@@ -1,0 +1,5 @@
+/* Minimal global styles for the maps app */
+.map-container {
+  width: 100%;
+  height: 100vh;
+}

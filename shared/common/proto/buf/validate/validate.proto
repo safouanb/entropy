@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package buf.validate;
+
+import "google/protobuf/descriptor.proto";
+
+// Minimal placeholder definitions to allow code generation without fetching
+// remote deps.
+
+message DoubleRules {
+  double gte = 1;
+  double lte = 2;
+  double gt = 3;
+  double lt = 4;
+}
+
+message Int32Rules {
+  int32 gte = 1;
+  int32 lte = 2;
+  int32 gt = 3;
+  int32 lt = 4;
+}
+
+message Int64Rules {
+  int64 gte = 1;
+  int64 lte = 2;
+  int64 gt = 3;
+  int64 lt = 4;
+}
+
+message StringRules {
+  uint32 min_len = 1;
+  uint32 max_len = 2;
+}
+
+message BoolRules {}
+
+message FieldRules {
+  oneof type {
+    DoubleRules double = 1;
+    Int32Rules int32 = 2;
+    Int64Rules int64 = 3;
+    StringRules string = 4;
+    BoolRules bool = 5;
+  }
+  bool required = 1000;
+}
+
+extend google.protobuf.FieldOptions {
+  FieldRules field = 113816; // arbitrary extension id for local compilation
+}

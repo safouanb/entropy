@@ -1,0 +1,210 @@
+syntax = "proto3";
+
+package pyrecycleheat.v1;
+
+option go_package = "github.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v1;pyrecycleheatv1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "pyrecycleheat/v1/common.proto";
+
+enum RouteStatus {
+  ROUTE_STATUS_UNSPECIFIED = 0;
+  ROUTE_STATUS_ACTIVE = 1;
+  ROUTE_STATUS_INACTIVE = 2;
+  ROUTE_STATUS_MAINTENANCE = 3;
+  ROUTE_STATUS_PLANNED = 4;
+}
+
+message HeatCenter {
+  int64 id = 1;
+  string name = 2
+      [ (buf.validate.field).string = {min_len : 1, max_len : 255} ];
+  Location location = 3 [ (buf.validate.field).required = true ];
+  string address = 4 [ (buf.validate.field).string.max_len = 500 ];
+  double max_capacity_mw = 5 [ (buf.validate.field).double.gt = 0 ];
+  double current_output_mw = 6 [ (buf.validate.field).double.gte = 0 ];
+  double efficiency_percent = 7
+      [ (buf.validate.field).double = {gte : 0, lte : 100} ];
+  string fuel_type = 8 [ (buf.validate.field).string.max_len = 100 ];
+  bool is_active = 9;
+  google.protobuf.Timestamp commissioning_date = 10;
+  google.protobuf.Timestamp last_maintenance = 11;
+  string description = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+// Create/Update requests for HeatCenter
+message CreateHeatCenterRequest {
+  string name = 1
+      [ (buf.validate.field).string = {min_len : 1, max_len : 255} ];
+  Location location = 2 [ (buf.validate.field).required = true ];
+  string address = 3 [ (buf.validate.field).string.max_len = 500 ];
+  double max_capacity_mw = 4 [ (buf.validate.field).double.gt = 0 ];
+  double current_output_mw = 5;
+  double efficiency_percent = 6;
+  string fuel_type = 7;
+  bool is_active = 8;
+  google.protobuf.Timestamp commissioning_date = 9;
+  google.protobuf.Timestamp last_maintenance = 10;
+  string description = 11;
+}
+
+message UpdateHeatCenterRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+  string name = 2;
+  Location location = 3;
+  string address = 4;
+  double max_capacity_mw = 5;
+  double current_output_mw = 6;
+  double efficiency_percent = 7;
+  string fuel_type = 8;
+  bool is_active = 9;
+  google.protobuf.Timestamp commissioning_date = 10;
+  google.protobuf.Timestamp last_maintenance = 11;
+  string description = 12;
+}
+
+message DemandSite {
+  int64 id = 1;
+  string name = 2
+      [ (buf.validate.field).string = {min_len : 1, max_len : 255} ];
+  Location location = 3 [ (buf.validate.field).required = true ];
+  string address = 4 [ (buf.validate.field).string.max_len = 500 ];
+  string site_type = 5 [ (buf.validate.field).string.max_len = 100 ];
+  double peak_demand_mw = 6 [ (buf.validate.field).double.gt = 0 ];
+  double current_demand_mw = 7 [ (buf.validate.field).double.gte = 0 ];
+  double annual_consumption_mwh = 8 [ (buf.validate.field).double.gte = 0 ];
+  bool is_connected = 9;
+  google.protobuf.Timestamp connection_date = 10;
+  int32 priority_level = 11 [ (buf.validate.field).int32 = {gte : 1, lte : 5} ];
+  double floor_area_sqm = 12 [ (buf.validate.field).double.gte = 0 ];
+  int32 building_age_years = 13 [ (buf.validate.field).int32.gte = 0 ];
+  string insulation_rating = 14 [ (buf.validate.field).string.max_len = 10 ];
+  string description = 15;
+  google.protobuf.Timestamp created_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
+}
+
+// Create/Update requests for DemandSite
+message CreateDemandSiteRequest {
+  string name = 1
+      [ (buf.validate.field).string = {min_len : 1, max_len : 255} ];
+  Location location = 2 [ (buf.validate.field).required = true ];
+  string address = 3;
+  string site_type = 4;
+  double peak_demand_mw = 5 [ (buf.validate.field).double.gt = 0 ];
+  double current_demand_mw = 6;
+  double annual_consumption_mwh = 7;
+  bool is_connected = 8;
+  google.protobuf.Timestamp connection_date = 9;
+  int32 priority_level = 10;
+  double floor_area_sqm = 11;
+  int32 building_age_years = 12;
+  string insulation_rating = 13;
+  string description = 14;
+}
+
+message UpdateDemandSiteRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+  string name = 2;
+  Location location = 3;
+  string address = 4;
+  string site_type = 5;
+  double peak_demand_mw = 6;
+  double current_demand_mw = 7;
+  double annual_consumption_mwh = 8;
+  bool is_connected = 9;
+  google.protobuf.Timestamp connection_date = 10;
+  int32 priority_level = 11;
+  double floor_area_sqm = 12;
+  int32 building_age_years = 13;
+  string insulation_rating = 14;
+  string description = 15;
+}
+
+message Route {
+  int64 id = 1;
+  int64 heat_center_id = 2 [ (buf.validate.field).int64.gt = 0 ];
+  int64 demand_site_id = 3 [ (buf.validate.field).int64.gt = 0 ];
+  double distance_km = 4 [ (buf.validate.field).double.gt = 0 ];
+  int32 pipe_diameter_mm = 5 [ (buf.validate.field).int32.gt = 0 ];
+  double max_flow_capacity_mw = 6 [ (buf.validate.field).double.gt = 0 ];
+  double current_flow_mw = 7 [ (buf.validate.field).double.gte = 0 ];
+  double supply_temp_celsius = 8
+      [ (buf.validate.field).double = {gte : 0, lte : 200} ];
+  double return_temp_celsius = 9
+      [ (buf.validate.field).double = {gte : 0, lte : 200} ];
+  double pressure_bar = 10 [ (buf.validate.field).double.gte = 0 ];
+  double heat_loss_percent = 11
+      [ (buf.validate.field).double = {gte : 0, lte : 100} ];
+  int32 installation_year = 12
+      [ (buf.validate.field).int32 = {gte : 1900, lte : 2100} ];
+  string pipe_material = 13 [ (buf.validate.field).string.max_len = 100 ];
+  string insulation_type = 14 [ (buf.validate.field).string.max_len = 100 ];
+  RouteStatus status = 15;
+  bool is_bidirectional = 16;
+  google.protobuf.Timestamp maintenance_due = 17;
+  double construction_cost = 18 [ (buf.validate.field).double.gte = 0 ];
+  double annual_maintenance_cost = 19 [ (buf.validate.field).double.gte = 0 ];
+  google.protobuf.Timestamp created_at = 20;
+  google.protobuf.Timestamp updated_at = 21;
+}
+
+// Create/Update requests for Route
+message CreateRouteRequest {
+  int64 heat_center_id = 1 [ (buf.validate.field).int64.gt = 0 ];
+  int64 demand_site_id = 2 [ (buf.validate.field).int64.gt = 0 ];
+  double distance_km = 3 [ (buf.validate.field).double.gt = 0 ];
+  int32 pipe_diameter_mm = 4;
+  double max_flow_capacity_mw = 5 [ (buf.validate.field).double.gt = 0 ];
+  double current_flow_mw = 6;
+  double supply_temp_celsius = 7;
+  double return_temp_celsius = 8;
+  double pressure_bar = 9;
+  double heat_loss_percent = 10;
+  int32 installation_year = 11;
+  string pipe_material = 12;
+  string insulation_type = 13;
+  RouteStatus status = 14;
+  bool is_bidirectional = 15;
+  google.protobuf.Timestamp maintenance_due = 16;
+  double construction_cost = 17;
+  double annual_maintenance_cost = 18;
+}
+
+message UpdateRouteRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+  int64 heat_center_id = 2;
+  int64 demand_site_id = 3;
+  double distance_km = 4;
+  int32 pipe_diameter_mm = 5;
+  double max_flow_capacity_mw = 6;
+  double current_flow_mw = 7;
+  double supply_temp_celsius = 8;
+  double return_temp_celsius = 9;
+  double pressure_bar = 10;
+  double heat_loss_percent = 11;
+  int32 installation_year = 12;
+  string pipe_material = 13;
+  string insulation_type = 14;
+  RouteStatus status = 15;
+  bool is_bidirectional = 16;
+  google.protobuf.Timestamp maintenance_due = 17;
+  double construction_cost = 18;
+  double annual_maintenance_cost = 19;
+}
+
+message AnalyticsSummary {
+  int64 total_heat_centers = 1;
+  int64 total_demand_sites = 2;
+  int64 total_routes = 3;
+  int64 active_heat_centers = 4;
+  int64 connected_demand_sites = 5;
+  double total_capacity_mw = 6;
+  double total_current_output_mw = 7;
+  double total_demand_mw = 8;
+  double system_efficiency_percent = 9;
+  int64 total_active_routes = 10;
+}

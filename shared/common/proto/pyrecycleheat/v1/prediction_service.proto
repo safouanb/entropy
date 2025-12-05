@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package pyrecycleheat.v1;
+
+option go_package = "github.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v1;pyrecycleheatv1";
+
+import "pyrecycleheat/v1/prediction.proto";
+import "pyrecycleheat/v1/common.proto";
+import "buf/validate/validate.proto";
+
+service PredictionService {
+  rpc ListDataCenters(ListDataCentersRequest) returns (ListDataCentersResponse);
+  rpc GetDataCenter(GetDataCenterRequest) returns (GetDataCenterResponse);
+  rpc CreateDataCenter(CreateDataCenterRequest)
+      returns (CreateDataCenterResponse);
+  rpc UpdateDataCenter(UpdateDataCenterRequest)
+      returns (UpdateDataCenterResponse);
+  rpc DeleteDataCenter(DeleteDataCenterRequest)
+      returns (DeleteDataCenterResponse);
+
+  rpc ListCarbonCredits(ListCarbonCreditsRequest)
+      returns (ListCarbonCreditsResponse);
+  rpc GetCarbonCredit(GetCarbonCreditRequest) returns (GetCarbonCreditResponse);
+  rpc CreateCarbonCredit(CreateCarbonCreditRequest)
+      returns (CreateCarbonCreditResponse);
+  rpc UpdateCarbonCredit(UpdateCarbonCreditRequest)
+      returns (UpdateCarbonCreditResponse);
+  rpc DeleteCarbonCredit(DeleteCarbonCreditRequest)
+      returns (DeleteCarbonCreditResponse);
+
+  rpc ListHeatSinks(ListHeatSinksRequest) returns (ListHeatSinksResponse);
+  rpc GetHeatSink(GetHeatSinkRequest) returns (GetHeatSinkResponse);
+  rpc CreateHeatSink(CreateHeatSinkRequest) returns (CreateHeatSinkResponse);
+  rpc UpdateHeatSink(UpdateHeatSinkRequest) returns (UpdateHeatSinkResponse);
+  rpc DeleteHeatSink(DeleteHeatSinkRequest) returns (DeleteHeatSinkResponse);
+
+  rpc CalculatePrediction(CalculatePredictionRequest)
+      returns (CalculatePredictionResponse);
+  rpc ListPredictionResults(ListPredictionResultsRequest)
+      returns (ListPredictionResultsResponse);
+  rpc GetPredictionResult(GetPredictionResultRequest)
+      returns (GetPredictionResultResponse);
+
+  // New parity RPCs
+  rpc DeletePredictionResult(DeletePredictionResultRequest)
+      returns (DeletePredictionResultResponse);
+
+  rpc ListNearbyHeatSinks(ListNearbyHeatSinksRequest)
+      returns (ListNearbyHeatSinksResponse);
+
+  rpc GetPredictionAnalytics(GetPredictionAnalyticsRequest)
+      returns (GetPredictionAnalyticsResponse);
+}
+
+message ListDataCentersRequest { PaginationRequest pagination = 1; }
+message ListDataCentersResponse {
+  repeated DataCenter data_centers = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetDataCenterRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetDataCenterResponse { DataCenter data_center = 1; }
+message CreateDataCenterResponse { DataCenter data_center = 1; }
+message UpdateDataCenterResponse { DataCenter data_center = 1; }
+message DeleteDataCenterRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteDataCenterResponse {}
+
+message ListCarbonCreditsRequest { PaginationRequest pagination = 1; }
+message ListCarbonCreditsResponse {
+  repeated CarbonCredit carbon_credits = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetCarbonCreditRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetCarbonCreditResponse { CarbonCredit carbon_credit = 1; }
+message CreateCarbonCreditResponse { CarbonCredit carbon_credit = 1; }
+message UpdateCarbonCreditResponse { CarbonCredit carbon_credit = 1; }
+message DeleteCarbonCreditRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteCarbonCreditResponse {}
+
+message ListHeatSinksRequest { PaginationRequest pagination = 1; }
+message ListHeatSinksResponse {
+  repeated HeatSink heat_sinks = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetHeatSinkRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetHeatSinkResponse { HeatSink heat_sink = 1; }
+message CreateHeatSinkResponse { HeatSink heat_sink = 1; }
+message UpdateHeatSinkResponse { HeatSink heat_sink = 1; }
+message DeleteHeatSinkRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteHeatSinkResponse {}
+
+message ListPredictionResultsRequest {
+  PaginationRequest pagination = 1;
+  int64 data_center_id = 2;
+  string scenario_name = 3;
+}
+message ListPredictionResultsResponse {
+  repeated PredictionResult prediction_results = 1;
+  PaginationMetadata pagination = 2;
+}
+
+message GetPredictionResultResponse { PredictionResult prediction_result = 1; }
+
+message DeletePredictionResultRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeletePredictionResultResponse {}
+
+message ListNearbyHeatSinksRequest {
+  int64 data_center_id = 1 [ (buf.validate.field).int64.gt = 0 ];
+  double max_distance_km = 2 [ (buf.validate.field).double.gt = 0 ];
+  int32 limit = 3 [ (buf.validate.field).int32 = {gte : 1, lte : 100} ];
+}
+
+message ListNearbyHeatSinksResponse { repeated HeatSink heat_sinks = 1; }
+
+message PredictionAnalytics {
+  int64 total_predictions = 1;
+  int64 total_data_centers = 2;
+  int64 total_carbon_credits = 3;
+  int64 total_heat_sinks = 4;
+  double avg_annual_savings = 5;
+  double avg_internal_rate_return = 6;
+  double avg_payback_period_years = 7;
+}
+
+message GetPredictionAnalyticsRequest {}
+message GetPredictionAnalyticsResponse {
+  PredictionAnalytics prediction_analytics = 1;
+}

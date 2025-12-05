@@ -1,0 +1,23 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/pyrecycleheat/backend/api/gen/go
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: ../../../backend/api/gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/connectrpc/go
+    out: ../../../backend/api/gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/bufbuild/es
+    out: ../../../frontend/src/gen
+    opt:
+      - target=ts
+  - remote: buf.build/connectrpc/es
+    out: ../../../frontend/src/gen
+    opt:
+      - target=ts

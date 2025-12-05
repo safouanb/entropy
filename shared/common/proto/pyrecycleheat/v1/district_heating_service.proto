@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package pyrecycleheat.v1;
+
+option go_package = "github.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v1;pyrecycleheatv1";
+
+import "pyrecycleheat/v1/district_heating.proto";
+import "pyrecycleheat/v1/common.proto";
+import "buf/validate/validate.proto";
+
+service DistrictHeatingService {
+  rpc ListHeatCenters(ListHeatCentersRequest) returns (ListHeatCentersResponse);
+  rpc GetHeatCenter(GetHeatCenterRequest) returns (GetHeatCenterResponse);
+  rpc CreateHeatCenter(CreateHeatCenterRequest)
+      returns (CreateHeatCenterResponse);
+  rpc UpdateHeatCenter(UpdateHeatCenterRequest)
+      returns (UpdateHeatCenterResponse);
+  rpc DeleteHeatCenter(DeleteHeatCenterRequest)
+      returns (DeleteHeatCenterResponse);
+
+  rpc ListDemandSites(ListDemandSitesRequest) returns (ListDemandSitesResponse);
+  rpc GetDemandSite(GetDemandSiteRequest) returns (GetDemandSiteResponse);
+  rpc CreateDemandSite(CreateDemandSiteRequest)
+      returns (CreateDemandSiteResponse);
+  rpc UpdateDemandSite(UpdateDemandSiteRequest)
+      returns (UpdateDemandSiteResponse);
+  rpc DeleteDemandSite(DeleteDemandSiteRequest)
+      returns (DeleteDemandSiteResponse);
+
+  rpc ListRoutes(ListRoutesRequest) returns (ListRoutesResponse);
+  rpc GetRoute(GetRouteRequest) returns (GetRouteResponse);
+  rpc CreateRoute(CreateRouteRequest) returns (CreateRouteResponse);
+  rpc UpdateRoute(UpdateRouteRequest) returns (UpdateRouteResponse);
+  rpc DeleteRoute(DeleteRouteRequest) returns (DeleteRouteResponse);
+
+  rpc GetAnalyticsSummary(GetAnalyticsSummaryRequest)
+      returns (GetAnalyticsSummaryResponse);
+
+  // New parity RPCs for per-entity analytics
+  rpc GetHeatCenterAnalytics(GetHeatCenterAnalyticsRequest)
+      returns (GetHeatCenterAnalyticsResponse);
+  rpc GetDemandSiteAnalytics(GetDemandSiteAnalyticsRequest)
+      returns (GetDemandSiteAnalyticsResponse);
+}
+
+message ListHeatCentersRequest { PaginationRequest pagination = 1; }
+message ListHeatCentersResponse {
+  repeated HeatCenter heat_centers = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetHeatCenterRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetHeatCenterResponse { HeatCenter heat_center = 1; }
+message CreateHeatCenterResponse { HeatCenter heat_center = 1; }
+message UpdateHeatCenterResponse { HeatCenter heat_center = 1; }
+message DeleteHeatCenterRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteHeatCenterResponse {}
+
+message ListDemandSitesRequest { PaginationRequest pagination = 1; }
+message ListDemandSitesResponse {
+  repeated DemandSite demand_sites = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetDemandSiteRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetDemandSiteResponse { DemandSite demand_site = 1; }
+message CreateDemandSiteResponse { DemandSite demand_site = 1; }
+message UpdateDemandSiteResponse { DemandSite demand_site = 1; }
+message DeleteDemandSiteRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteDemandSiteResponse {}
+
+message ListRoutesRequest { PaginationRequest pagination = 1; }
+message ListRoutesResponse {
+  repeated Route routes = 1;
+  PaginationMetadata pagination = 2;
+}
+message GetRouteRequest { int64 id = 1 [ (buf.validate.field).int64.gt = 0 ]; }
+message GetRouteResponse { Route route = 1; }
+message CreateRouteResponse { Route route = 1; }
+message UpdateRouteResponse { Route route = 1; }
+message DeleteRouteRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message DeleteRouteResponse {}
+
+message HeatCenterAnalytics {
+  HeatCenter heat_center = 1;
+  repeated DemandSite connected_demand_sites = 2;
+  double total_connected_demand_mw = 3;
+  double capacity_utilization_percent = 4;
+  int64 routes_count = 5;
+}
+
+message DemandSiteAnalytics {
+  DemandSite demand_site = 1;
+  repeated HeatCenter heat_sources = 2;
+  double total_available_capacity_mw = 3;
+  double demand_coverage_percent = 4;
+  int64 routes_count = 5;
+}
+
+message GetAnalyticsSummaryRequest {}
+message GetAnalyticsSummaryResponse { AnalyticsSummary analytics_summary = 1; }
+
+message GetHeatCenterAnalyticsRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetHeatCenterAnalyticsResponse {
+  HeatCenterAnalytics heat_center_analytics = 1;
+}
+
+message GetDemandSiteAnalyticsRequest {
+  int64 id = 1 [ (buf.validate.field).int64.gt = 0 ];
+}
+message GetDemandSiteAnalyticsResponse {
+  DemandSiteAnalytics demand_site_analytics = 1;
+}
