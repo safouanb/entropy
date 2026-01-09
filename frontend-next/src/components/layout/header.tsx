@@ -2,14 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Leaf, Map, Info, LayoutDashboard, Zap, TrendingUp } from "lucide-react";
+import {
+  GlobeEuropeAfricaIcon,
+  MapIcon,
+  InformationCircleIcon,
+  Squares2X2Icon,
+  BoltIcon,
+  ArrowTrendingUpIcon
+} from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import { useAnalytics } from "@/hooks";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/map", label: "Map", icon: Map },
-  { href: "/about", label: "About", icon: Info },
+  { href: "/", label: "Dashboard", icon: Squares2X2Icon },
+  { href: "/map", label: "Map", icon: MapIcon },
+  { href: "/about", label: "About", icon: InformationCircleIcon },
 ];
 
 export function Header() {
@@ -22,10 +29,10 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500">
-            <Leaf className="h-5 w-5 text-white" />
+            <GlobeEuropeAfricaIcon className="h-5 w-5 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg leading-none tracking-tight">PyRecycleHeat</span>
+            <span className="font-bold text-lg leading-none tracking-tight">ENTROPY</span>
             <span className="text-[10px] text-muted-foreground font-medium tracking-wider uppercase">Heat Recovery Platform</span>
           </div>
         </Link>
@@ -59,13 +66,13 @@ export function Header() {
           {analytics && (
             <div className="hidden lg:flex items-center gap-6">
               <StatBadge
-                icon={Zap}
+                icon={BoltIcon}
                 value={analytics.totalDataCenters || 0}
                 label="Sites"
                 color="emerald"
               />
               <StatBadge
-                icon={TrendingUp}
+                icon={ArrowTrendingUpIcon}
                 value={analytics.totalPredictions || 0}
                 label="Analyses"
                 color="teal"

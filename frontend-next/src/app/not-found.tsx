@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { HomeIcon } from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Button asChild className="mt-6">
         <Link href="/">
-          <Home className="mr-2 h-4 w-4" />
+          <HomeIcon className="mr-2 h-4 w-4" />
           Back to Home
         </Link>
       </Button>

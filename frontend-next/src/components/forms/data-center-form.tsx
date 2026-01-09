@@ -3,7 +3,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Building2, MapPin, Cpu, Settings } from "lucide-react";
+import {
+  ArrowPathIcon,
+  BuildingOffice2Icon,
+  MapPinIcon,
+  CpuChipIcon,
+  Cog6ToothIcon
+} from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,7 +70,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-blue-100">
-            <Building2 className="h-4 w-4 text-blue-600" />
+            <BuildingOffice2Icon className="h-4 w-4 text-blue-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Basic Information</h3>
         </div>
@@ -98,7 +104,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-emerald-100">
-            <MapPin className="h-4 w-4 text-emerald-600" />
+            <MapPinIcon className="h-4 w-4 text-emerald-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Location</h3>
         </div>
@@ -131,7 +137,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-purple-100">
-            <Cpu className="h-4 w-4 text-purple-600" />
+            <CpuChipIcon className="h-4 w-4 text-purple-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Technical Specifications</h3>
         </div>
@@ -207,7 +213,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-amber-100">
-            <Settings className="h-4 w-4 text-amber-600" />
+            <Cog6ToothIcon className="h-4 w-4 text-amber-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Operational Parameters</h3>
         </div>
@@ -289,7 +295,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
         >
           {createMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
               Creating...
             </>
           ) : (

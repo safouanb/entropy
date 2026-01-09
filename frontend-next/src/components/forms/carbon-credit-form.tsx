@@ -3,7 +3,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Leaf, Euro, Shield, FileText } from "lucide-react";
+import {
+  ArrowPathIcon,
+  GlobeEuropeAfricaIcon,
+  CurrencyEuroIcon,
+  ShieldCheckIcon,
+  DocumentTextIcon
+} from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,7 +62,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-emerald-100">
-            <Leaf className="h-4 w-4 text-emerald-600" />
+            <GlobeEuropeAfricaIcon className="h-4 w-4 text-emerald-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Project Information</h3>
         </div>
@@ -111,7 +117,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-blue-100">
-            <Shield className="h-4 w-4 text-blue-600" />
+            <ShieldCheckIcon className="h-4 w-4 text-blue-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Verification & Location</h3>
         </div>
@@ -151,7 +157,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-amber-100">
-            <Euro className="h-4 w-4 text-amber-600" />
+            <CurrencyEuroIcon className="h-4 w-4 text-amber-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Pricing & Availability</h3>
         </div>
@@ -191,7 +197,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-purple-100">
-            <FileText className="h-4 w-4 text-purple-600" />
+            <DocumentTextIcon className="h-4 w-4 text-purple-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Description</h3>
         </div>
@@ -214,7 +220,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
         >
           {createMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
               Creating...
             </>
           ) : (

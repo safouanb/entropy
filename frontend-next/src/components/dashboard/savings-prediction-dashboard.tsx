@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, BarChart3, Map, Settings, History } from "lucide-react";
+import {
+  CalculatorIcon,
+  ChartBarIcon,
+  MapIcon,
+  Cog6ToothIcon,
+  ClockIcon
+} from "@heroicons/react/24/outline";
 import { CalculateTab } from "./calculate-tab";
 import { ResultsTab } from "./results-tab";
 import { MapTab } from "./map-tab";
@@ -30,35 +36,35 @@ export function SavingsPredictionDashboard() {
                 value="calculate"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
-                <Calculator className="h-4 w-4" />
+                <CalculatorIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Calculate</span>
               </TabsTrigger>
               <TabsTrigger
                 value="results"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
-                <BarChart3 className="h-4 w-4" />
+                <ChartBarIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Results</span>
               </TabsTrigger>
               <TabsTrigger
                 value="map"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
-                <Map className="h-4 w-4" />
+                <MapIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Map</span>
               </TabsTrigger>
               <TabsTrigger
                 value="manage"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
-                <Settings className="h-4 w-4" />
+                <Cog6ToothIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Manage</span>
               </TabsTrigger>
               <TabsTrigger
                 value="history"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
-                <History className="h-4 w-4" />
+                <ClockIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">History</span>
               </TabsTrigger>
             </TabsList>

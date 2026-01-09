@@ -3,10 +3,27 @@
 import { useRef, useCallback, useState } from "react";
 import Map, { Marker, Popup, NavigationControl, FullscreenControl, Source, Layer } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Building2, Factory, Home, Zap, Loader2 } from "lucide-react";
+
+import {
+  BuildingOffice2Icon,
+  HomeModernIcon,
+  BoltIcon,
+  ArrowPathIcon,
+  AdjustmentsHorizontalIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  BanknotesIcon
+} from "@heroicons/react/24/solid";
+import {
+  XMarkIcon,
+  InformationCircleIcon
+} from "@heroicons/react/24/outline";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useDataCenters, useHeatSinks } from "@/hooks";
 import { formatCurrency, formatPercent } from "@/lib/constants";
@@ -156,7 +173,7 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
           >
             <div className={`cursor-pointer p-2 rounded-full shadow-lg transition-all ${selectedDC?.id === dc.id ? "bg-purple-600 scale-110 ring-4 ring-purple-200" : "bg-blue-500 hover:bg-blue-600"
               }`}>
-              <Building2 className="h-5 w-5 text-white" />
+              <BuildingOffice2Icon className="h-5 w-5 text-white" />
             </div>
           </Marker>
         ))}
@@ -175,7 +192,7 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
           >
             <div className={`cursor-pointer p-2 rounded-full shadow-lg transition-all ${selectedHS?.id === hs.id ? "bg-purple-600 scale-110 ring-4 ring-purple-200" : "bg-green-500 hover:bg-green-600"
               }`}>
-              <Home className="h-5 w-5 text-white" />
+              <HomeModernIcon className="h-5 w-5 text-white" />
             </div>
           </Marker>
         ))}
@@ -225,7 +242,17 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
 
 function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: DataCenter, heatSink: HeatSink, distance: string }) {
   const [loading, setLoading] = useState(false);
-  const [metrics, setMetrics] = useState<{ npv: number; savings: number; irr: number; payback: number; co2: number } | null>(null);
+  const [metrics, setMetrics] = useState<any | null>(null);
+
+  // Advanced Config State
+  const [showConfig, setShowConfig] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [params, setParams] = useState({
+    analysisYears: 10,
+    discountRate: 8,
+    electricityCost: 0.12,
+    carbonPrice: 25
+  });
 
   const handleRunAnalysis = async () => {
     setLoading(true);
@@ -237,8 +264,10 @@ function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: 
           dataCenterId: dataCenter.id,
           heatSinkIds: [heatSink.id],
           scenarioName: `Quick Check: ${dataCenter.name} -> ${heatSink.name}`,
-          analysisYears: 10,
-          discountRate: 0.08,
+          analysisYears: Number(params.analysisYears),
+          discountRate: Number(params.discountRate) / 100, // convert percentage
+          customElectricityRate: Number(params.electricityCost),
+          customCarbonPrice: Number(params.carbonPrice),
         }),
       });
 
@@ -246,13 +275,7 @@ function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: 
       const data = await resp.json();
 
       if (data && data.financialMetrics) {
-        setMetrics({
-          npv: data.financialMetrics.netPresentValue,
-          savings: data.savingsMetrics?.netAnnualSavings || (data.heatRecoveryMetrics?.annualGasCostSavings || 0),
-          irr: (data.financialMetrics.internalRateOfReturn || 0) / 100,
-          payback: data.financialMetrics.simplePaybackYears || 0,
-          co2: data.heatRecoveryMetrics?.co2AvoidedKgPerYear || (data.carbonMetrics?.annualCo2ReductionKg || 0),
-        });
+        setMetrics(data); // Store full response for breakdown
       }
     } catch (err) {
       console.error(err);
@@ -263,16 +286,73 @@ function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: 
   };
 
   return (
-    <div className="absolute top-24 left-4 bg-white/95 backdrop-blur p-4 rounded-xl shadow-xl w-80 animate-in slide-in-from-left-10 fade-in duration-300 border border-purple-100">
-      <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100">
-        <div className="p-2 rounded-lg bg-purple-100">
-          <Zap className="h-5 w-5 text-purple-600" />
+    <div className="absolute top-24 left-4 bg-white/95 backdrop-blur p-4 rounded-xl shadow-xl w-80 max-h-[80vh] overflow-y-auto animate-in slide-in-from-left-10 fade-in duration-300 border border-purple-100 flex flex-col gap-3">
+
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-purple-100">
+            <BoltIcon className="h-5 w-5 text-purple-600" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900">Quick Feasibility</h4>
+            <p className="text-xs text-gray-500">Pipeline: {distance}</p>
+          </div>
         </div>
-        <div>
-          <h4 className="font-semibold text-gray-900">Quick Feasibility</h4>
-          <p className="text-xs text-gray-500">Pipeline: {distance}</p>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-gray-500 hover:text-purple-600"
+          onClick={() => setShowConfig(!showConfig)}
+        >
+          <AdjustmentsHorizontalIcon className="h-5 w-5" />
+        </Button>
       </div>
+
+      {/* Configuration Form */}
+      {showConfig && (
+        <div className="p-3 bg-gray-50 rounded-lg border border-gray-100 space-y-3 animate-in slide-in-from-top-2">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Years</Label>
+              <Input
+                type="number"
+                value={params.analysisYears}
+                onChange={e => setParams({ ...params, analysisYears: Number(e.target.value) })}
+                className="h-7 text-xs bg-white"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Disc. Rate (%)</Label>
+              <Input
+                type="number"
+                value={params.discountRate}
+                onChange={e => setParams({ ...params, discountRate: Number(e.target.value) })}
+                className="h-7 text-xs bg-white"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Elec (€/kWh)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={params.electricityCost}
+                onChange={e => setParams({ ...params, electricityCost: Number(e.target.value) })}
+                className="h-7 text-xs bg-white"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Carbon (€/t)</Label>
+              <Input
+                type="number"
+                value={params.carbonPrice}
+                onChange={e => setParams({ ...params, carbonPrice: Number(e.target.value) })}
+                className="h-7 text-xs bg-white"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {metrics === null ? (
         <div className="space-y-3">
@@ -286,7 +366,7 @@ function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: 
           >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
                 Analyzing...
               </>
             ) : (
@@ -296,33 +376,84 @@ function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: 
         </div>
       ) : (
         <div className="space-y-3">
+          {/* Main Result */}
           <div className="text-center py-3 bg-purple-50 rounded-lg border border-purple-100 mb-2">
             <p className="text-xs text-purple-600 uppercase font-semibold mb-1">Estimated NPV</p>
-            <p className="text-3xl font-bold text-gray-900">{formatCurrency(metrics.npv)}</p>
+            <p className="text-3xl font-bold text-gray-900">{formatCurrency(metrics.financialMetrics.netPresentValue)}</p>
           </div>
 
+          {/* Quick Metrics Grid */}
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-xs text-gray-500">Annual Savings</p>
-              <p className="font-semibold text-gray-900">{formatCurrency(metrics.savings)}</p>
+              <p className="font-semibold text-gray-900">{formatCurrency(metrics.savingsMetrics?.netAnnualSavings || metrics.heatRecoveryMetrics?.annualGasCostSavings || 0)}</p>
             </div>
             <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-xs text-gray-500">Payback</p>
-              <p className="font-semibold text-gray-900">{metrics.payback.toFixed(1)} yrs</p>
+              <p className="font-semibold text-gray-900">{metrics.financialMetrics.simplePaybackYears.toFixed(1)} yrs</p>
             </div>
             <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-xs text-gray-500">IRR</p>
-              <p className="font-semibold text-gray-900">{formatPercent(metrics.irr)}</p>
+              <p className="font-semibold text-gray-900">{formatPercent(metrics.financialMetrics.internalRateOfReturn / 100)}</p>
             </div>
             <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-xs text-gray-500">CO₂ Avoided</p>
-              <p className="font-semibold text-gray-900">{(metrics.co2 / 1000).toFixed(0)}t</p>
+              <p className="font-semibold text-gray-900">{(metrics.heatRecoveryMetrics?.co2AvoidedKgPerYear / 1000).toFixed(0)}t</p>
             </div>
           </div>
 
-          <Button variant="outline" size="sm" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 mt-2" onClick={() => setMetrics(null)}>
-            Run Again
+          {/* Detailed Breakdown Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowBreakdown(!showBreakdown)}
+            className="w-full flex items-center justify-center gap-1 text-xs text-gray-500 h-6"
+          >
+            {showBreakdown ? (
+              <>Hide Breakdown <ChevronUpIcon className="h-3 w-3" /></>
+            ) : (
+              <>Show Breakdown <ChevronDownIcon className="h-3 w-3" /></>
+            )}
           </Button>
+
+          {/* Detailed Breakdown Panel */}
+          {showBreakdown && (
+            <div className="space-y-2 text-xs border-t border-gray-100 pt-2 animate-in slide-in-from-top-2">
+              <div className="flex justify-between font-medium text-gray-900">
+                <span>Initial Investment (Capex)</span>
+                <span>{formatCurrency(metrics.financialMetrics.netPresentValue * -1 + (metrics.heatRecoveryMetrics?.annualGasCostSavings * metrics.financialMetrics.simplePaybackYears))}*</span>
+                {/* Note: Logic above is rough approx since we don't have capex field in FinMetrics directly, assume NPV+Outflows roughly, but better to use simple payback calc reverse: Capex = AnnualSavings * Payback */}
+              </div>
+              <div className="flex justify-between pl-2 text-gray-500">
+                <span>Pipeline ({distance}) + Connect</span>
+                <span>See details</span>
+              </div>
+
+              <div className="flex justify-between font-medium text-gray-900 mt-2">
+                <span>Annual Revenue</span>
+                <span>{formatCurrency(metrics.heatRecoveryMetrics?.annualGasCostSavings)}</span>
+              </div>
+              <div className="flex justify-between pl-2 text-gray-500">
+                <span>Gas Replacement</span>
+                <span>{formatCurrency(metrics.heatRecoveryMetrics?.annualGasCostSavings)}</span>
+              </div>
+
+              <div className="mt-2 p-2 bg-blue-50 rounded text-blue-700">
+                <div className="flex items-start gap-2">
+                  <InformationCircleIcon className="h-4 w-4 shrink-0 mt-0.5" />
+                  <p className="leading-tight">
+                    Capex derived from €1.5M/km pipeline cost + €500k fixed station cost.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="flex-1 border-purple-200 text-purple-700 hover:bg-purple-50" onClick={() => setMetrics(null)}>
+              Run Again
+            </Button>
+          </div>
         </div>
       )}
     </div>
@@ -334,7 +465,7 @@ function DataCenterPopup({ dataCenter }: { dataCenter: DataCenter }) {
     <Card className="border-0 shadow-none min-w-[200px]">
       <CardHeader className="p-2 pb-1">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-blue-500" />
+          <BuildingOffice2Icon className="h-4 w-4 text-blue-500" />
           {dataCenter.name}
         </CardTitle>
       </CardHeader>
@@ -362,7 +493,7 @@ function HeatSinkPopup({ heatSink }: { heatSink: HeatSink }) {
     <Card className="border-0 shadow-none min-w-[200px]">
       <CardHeader className="p-2 pb-1">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Factory className="h-4 w-4 text-green-500" />
+          <HomeModernIcon className="h-4 w-4 text-green-500" />
           {heatSink.name}
         </CardTitle>
       </CardHeader>

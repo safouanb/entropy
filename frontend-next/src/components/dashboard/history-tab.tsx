@@ -1,6 +1,14 @@
 "use client";
 
-import { Download, Trash2, Eye, History, TrendingUp, Clock, Award, FileJson } from "lucide-react";
+import {
+  ArrowDownTrayIcon,
+  TrashIcon,
+  EyeIcon,
+  ClockIcon,
+  ArrowTrendingUpIcon,
+  TrophyIcon,
+  DocumentTextIcon
+} from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -66,7 +74,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-purple-500 shadow-lg shadow-purple-500/25">
-              <History className="h-5 w-5 text-white" />
+              <ClockIcon className="h-5 w-5 text-white" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">Prediction History</h3>
@@ -82,7 +90,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
               onClick={handleExportAll}
               className="border-gray-200 hover:bg-gray-50 hover:border-gray-300"
             >
-              <Download className="mr-2 h-4 w-4" />
+              <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
               Export All
             </Button>
           ) : null}
@@ -100,7 +108,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
         ) : predictions?.items?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-6">
-              <FileJson className="h-10 w-10 text-gray-400" />
+              <DocumentTextIcon className="h-10 w-10 text-gray-400" />
             </div>
             <h4 className="text-lg font-semibold text-gray-900 mb-2">No predictions yet</h4>
             <p className="text-gray-500 max-w-sm">
@@ -132,7 +140,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                         <div className="grid grid-cols-3 gap-4">
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 rounded-md bg-emerald-50">
-                              <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+                              <ArrowTrendingUpIcon className="h-3.5 w-3.5 text-emerald-600" />
                             </div>
                             <div>
                               <p className="text-xs text-gray-500">NPV</p>
@@ -143,7 +151,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 rounded-md bg-blue-50">
-                              <Award className="h-3.5 w-3.5 text-blue-600" />
+                              <TrophyIcon className="h-3.5 w-3.5 text-blue-600" />
                             </div>
                             <div>
                               <p className="text-xs text-gray-500">IRR</p>
@@ -154,7 +162,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 rounded-md bg-amber-50">
-                              <Clock className="h-3.5 w-3.5 text-amber-600" />
+                              <ClockIcon className="h-3.5 w-3.5 text-amber-600" />
                             </div>
                             <div>
                               <p className="text-xs text-gray-500">Payback</p>
@@ -173,7 +181,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                           title="View details"
                           className="h-9 w-9 hover:bg-purple-50"
                         >
-                          <Eye className="h-4 w-4 text-purple-600" />
+                          <EyeIcon className="h-4 w-4 text-purple-600" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -182,7 +190,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                           title="Export"
                           className="h-9 w-9 hover:bg-blue-50"
                         >
-                          <Download className="h-4 w-4 text-blue-600" />
+                          <ArrowDownTrayIcon className="h-4 w-4 text-blue-600" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -192,7 +200,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                           title="Delete"
                           className="h-9 w-9 hover:bg-red-50"
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <TrashIcon className="h-4 w-4 text-red-500" />
                         </Button>
                       </div>
                     </div>

@@ -4,7 +4,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Building2, Leaf, Sparkles, Clock, Percent, FileText } from "lucide-react";
+import {
+  ArrowPathIcon,
+  BuildingOffice2Icon,
+  GlobeEuropeAfricaIcon,
+  SparklesIcon,
+  ClockIcon,
+  ReceiptPercentIcon,
+  DocumentTextIcon,
+  CalculatorIcon
+} from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,7 +81,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
           <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-emerald-300 transition-colors">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-emerald-100">
-                <Building2 className="h-5 w-5 text-emerald-600" />
+                <BuildingOffice2Icon className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">Data Center</h3>
@@ -105,7 +114,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
           <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-teal-300 transition-colors">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-teal-100">
-                <Leaf className="h-5 w-5 text-teal-600" />
+                <GlobeEuropeAfricaIcon className="h-5 w-5 text-teal-600" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">Carbon Credit</h3>
@@ -135,7 +144,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         <div className="p-6 rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 rounded-lg bg-purple-100">
-              <Sparkles className="h-5 w-5 text-purple-600" />
+              <CalculatorIcon className="h-5 w-5 text-purple-600" />
             </div>
             <div>
               <h3 className="font-medium text-gray-900">Analysis Parameters</h3>
@@ -146,7 +155,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
           <div className="grid gap-6 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="scenarioName" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                <FileText className="h-4 w-4 text-gray-400" />
+                <DocumentTextIcon className="h-4 w-4 text-gray-400" />
                 Scenario Name
               </Label>
               <Input
@@ -162,7 +171,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
 
             <div className="space-y-2">
               <Label htmlFor="analysisYears" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                <Clock className="h-4 w-4 text-gray-400" />
+                <ClockIcon className="h-4 w-4 text-gray-400" />
                 Analysis Period (Years)
               </Label>
               <Input
@@ -177,7 +186,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
 
             <div className="space-y-2">
               <Label htmlFor="discountRate" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                <Percent className="h-4 w-4 text-gray-400" />
+                <ReceiptPercentIcon className="h-4 w-4 text-gray-400" />
                 Discount Rate (%)
               </Label>
               <Input
@@ -205,12 +214,12 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         >
           {calculateMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <ArrowPathIcon className="mr-2 h-5 w-5 animate-spin" />
               Calculating Prediction...
             </>
           ) : (
             <>
-              <Sparkles className="mr-2 h-5 w-5" />
+              <SparklesIcon className="mr-2 h-5 w-5" />
               Calculate Savings Prediction
             </>
           )}

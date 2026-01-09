@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, Server, Leaf, Zap, DollarSign, Building2 } from "lucide-react";
+import {
+  PlusIcon,
+  TrashIcon,
+  ServerIcon,
+  GlobeEuropeAfricaIcon,
+  BoltIcon,
+  CurrencyDollarIcon,
+  BuildingOffice2Icon
+} from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -47,7 +55,7 @@ export function ManageTab() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/25">
-                <Server className="h-5 w-5 text-white" />
+                <ServerIcon className="h-5 w-5 text-white" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Data Centers</h3>
@@ -57,7 +65,7 @@ export function ManageTab() {
             <Dialog open={dcDialogOpen} onOpenChange={setDcDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="bg-blue-500 hover:bg-blue-600 shadow-md shadow-blue-500/20">
-                  <Plus className="mr-2 h-4 w-4" />
+                  <PlusIcon className="mr-2 h-4 w-4" />
                   Add
                 </Button>
               </DialogTrigger>
@@ -65,7 +73,7 @@ export function ManageTab() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     <div className="p-2 rounded-lg bg-blue-100">
-                      <Building2 className="h-5 w-5 text-blue-600" />
+                      <BuildingOffice2Icon className="h-5 w-5 text-blue-600" />
                     </div>
                     Add Data Center
                   </DialogTitle>
@@ -84,7 +92,7 @@ export function ManageTab() {
           ) : dataCenters?.items?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
-                <Server className="h-8 w-8 text-gray-400" />
+                <ServerIcon className="h-8 w-8 text-gray-400" />
               </div>
               <p className="text-gray-500 mb-1">No data centers yet</p>
               <p className="text-sm text-gray-400">Add one to get started</p>
@@ -98,13 +106,13 @@ export function ManageTab() {
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-lg bg-blue-50 group-hover:bg-blue-100 transition-colors">
-                      <Building2 className="h-5 w-5 text-blue-600" />
+                      <BuildingOffice2Icon className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{dc.name}</p>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="inline-flex items-center gap-1 text-sm text-gray-500">
-                          <Zap className="h-3.5 w-3.5" />
+                          <BoltIcon className="h-3.5 w-3.5" />
                           {dc.totalItLoadKw} kW
                         </span>
                         <span className="text-gray-300">|</span>
@@ -121,7 +129,7 @@ export function ManageTab() {
                     onClick={() => handleDeleteDc(dc.id)}
                     disabled={deleteDcMutation.isPending}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <TrashIcon className="h-4 w-4 text-red-500" />
                   </Button>
                 </li>
               ))}
@@ -136,7 +144,7 @@ export function ManageTab() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/25">
-                <Leaf className="h-5 w-5 text-white" />
+                <GlobeEuropeAfricaIcon className="h-5 w-5 text-white" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Carbon Credits</h3>
@@ -146,7 +154,7 @@ export function ManageTab() {
             <Dialog open={ccDialogOpen} onOpenChange={setCcDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20">
-                  <Plus className="mr-2 h-4 w-4" />
+                  <PlusIcon className="mr-2 h-4 w-4" />
                   Add
                 </Button>
               </DialogTrigger>
@@ -154,7 +162,7 @@ export function ManageTab() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     <div className="p-2 rounded-lg bg-emerald-100">
-                      <Leaf className="h-5 w-5 text-emerald-600" />
+                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-emerald-600" />
                     </div>
                     Add Carbon Credit
                   </DialogTitle>
@@ -173,7 +181,7 @@ export function ManageTab() {
           ) : carbonCredits?.items?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
-                <Leaf className="h-8 w-8 text-gray-400" />
+                <GlobeEuropeAfricaIcon className="h-8 w-8 text-gray-400" />
               </div>
               <p className="text-gray-500 mb-1">No carbon credits yet</p>
               <p className="text-sm text-gray-400">Add one to include in predictions</p>
@@ -187,13 +195,13 @@ export function ManageTab() {
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
-                      <Leaf className="h-5 w-5 text-emerald-600" />
+                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{cc.projectName}</p>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="inline-flex items-center gap-1 text-sm text-gray-500">
-                          <DollarSign className="h-3.5 w-3.5" />
+                          <CurrencyDollarIcon className="h-3.5 w-3.5" />
                           ${cc.pricePerTon}/ton
                         </span>
                         <span className="text-gray-300">|</span>
@@ -210,7 +218,7 @@ export function ManageTab() {
                     onClick={() => handleDeleteCc(cc.id)}
                     disabled={deleteCcMutation.isPending}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <TrashIcon className="h-4 w-4 text-red-500" />
                   </Button>
                 </li>
               ))}

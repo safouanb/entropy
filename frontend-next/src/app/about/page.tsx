@@ -2,7 +2,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Leaf, Building2, Users } from "lucide-react";
+import {
+  BoltIcon,
+  BuildingOffice2Icon,
+  UserGroupIcon as UsersIcon,
+  GlobeEuropeAfricaIcon as LeafIcon
+} from "@heroicons/react/24/outline";
 import { useAnalytics } from "@/hooks";
 import { formatNumber } from "@/lib/constants";
 
@@ -20,25 +25,25 @@ export default function AboutPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
         <StatCard
-          icon={Zap}
+          icon={BoltIcon}
           label="Energy Efficiency"
           value="85%"
           description="Average heat recovery rate"
         />
         <StatCard
-          icon={Building2}
+          icon={BuildingOffice2Icon}
           label="Data Centers"
           value={formatNumber(analytics?.totalDataCenters || 0)}
           description="Active in system"
         />
         <StatCard
-          icon={Leaf}
+          icon={LeafIcon}
           label="CO2 Reduction"
           value="40%"
           description="Average emissions reduction"
         />
         <StatCard
-          icon={Users}
+          icon={UsersIcon}
           label="Predictions"
           value={formatNumber(analytics?.totalPredictions || 0)}
           description="Analyses completed"

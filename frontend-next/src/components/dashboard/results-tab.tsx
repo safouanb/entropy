@@ -1,6 +1,18 @@
 "use client";
 
-import { DollarSign, Zap, Leaf, Thermometer, TrendingUp, Clock, Award, BarChart3, Calculator, Map, Activity } from "lucide-react";
+import {
+  CurrencyDollarIcon,
+  BoltIcon,
+  GlobeEuropeAfricaIcon,
+  FireIcon,
+  ArrowTrendingUpIcon,
+  ClockIcon,
+  TrophyIcon,
+  ChartBarIcon,
+  CalculatorIcon,
+  MapIcon,
+  PresentationChartLineIcon
+} from "@heroicons/react/24/outline";
 import { formatCurrency, formatNumber, formatPercent } from "@/lib/constants";
 import type { PredictionResult } from "@/types";
 
@@ -13,7 +25,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
         <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-6">
-          <Calculator className="h-10 w-10 text-gray-400" />
+          <CalculatorIcon className="h-10 w-10 text-gray-400" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">No Results Yet</h3>
         <p className="text-gray-500 max-w-md">
@@ -61,7 +73,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
       <div>
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 rounded-lg bg-emerald-100">
-            <DollarSign className="h-4 w-4 text-emerald-600" />
+            <CurrencyDollarIcon className="h-4 w-4 text-emerald-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Financial Performance</h3>
         </div>
@@ -69,26 +81,26 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
           <MetricCard
             title="Annual Savings"
             value={formatCurrency(savingsMetrics?.netAnnualSavings || 0)}
-            icon={DollarSign}
+            icon={CurrencyDollarIcon}
             description="Net annual savings"
             variant="primary"
           />
           <MetricCard
             title="NPV"
             value={formatCurrency(financialMetrics?.netPresentValue || 0)}
-            icon={TrendingUp}
+            icon={ArrowTrendingUpIcon}
             description="Net Present Value"
           />
           <MetricCard
             title="IRR"
             value={formatPercent(financialMetrics?.internalRateOfReturn || 0)}
-            icon={Award}
+            icon={TrophyIcon}
             description="Internal Rate of Return"
           />
           <MetricCard
             title="Payback Period"
             value={`${formatNumber(financialMetrics?.simplePaybackYears || 0, 1)} years`}
-            icon={Clock}
+            icon={ClockIcon}
             description="Simple payback"
           />
         </div>
@@ -98,7 +110,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
       <div>
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 rounded-lg bg-teal-100">
-            <Leaf className="h-4 w-4 text-teal-600" />
+            <GlobeEuropeAfricaIcon className="h-4 w-4 text-teal-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Energy & Environmental Impact</h3>
         </div>
@@ -106,39 +118,39 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
           <MetricCard
             title="Heat Recovery"
             value={`${formatNumber((heatRecoveryMetrics?.annualHeatRecoveryKwh || 0) / 1000)} MWh`}
-            icon={Thermometer}
+            icon={FireIcon}
             description="Annual heat recovery"
             variant="teal"
           />
           <MetricCard
             title="Waste Heat Available"
             value={`${formatNumber(energyMetrics?.wasteHeatKw || 0)} kW`}
-            icon={Zap}
+            icon={BoltIcon}
             description="Available waste heat"
           />
           <MetricCard
             title="CO2 Avoided"
             value={`${formatNumber((carbonMetrics?.annualCo2ReductionKg || 0) / 1000)} tons`}
-            icon={Leaf}
+            icon={GlobeEuropeAfricaIcon}
             description="Annual CO2 reduction"
             variant="green"
           />
           <MetricCard
             title="Gas Savings"
             value={formatCurrency(heatRecoveryMetrics?.annualGasCostSavings || 0)}
-            icon={DollarSign}
+            icon={CurrencyDollarIcon}
             description="Annual gas cost savings"
           />
           <MetricCard
             title="Distance to Heat Sink"
             value={`${formatNumber(heatRecoveryMetrics?.distanceKm || 0, 1)} km`}
-            icon={Map}
+            icon={MapIcon}
             description="Pipeline length"
           />
           <MetricCard
             title="Transmission Efficiency"
             value={formatPercent(heatRecoveryMetrics?.distanceEfficiencyFactor || 0)}
-            icon={Activity}
+            icon={PresentationChartLineIcon}
             description="After transmission loss"
           />
         </div>
@@ -149,7 +161,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <div className="p-2 rounded-lg bg-blue-100">
-              <BarChart3 className="h-4 w-4 text-blue-600" />
+              <ChartBarIcon className="h-4 w-4 text-blue-600" />
             </div>
             <h3 className="font-semibold text-gray-900">Yearly Cash Flow Breakdown</h3>
           </div>
