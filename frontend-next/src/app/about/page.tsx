@@ -1,174 +1,121 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  BoltIcon,
-  BuildingOffice2Icon,
-  UserGroupIcon as UsersIcon,
-  GlobeEuropeAfricaIcon as LeafIcon
+  SparklesIcon,
+  ScaleIcon,
+  CpuChipIcon,
+  BuildingLibraryIcon,
+  GlobeEuropeAfricaIcon
 } from "@heroicons/react/24/outline";
-import { useAnalytics } from "@/hooks";
-import { formatNumber } from "@/lib/constants";
 
 export default function AboutPage() {
-  const { data: analytics } = useAnalytics();
-
   return (
-    <div className="container py-8 max-w-4xl mx-auto px-4">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">About PyRecycleHeat</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Transforming waste heat from data centers into sustainable urban heating solutions
+    <div className="container py-12 max-w-4xl mx-auto px-4">
+      {/* Header / Manifesto Start */}
+      <div className="mb-16 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+          The Gap Between <span className="text-emerald-500">Interest</span> and <span className="text-emerald-500">Feasibility</span>
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          Entropy exists because one of the largest energy inefficiencies in modern society has quietly been normalized.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
-        <StatCard
-          icon={BoltIcon}
-          label="Energy Efficiency"
-          value="85%"
-          description="Average heat recovery rate"
-        />
-        <StatCard
-          icon={BuildingOffice2Icon}
-          label="Data Centers"
-          value={formatNumber(analytics?.totalDataCenters || 0)}
-          description="Active in system"
-        />
-        <StatCard
-          icon={LeafIcon}
-          label="CO2 Reduction"
-          value="40%"
-          description="Average emissions reduction"
-        />
-        <StatCard
-          icon={UsersIcon}
-          label="Predictions"
-          value={formatNumber(analytics?.totalPredictions || 0)}
-          description="Analyses completed"
-        />
-      </div>
-
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Our Mission</CardTitle>
-        </CardHeader>
-        <CardContent className="prose prose-gray max-w-none">
-          <p>
-            Data centers consume approximately 1-2% of global electricity, with 30-40% of that
-            energy being released as waste heat. PyRecycleHeat bridges the gap between this
-            untapped resource and urban heating needs.
+      <div className="space-y-16">
+        {/* The Problem */}
+        <section className="prose prose-gray max-w-none">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900">The Absurdity of Normalized Waste</h2>
+          <p className="text-gray-600 leading-7">
+            Data centers generate enormous amounts of low- to mid-grade heat as a byproduct of computation, and that heat is almost always discarded into the air or water. At the same time, cities, residential buildings, campuses, and industrial facilities spend billions each year producing heat through gas, electricity, or centralized district heating systems.
           </p>
-          <p>
-            Our platform provides comprehensive feasibility analysis, financial modeling, and
-            carbon accounting to help infrastructure investors, data center operators, and
-            city planners make informed decisions about heat recovery projects.
+          <p className="text-gray-600 leading-7 mt-4">
+            The absurdity is not technological; the physics are well understood. The absurdity is organizational, informational, and economic. Every potential heat reuse project helps, yet most die in the same place: the gap between interest and feasibility. That gap is filled today by slow, bespoke engineering studies, consultants, and spreadsheets.
           </p>
-        </CardContent>
-      </Card>
+        </section>
 
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>How It Works</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ol className="space-y-4">
-            <li className="flex gap-4">
-              <Badge variant="outline" className="h-8 w-8 rounded-full flex items-center justify-center shrink-0">
-                1
-              </Badge>
-              <div>
-                <p className="font-medium">Add Your Data Center</p>
-                <p className="text-sm text-muted-foreground">
-                  Enter specifications including IT load, PUE, and location
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-4">
-              <Badge variant="outline" className="h-8 w-8 rounded-full flex items-center justify-center shrink-0">
-                2
-              </Badge>
-              <div>
-                <p className="font-medium">Configure Carbon Credits</p>
-                <p className="text-sm text-muted-foreground">
-                  Optionally add carbon credit programs for enhanced analysis
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-4">
-              <Badge variant="outline" className="h-8 w-8 rounded-full flex items-center justify-center shrink-0">
-                3
-              </Badge>
-              <div>
-                <p className="font-medium">Run Predictions</p>
-                <p className="text-sm text-muted-foreground">
-                  Calculate NPV, IRR, payback period, and environmental impact
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-4">
-              <Badge variant="outline" className="h-8 w-8 rounded-full flex items-center justify-center shrink-0">
-                4
-              </Badge>
-              <div>
-                <p className="font-medium">Make Informed Decisions</p>
-                <p className="text-sm text-muted-foreground">
-                  Use investment grade ratings to evaluate project viability
-                </p>
-              </div>
-            </li>
-          </ol>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Key Features</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FeatureItem title="Financial Modeling" description="NPV, IRR, and payback period calculations with sensitivity analysis" />
-            <FeatureItem title="Energy Analysis" description="Waste heat recovery potential based on PUE and utilization" />
-            <FeatureItem title="Carbon Accounting" description="CO2 reduction estimates and carbon credit integration" />
-            <FeatureItem title="Geospatial Analysis" description="Distance-based efficiency calculations and heat sink matching" />
-            <FeatureItem title="Investment Grading" description="A-D grade system for quick project viability assessment" />
-            <FeatureItem title="Export & History" description="Save and export predictions for reporting and comparison" />
+        {/* The Solution */}
+        <section className="grid gap-8 md:grid-cols-2 items-center bg-slate-50 p-8 rounded-2xl border border-slate-100">
+          <div>
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900">Entropy is the Intelligence Layer</h2>
+            <p className="text-gray-600 leading-7 mb-6">
+              Entropy is a software platform that turns waste heat reuse from an expert-driven, manual, and opaque process into a computable, standardized, and repeatable decision.
+            </p>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <CpuChipIcon className="h-6 w-6 text-emerald-500 shrink-0" />
+                <span className="text-sm text-gray-700">Turns opaque engineering studies into instant feasibility scores.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <ScaleIcon className="h-6 w-6 text-emerald-500 shrink-0" />
+                <span className="text-sm text-gray-700">Aligns incentives between data centers and municipalities.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <GlobeEuropeAfricaIcon className="h-6 w-6 text-emerald-500 shrink-0" />
+                <span className="text-sm text-gray-700">Makes waste heat visible, legible, and actionable.</span>
+              </li>
+            </ul>
           </div>
-        </CardContent>
-      </Card>
-    </div >
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-full flex flex-col justify-center">
+            <blockquote className="text-lg italic text-slate-700 mb-4 border-l-4 border-emerald-500 pl-4">
+              "The product does not replace engineering; it precedes it. It determines whether engineering is worth doing at all."
+            </blockquote>
+            <p className="text-sm text-slate-500 font-medium">— The Entropy Thesis</p>
+          </div>
+        </section>
+
+        {/* The Analogy */}
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-lg bg-emerald-100">
+              <BuildingLibraryIcon className="h-5 w-5 text-emerald-600" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">The Airbnb for Waste Heat</h2>
+          </div>
+          <p className="text-gray-600 leading-7">
+            Airbnb did not create new housing stock; it made unused capacity legible, comparable, and accessible. It abstracted away the complexity of zoning, trust, and pricing. Entropy applies the same logic to waste heat. It does not generate heat or consume it. It makes heat visible as a resource, evaluates its viability, and connects it to demand.
+          </p>
+        </section>
+
+        {/* The Vision */}
+        <section className="grid gap-6 md:grid-cols-3">
+          <VisionCard
+            title="Software First"
+            description="We are not a hardware or construction business. We are an intelligence business. Our defensibility lies in data models and feasibility logic."
+          />
+          <VisionCard
+            title="Pragmatism"
+            description="We are not driven by symbolism alone. Projects move forward not because they are theoretically elegant, but because they make financial sense."
+          />
+          <VisionCard
+            title="Invisible System"
+            description="Entropy's ambition is to become invisible: the default system people use to understand waste heat. When feasibility is no longer a bottleneck, reuse becomes the norm."
+          />
+        </section>
+
+        <div className="text-center pt-8 border-t border-gray-100">
+          <p className="text-lg font-medium text-gray-900 mb-2">Turning Waste into Opportunity</p>
+          <p className="text-slate-500">
+            By introducing computation where intuition and bureaucracy once dominated.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  description,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-  description: string;
-}) {
+function VisionCard({ title, description }: { title: string; description: string }) {
   return (
-    <Card>
+    <Card className="bg-white border-slate-200">
       <CardContent className="pt-6">
-        <Icon className="h-8 w-8 text-emerald-600 mb-2" />
-        <div className="text-2xl font-bold">{value}</div>
-        <div className="text-sm font-medium">{label}</div>
-        <div className="text-xs text-muted-foreground">{description}</div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900">{title}</h3>
+          <SparklesIcon className="h-5 w-5 text-emerald-500" />
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {description}
+        </p>
       </CardContent>
     </Card>
-  );
-}
-
-function FeatureItem({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="p-4 bg-muted/50 rounded-lg">
-      <p className="font-medium">{title}</p>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
   );
 }

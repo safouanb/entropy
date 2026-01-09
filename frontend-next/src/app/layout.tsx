@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PyRecycleHeat - Data Center Heat Recovery",
-  description: "Analyze the feasibility and ROI of capturing waste heat from data centers to supply urban heating networks",
+  title: "Entropy | Waste Heat Intelligence",
+  description: "The intelligence layer for waste heat reuse. Turning opaque engineering studies into standardized, computable decisions.",
 };
 
 export default function RootLayout({
