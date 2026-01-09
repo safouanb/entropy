@@ -14,6 +14,7 @@ export interface HeatRecoveryMetrics {
   annualGasCostSavings: number;
   co2AvoidedKgPerYear: number;
   distanceEfficiencyFactor: number;
+  distanceKm: number;
 }
 
 export interface CarbonMetrics {

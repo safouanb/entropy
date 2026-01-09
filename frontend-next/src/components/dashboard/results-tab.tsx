@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Zap, Leaf, Thermometer, TrendingUp, Clock, Award, BarChart3, Calculator } from "lucide-react";
+import { DollarSign, Zap, Leaf, Thermometer, TrendingUp, Clock, Award, BarChart3, Calculator, Map, Activity } from "lucide-react";
 import { formatCurrency, formatNumber, formatPercent } from "@/lib/constants";
 import type { PredictionResult } from "@/types";
 
@@ -128,6 +128,18 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
             value={formatCurrency(heatRecoveryMetrics?.annualGasCostSavings || 0)}
             icon={DollarSign}
             description="Annual gas cost savings"
+          />
+          <MetricCard
+            title="Distance to Heat Sink"
+            value={`${formatNumber(heatRecoveryMetrics?.distanceKm || 0, 1)} km`}
+            icon={Map}
+            description="Pipeline length"
+          />
+          <MetricCard
+            title="Transmission Efficiency"
+            value={formatPercent(heatRecoveryMetrics?.distanceEfficiencyFactor || 0)}
+            icon={Activity}
+            description="After transmission loss"
           />
         </div>
       </div>

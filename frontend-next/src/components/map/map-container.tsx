@@ -1,12 +1,15 @@
 "use client";
 
 import { useRef, useCallback, useState } from "react";
-import Map, { Marker, Popup, NavigationControl, FullscreenControl } from "react-map-gl/maplibre";
+import Map, { Marker, Popup, NavigationControl, FullscreenControl, Source, Layer } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Building2, Factory, Home } from "lucide-react";
+import { Building2, Factory, Home, Zap, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { useDataCenters, useHeatSinks } from "@/hooks";
+import { formatCurrency, formatPercent } from "@/lib/constants";
 import type { DataCenter, HeatSink } from "@/types";
 
 const MAPLIBRE_STYLE = process.env.NEXT_PUBLIC_MAPLIBRE_STYLE || "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
@@ -27,11 +30,14 @@ type PopupInfo = {
 export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSink }: MapContainerProps) {
   const mapRef = useRef(null);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
+  const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null);
+  const [selectedHS, setSelectedHS] = useState<HeatSink | null>(null);
 
   const { data: dataCenters } = useDataCenters();
   const { data: heatSinks } = useHeatSinks();
 
   const handleDcClick = useCallback((dc: DataCenter) => {
+    setSelectedDC(dc);
     setPopupInfo({
       type: "datacenter",
       data: dc,
@@ -42,6 +48,7 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
   }, [onSelectDataCenter]);
 
   const handleHsClick = useCallback((hs: HeatSink) => {
+    setSelectedHS(hs);
     setPopupInfo({
       type: "heatsink",
       data: hs,
@@ -50,6 +57,24 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
     });
     onSelectHeatSink?.(hs);
   }, [onSelectHeatSink]);
+
+
+
+  // Calculate distance string if both selected
+  let lineDistance = "";
+  if (selectedDC && selectedHS) {
+    const R = 6371; // km
+    const dLat = (selectedHS.location.latitude - selectedDC.location.latitude) * Math.PI / 180;
+    const dLon = (selectedHS.location.longitude - selectedDC.location.longitude) * Math.PI / 180;
+    const lat1 = selectedDC.location.latitude * Math.PI / 180;
+    const lat2 = selectedHS.location.latitude * Math.PI / 180;
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+    lineDistance = `${d.toFixed(1)} km`;
+  }
 
   return (
     <div style={{ height }}>
@@ -66,6 +91,57 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
         <NavigationControl position="top-right" />
         <FullscreenControl position="top-right" />
 
+        {/* Connection Line */}
+        {selectedDC && selectedHS && (
+          <Source
+            id="connection-line"
+            type="geojson"
+            data={{
+              type: "Feature",
+              geometry: {
+                type: "LineString",
+                coordinates: [
+                  [selectedDC.location.longitude, selectedDC.location.latitude],
+                  [selectedHS.location.longitude, selectedHS.location.latitude],
+                ],
+              },
+              properties: {
+                distance: lineDistance,
+              },
+            }}
+          >
+            <Layer
+              id="line-layer"
+              type="line"
+              layout={{
+                "line-join": "round",
+                "line-cap": "round",
+              }}
+              paint={{
+                "line-color": "#8b5cf6", // Purple
+                "line-width": 4,
+                "line-dasharray": [2, 1],
+              }}
+            />
+            <Layer
+              id="line-label"
+              type="symbol"
+              layout={{
+                "text-field": ["get", "distance"],
+                "symbol-placement": "line-center",
+                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                "text-size": 14,
+                "text-offset": [0, -1],
+              }}
+              paint={{
+                "text-color": "#6b21a8",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+              }}
+            />
+          </Source>
+        )}
+
         {/* Data Center Markers */}
         {dataCenters?.items?.map((dc) => (
           <Marker
@@ -78,7 +154,8 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
               handleDcClick(dc);
             }}
           >
-            <div className="cursor-pointer p-2 bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 transition-colors">
+            <div className={`cursor-pointer p-2 rounded-full shadow-lg transition-all ${selectedDC?.id === dc.id ? "bg-purple-600 scale-110 ring-4 ring-purple-200" : "bg-blue-500 hover:bg-blue-600"
+              }`}>
               <Building2 className="h-5 w-5 text-white" />
             </div>
           </Marker>
@@ -96,7 +173,8 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
               handleHsClick(hs);
             }}
           >
-            <div className="cursor-pointer p-2 bg-green-500 rounded-full shadow-lg hover:bg-green-600 transition-colors">
+            <div className={`cursor-pointer p-2 rounded-full shadow-lg transition-all ${selectedHS?.id === hs.id ? "bg-purple-600 scale-110 ring-4 ring-purple-200" : "bg-green-500 hover:bg-green-600"
+              }`}>
               <Home className="h-5 w-5 text-white" />
             </div>
           </Marker>
@@ -132,6 +210,121 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
           <span>Heat Sinks ({heatSinks?.items?.length || 0})</span>
         </div>
       </div>
+
+      {/* Quick Feasibility Card */}
+      {selectedDC && selectedHS && (
+        <QuickFeasibilityCard
+          dataCenter={selectedDC}
+          heatSink={selectedHS}
+          distance={lineDistance}
+        />
+      )}
+    </div>
+  );
+}
+
+function QuickFeasibilityCard({ dataCenter, heatSink, distance }: { dataCenter: DataCenter, heatSink: HeatSink, distance: string }) {
+  const [loading, setLoading] = useState(false);
+  const [metrics, setMetrics] = useState<{ npv: number; savings: number; irr: number; payback: number; co2: number } | null>(null);
+
+  const handleRunAnalysis = async () => {
+    setLoading(true);
+    try {
+      const resp = await fetch("/api/predictions/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dataCenterId: dataCenter.id,
+          heatSinkIds: [heatSink.id],
+          scenarioName: `Quick Check: ${dataCenter.name} -> ${heatSink.name}`,
+          analysisYears: 10,
+          discountRate: 0.08,
+        }),
+      });
+
+      if (!resp.ok) throw new Error("Calculation failed");
+      const data = await resp.json();
+
+      if (data && data.financialMetrics) {
+        setMetrics({
+          npv: data.financialMetrics.netPresentValue,
+          savings: data.savingsMetrics?.netAnnualSavings || (data.heatRecoveryMetrics?.annualGasCostSavings || 0),
+          irr: (data.financialMetrics.internalRateOfReturn || 0) / 100,
+          payback: data.financialMetrics.simplePaybackYears || 0,
+          co2: data.heatRecoveryMetrics?.co2AvoidedKgPerYear || (data.carbonMetrics?.annualCo2ReductionKg || 0),
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to calculate feasibility");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="absolute top-24 left-4 bg-white/95 backdrop-blur p-4 rounded-xl shadow-xl w-80 animate-in slide-in-from-left-10 fade-in duration-300 border border-purple-100">
+      <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100">
+        <div className="p-2 rounded-lg bg-purple-100">
+          <Zap className="h-5 w-5 text-purple-600" />
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900">Quick Feasibility</h4>
+          <p className="text-xs text-gray-500">Pipeline: {distance}</p>
+        </div>
+      </div>
+
+      {metrics === null ? (
+        <div className="space-y-3">
+          <div className="text-sm text-gray-600">
+            Estimate ROI for connecting <strong>{dataCenter.name}</strong> to <strong>{heatSink.name}</strong>.
+          </div>
+          <Button
+            onClick={handleRunAnalysis}
+            disabled={loading}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              "Run Quick Analysis"
+            )}
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="text-center py-3 bg-purple-50 rounded-lg border border-purple-100 mb-2">
+            <p className="text-xs text-purple-600 uppercase font-semibold mb-1">Estimated NPV</p>
+            <p className="text-3xl font-bold text-gray-900">{formatCurrency(metrics.npv)}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-xs text-gray-500">Annual Savings</p>
+              <p className="font-semibold text-gray-900">{formatCurrency(metrics.savings)}</p>
+            </div>
+            <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-xs text-gray-500">Payback</p>
+              <p className="font-semibold text-gray-900">{metrics.payback.toFixed(1)} yrs</p>
+            </div>
+            <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-xs text-gray-500">IRR</p>
+              <p className="font-semibold text-gray-900">{formatPercent(metrics.irr)}</p>
+            </div>
+            <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-xs text-gray-500">CO₂ Avoided</p>
+              <p className="font-semibold text-gray-900">{(metrics.co2 / 1000).toFixed(0)}t</p>
+            </div>
+          </div>
+
+          <Button variant="outline" size="sm" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 mt-2" onClick={() => setMetrics(null)}>
+            Run Again
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
