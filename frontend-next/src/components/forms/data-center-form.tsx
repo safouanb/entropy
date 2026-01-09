@@ -34,16 +34,16 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
         longitude: DEFAULTS.SF_LONGITUDE,
       },
       address: "",
-      dc_type: "enterprise",
-      total_it_load_kw: 1000,
+      dcType: "enterprise",
+      totalItLoadKw: 1000,
       pue: DEFAULTS.PUE,
-      utilization_percent: DEFAULTS.UTILIZATION_PERCENT,
-      cooling_type: "air_cooled",
-      energy_source: "grid",
-      renewable_percent: DEFAULTS.RENEWABLE_PERCENT,
-      electricity_cost_kwh: DEFAULTS.ELECTRICITY_COST_KWH,
-      operating_hours_year: DEFAULTS.OPERATING_HOURS_YEAR,
-      heat_recovery_enabled: false,
+      utilizationPercent: DEFAULTS.UTILIZATION_PERCENT,
+      coolingType: "air_cooled",
+      energySource: "grid",
+      renewablePercent: DEFAULTS.RENEWABLE_PERCENT,
+      electricityCostKwh: DEFAULTS.ELECTRICITY_COST_KWH,
+      operatingHoursYear: DEFAULTS.OPERATING_HOURS_YEAR,
+      heatRecoveryEnabled: false,
     },
   });
 
@@ -137,10 +137,10 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="dc_type" className="text-gray-700">Data Center Type</Label>
+            <Label htmlFor="dcType" className="text-gray-700">Data Center Type</Label>
             <Select
-              value={form.watch("dc_type")}
-              onValueChange={(v) => form.setValue("dc_type", v)}
+              value={form.watch("dcType")}
+              onValueChange={(v) => form.setValue("dcType", v)}
             >
               <SelectTrigger className="border-gray-200 focus:border-purple-300 focus:ring-purple-200">
                 <SelectValue placeholder="Select type" />
@@ -156,16 +156,16 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="total_it_load_kw" className="text-gray-700">Total IT Load (kW) *</Label>
+            <Label htmlFor="totalItLoadKw" className="text-gray-700">Total IT Load (kW) *</Label>
             <Input
-              id="total_it_load_kw"
+              id="totalItLoadKw"
               type="number"
               min={1}
               className="border-gray-200 focus:border-purple-300 focus:ring-purple-200"
-              {...form.register("total_it_load_kw", { valueAsNumber: true })}
+              {...form.register("totalItLoadKw", { valueAsNumber: true })}
             />
-            {form.formState.errors.total_it_load_kw && (
-              <p className="text-sm text-red-500">{form.formState.errors.total_it_load_kw.message}</p>
+            {form.formState.errors.totalItLoadKw && (
+              <p className="text-sm text-red-500">{form.formState.errors.totalItLoadKw.message}</p>
             )}
           </div>
 
@@ -183,10 +183,10 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cooling_type" className="text-gray-700">Cooling Type</Label>
+            <Label htmlFor="coolingType" className="text-gray-700">Cooling Type</Label>
             <Select
-              value={form.watch("cooling_type")}
-              onValueChange={(v) => form.setValue("cooling_type", v)}
+              value={form.watch("coolingType")}
+              onValueChange={(v) => form.setValue("coolingType", v)}
             >
               <SelectTrigger className="border-gray-200 focus:border-purple-300 focus:ring-purple-200">
                 <SelectValue placeholder="Select cooling type" />
@@ -213,34 +213,34 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-2">
-            <Label htmlFor="utilization_percent" className="text-gray-700">Utilization (%)</Label>
+            <Label htmlFor="utilizationPercent" className="text-gray-700">Utilization (%)</Label>
             <Input
-              id="utilization_percent"
+              id="utilizationPercent"
               type="number"
               min={0}
               max={100}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("utilization_percent", { valueAsNumber: true })}
+              {...form.register("utilizationPercent", { valueAsNumber: true })}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="operating_hours_year" className="text-gray-700">Operating Hours/Year</Label>
+            <Label htmlFor="operatingHoursYear" className="text-gray-700">Operating Hours/Year</Label>
             <Input
-              id="operating_hours_year"
+              id="operatingHoursYear"
               type="number"
               min={1}
               max={8760}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("operating_hours_year", { valueAsNumber: true })}
+              {...form.register("operatingHoursYear", { valueAsNumber: true })}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="energy_source" className="text-gray-700">Energy Source</Label>
+            <Label htmlFor="energySource" className="text-gray-700">Energy Source</Label>
             <Select
-              value={form.watch("energy_source")}
-              onValueChange={(v) => form.setValue("energy_source", v)}
+              value={form.watch("energySource")}
+              onValueChange={(v) => form.setValue("energySource", v)}
             >
               <SelectTrigger className="border-gray-200 focus:border-amber-300 focus:ring-amber-200">
                 <SelectValue placeholder="Select energy source" />
@@ -256,26 +256,26 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="renewable_percent" className="text-gray-700">Renewable (%)</Label>
+            <Label htmlFor="renewablePercent" className="text-gray-700">Renewable (%)</Label>
             <Input
-              id="renewable_percent"
+              id="renewablePercent"
               type="number"
               min={0}
               max={100}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("renewable_percent", { valueAsNumber: true })}
+              {...form.register("renewablePercent", { valueAsNumber: true })}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="electricity_cost_kwh" className="text-gray-700">Electricity Cost ($/kWh)</Label>
+            <Label htmlFor="electricityCostKwh" className="text-gray-700">Electricity Cost ($/kWh)</Label>
             <Input
-              id="electricity_cost_kwh"
+              id="electricityCostKwh"
               type="number"
               step="0.01"
               min={0}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("electricity_cost_kwh", { valueAsNumber: true })}
+              {...form.register("electricityCostKwh", { valueAsNumber: true })}
             />
           </div>
         </div>

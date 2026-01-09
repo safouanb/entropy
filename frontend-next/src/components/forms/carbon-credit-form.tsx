@@ -28,14 +28,14 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
   const form = useForm<CarbonCreditFormData>({
     resolver: zodResolver(carbonCreditSchema),
     defaultValues: {
-      project_name: "",
-      credit_type: "renewable_energy",
-      price_per_ton: DEFAULTS.CARBON_PRICE_PER_TON,
-      available_tons: DEFAULTS.AVAILABLE_TONS,
-      vintage_year: new Date().getFullYear(),
-      verification_standard: "VCS",
+      projectName: "",
+      creditType: "renewable_energy",
+      pricePerTon: DEFAULTS.CARBON_PRICE_PER_TON,
+      availableTons: DEFAULTS.AVAILABLE_TONS,
+      vintageYear: new Date().getFullYear(),
+      verificationStandard: "VCS",
       location: "",
-      project_description: "",
+      projectDescription: "",
     },
   });
 
@@ -62,23 +62,23 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="project_name" className="text-gray-700">Project Name *</Label>
+            <Label htmlFor="projectName" className="text-gray-700">Project Name *</Label>
             <Input
-              id="project_name"
+              id="projectName"
               placeholder="e.g., California Solar Farm Credits"
               className="border-gray-200 focus:border-emerald-300 focus:ring-emerald-200"
-              {...form.register("project_name")}
+              {...form.register("projectName")}
             />
-            {form.formState.errors.project_name && (
-              <p className="text-sm text-red-500">{form.formState.errors.project_name.message}</p>
+            {form.formState.errors.projectName && (
+              <p className="text-sm text-red-500">{form.formState.errors.projectName.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="credit_type" className="text-gray-700">Credit Type</Label>
+            <Label htmlFor="creditType" className="text-gray-700">Credit Type</Label>
             <Select
-              value={form.watch("credit_type")}
-              onValueChange={(v) => form.setValue("credit_type", v)}
+              value={form.watch("creditType")}
+              onValueChange={(v) => form.setValue("creditType", v)}
             >
               <SelectTrigger className="border-gray-200 focus:border-emerald-300 focus:ring-emerald-200">
                 <SelectValue placeholder="Select type" />
@@ -94,14 +94,14 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vintage_year" className="text-gray-700">Vintage Year</Label>
+            <Label htmlFor="vintageYear" className="text-gray-700">Vintage Year</Label>
             <Input
-              id="vintage_year"
+              id="vintageYear"
               type="number"
               min={2000}
               max={2100}
               className="border-gray-200 focus:border-emerald-300 focus:ring-emerald-200"
-              {...form.register("vintage_year", { valueAsNumber: true })}
+              {...form.register("vintageYear", { valueAsNumber: true })}
             />
           </div>
         </div>
@@ -117,10 +117,10 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="verification_standard" className="text-gray-700">Verification Standard</Label>
+            <Label htmlFor="verificationStandard" className="text-gray-700">Verification Standard</Label>
             <Select
-              value={form.watch("verification_standard")}
-              onValueChange={(v) => form.setValue("verification_standard", v)}
+              value={form.watch("verificationStandard")}
+              onValueChange={(v) => form.setValue("verificationStandard", v)}
             >
               <SelectTrigger className="border-gray-200 focus:border-blue-300 focus:ring-blue-200">
                 <SelectValue placeholder="Select standard" />
@@ -157,31 +157,31 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="price_per_ton" className="text-gray-700">Price per Ton (USD) *</Label>
+            <Label htmlFor="pricePerTon" className="text-gray-700">Price per Ton (USD) *</Label>
             <Input
-              id="price_per_ton"
+              id="pricePerTon"
               type="number"
               step="0.01"
               min={0}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("price_per_ton", { valueAsNumber: true })}
+              {...form.register("pricePerTon", { valueAsNumber: true })}
             />
-            {form.formState.errors.price_per_ton && (
-              <p className="text-sm text-red-500">{form.formState.errors.price_per_ton.message}</p>
+            {form.formState.errors.pricePerTon && (
+              <p className="text-sm text-red-500">{form.formState.errors.pricePerTon.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="available_tons" className="text-gray-700">Available Tons *</Label>
+            <Label htmlFor="availableTons" className="text-gray-700">Available Tons *</Label>
             <Input
-              id="available_tons"
+              id="availableTons"
               type="number"
               min={1}
               className="border-gray-200 focus:border-amber-300 focus:ring-amber-200"
-              {...form.register("available_tons", { valueAsNumber: true })}
+              {...form.register("availableTons", { valueAsNumber: true })}
             />
-            {form.formState.errors.available_tons && (
-              <p className="text-sm text-red-500">{form.formState.errors.available_tons.message}</p>
+            {form.formState.errors.availableTons && (
+              <p className="text-sm text-red-500">{form.formState.errors.availableTons.message}</p>
             )}
           </div>
         </div>
@@ -196,12 +196,12 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
           <h3 className="font-semibold text-gray-900">Description</h3>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="project_description" className="text-gray-700">Project Description</Label>
+          <Label htmlFor="projectDescription" className="text-gray-700">Project Description</Label>
           <Input
-            id="project_description"
+            id="projectDescription"
             placeholder="Brief description of the carbon credit project"
             className="border-gray-200 focus:border-purple-300 focus:ring-purple-200"
-            {...form.register("project_description")}
+            {...form.register("projectDescription")}
           />
         </div>
       </div>
