@@ -1,9 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { DollarSign, Zap, Leaf, Thermometer, TrendingUp, Clock, Award } from "lucide-react";
-import { formatCurrency, formatNumber, formatPercent, INVESTMENT_GRADE_COLORS } from "@/lib/constants";
+import { DollarSign, Zap, Leaf, Thermometer, TrendingUp, Clock, Award, BarChart3, Calculator } from "lucide-react";
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/constants";
 import type { PredictionResult } from "@/types";
 
 interface ResultsTabProps {
@@ -13,125 +11,183 @@ interface ResultsTabProps {
 export function ResultsTab({ prediction }: ResultsTabProps) {
   if (!prediction) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center min-h-[300px] text-center">
-          <p className="text-muted-foreground">
-            No prediction results yet. Run a calculation from the Calculate tab.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center mb-6">
+          <Calculator className="h-10 w-10 text-gray-400" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Results Yet</h3>
+        <p className="text-gray-500 max-w-md">
+          Run a calculation from the Calculate tab to see your heat recovery savings prediction here.
+        </p>
+      </div>
     );
   }
 
   const { financial_metrics, savings_metrics, energy_metrics, heat_recovery_metrics, carbon_metrics } = prediction;
   const grade = financial_metrics?.investment_grade || "N/A";
-  const gradeColors = INVESTMENT_GRADE_COLORS[grade] || { bg: "bg-gray-100", text: "text-gray-800" };
+
+  const getGradeGradient = (grade: string) => {
+    switch (grade) {
+      case "A": return "from-emerald-500 to-teal-500";
+      case "B": return "from-blue-500 to-cyan-500";
+      case "C": return "from-amber-500 to-yellow-500";
+      case "D": return "from-orange-500 to-red-500";
+      default: return "from-gray-500 to-slate-500";
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Prediction Results: {prediction.scenario_name}</CardTitle>
-              <CardDescription>
-                Analysis period: {prediction.analysis_years} years at {formatPercent(prediction.discount_rate)} discount rate
-              </CardDescription>
-            </div>
-            <Badge className={`${gradeColors.bg} ${gradeColors.text} text-lg px-3 py-1`}>
-              Grade {grade}
-            </Badge>
+      {/* Header Card with Gradient */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl" />
+
+        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <p className="text-emerald-400 text-sm font-medium mb-1">Prediction Results</p>
+            <h2 className="text-2xl font-bold text-white">{prediction.scenario_name}</h2>
+            <p className="text-slate-400 mt-1">
+              {prediction.analysis_years} year analysis at {formatPercent(prediction.discount_rate)} discount rate
+            </p>
           </div>
-        </CardHeader>
-      </Card>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="Annual Savings"
-          value={formatCurrency(savings_metrics?.net_annual_savings || 0)}
-          icon={DollarSign}
-          description="Net annual savings"
-          highlight
-        />
-        <MetricCard
-          title="NPV"
-          value={formatCurrency(financial_metrics?.net_present_value || 0)}
-          icon={TrendingUp}
-          description="Net Present Value"
-        />
-        <MetricCard
-          title="IRR"
-          value={formatPercent(financial_metrics?.internal_rate_of_return || 0)}
-          icon={Award}
-          description="Internal Rate of Return"
-        />
-        <MetricCard
-          title="Payback Period"
-          value={`${formatNumber(financial_metrics?.simple_payback_years || 0, 1)} years`}
-          icon={Clock}
-          description="Simple payback"
-        />
+          <div className="flex items-center gap-4">
+            <div className={`px-6 py-3 rounded-xl bg-gradient-to-r ${getGradeGradient(grade)} shadow-lg`}>
+              <p className="text-white/80 text-xs font-medium">Investment Grade</p>
+              <p className="text-white text-3xl font-bold">{grade}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="Heat Recovery"
-          value={`${formatNumber((heat_recovery_metrics?.annual_heat_recovery_kwh || 0) / 1000)} MWh`}
-          icon={Thermometer}
-          description="Annual heat recovery"
-        />
-        <MetricCard
-          title="Energy Waste Heat"
-          value={`${formatNumber(energy_metrics?.waste_heat_kw || 0)} kW`}
-          icon={Zap}
-          description="Available waste heat"
-        />
-        <MetricCard
-          title="CO2 Avoided"
-          value={`${formatNumber((carbon_metrics?.annual_co2_reduction_kg || 0) / 1000)} tons`}
-          icon={Leaf}
-          description="Annual CO2 reduction"
-        />
-        <MetricCard
-          title="Gas Savings"
-          value={formatCurrency(heat_recovery_metrics?.annual_gas_cost_savings || 0)}
-          icon={DollarSign}
-          description="Annual gas cost savings"
-        />
+      {/* Financial Metrics - Primary Row */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 rounded-lg bg-emerald-100">
+            <DollarSign className="h-4 w-4 text-emerald-600" />
+          </div>
+          <h3 className="font-semibold text-gray-900">Financial Performance</h3>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <MetricCard
+            title="Annual Savings"
+            value={formatCurrency(savings_metrics?.net_annual_savings || 0)}
+            icon={DollarSign}
+            description="Net annual savings"
+            variant="primary"
+          />
+          <MetricCard
+            title="NPV"
+            value={formatCurrency(financial_metrics?.net_present_value || 0)}
+            icon={TrendingUp}
+            description="Net Present Value"
+          />
+          <MetricCard
+            title="IRR"
+            value={formatPercent(financial_metrics?.internal_rate_of_return || 0)}
+            icon={Award}
+            description="Internal Rate of Return"
+          />
+          <MetricCard
+            title="Payback Period"
+            value={`${formatNumber(financial_metrics?.simple_payback_years || 0, 1)} years`}
+            icon={Clock}
+            description="Simple payback"
+          />
+        </div>
       </div>
 
+      {/* Energy & Environmental Metrics */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 rounded-lg bg-teal-100">
+            <Leaf className="h-4 w-4 text-teal-600" />
+          </div>
+          <h3 className="font-semibold text-gray-900">Energy & Environmental Impact</h3>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <MetricCard
+            title="Heat Recovery"
+            value={`${formatNumber((heat_recovery_metrics?.annual_heat_recovery_kwh || 0) / 1000)} MWh`}
+            icon={Thermometer}
+            description="Annual heat recovery"
+            variant="teal"
+          />
+          <MetricCard
+            title="Waste Heat Available"
+            value={`${formatNumber(energy_metrics?.waste_heat_kw || 0)} kW`}
+            icon={Zap}
+            description="Available waste heat"
+          />
+          <MetricCard
+            title="CO₂ Avoided"
+            value={`${formatNumber((carbon_metrics?.annual_co2_reduction_kg || 0) / 1000)} tons`}
+            icon={Leaf}
+            description="Annual CO₂ reduction"
+            variant="green"
+          />
+          <MetricCard
+            title="Gas Savings"
+            value={formatCurrency(heat_recovery_metrics?.annual_gas_cost_savings || 0)}
+            icon={DollarSign}
+            description="Annual gas cost savings"
+          />
+        </div>
+      </div>
+
+      {/* Cash Flow Table */}
       {prediction.yearly_breakdown && prediction.yearly_breakdown.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Yearly Cash Flow Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 rounded-lg bg-blue-100">
+              <BarChart3 className="h-4 w-4 text-blue-600" />
+            </div>
+            <h3 className="font-semibold text-gray-900">Yearly Cash Flow Breakdown</h3>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2">Year</th>
-                    <th className="text-right py-2">Cash Inflow</th>
-                    <th className="text-right py-2">Cash Outflow</th>
-                    <th className="text-right py-2">Net Cash Flow</th>
-                    <th className="text-right py-2">Cumulative</th>
+                  <tr className="bg-gradient-to-r from-gray-50 to-gray-100/50">
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Year</th>
+                    <th className="text-right py-4 px-6 font-semibold text-gray-700">Cash Inflow</th>
+                    <th className="text-right py-4 px-6 font-semibold text-gray-700">Cash Outflow</th>
+                    <th className="text-right py-4 px-6 font-semibold text-gray-700">Net Cash Flow</th>
+                    <th className="text-right py-4 px-6 font-semibold text-gray-700">Cumulative</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {prediction.yearly_breakdown.map((year) => (
-                    <tr key={year.year} className="border-b">
-                      <td className="py-2">{year.year}</td>
-                      <td className="text-right py-2">{formatCurrency(year.cash_inflow)}</td>
-                      <td className="text-right py-2">{formatCurrency(year.cash_outflow)}</td>
-                      <td className="text-right py-2">{formatCurrency(year.net_cash_flow)}</td>
-                      <td className="text-right py-2">{formatCurrency(year.cumulative_cash_flow)}</td>
+                  {prediction.yearly_breakdown.map((year, index) => (
+                    <tr
+                      key={year.year}
+                      className={`border-t border-gray-100 hover:bg-gray-50/50 transition-colors ${
+                        year.cumulative_cash_flow >= 0 ? "bg-emerald-50/30" : ""
+                      }`}
+                    >
+                      <td className="py-4 px-6 font-medium text-gray-900">Year {year.year}</td>
+                      <td className="text-right py-4 px-6 text-emerald-600 font-medium">
+                        {formatCurrency(year.cash_inflow)}
+                      </td>
+                      <td className="text-right py-4 px-6 text-red-500">
+                        {formatCurrency(year.cash_outflow)}
+                      </td>
+                      <td className={`text-right py-4 px-6 font-medium ${
+                        year.net_cash_flow >= 0 ? "text-emerald-600" : "text-red-500"
+                      }`}>
+                        {formatCurrency(year.net_cash_flow)}
+                      </td>
+                      <td className={`text-right py-4 px-6 font-semibold ${
+                        year.cumulative_cash_flow >= 0 ? "text-emerald-700" : "text-red-600"
+                      }`}>
+                        {formatCurrency(year.cumulative_cash_flow)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -142,22 +198,47 @@ interface MetricCardProps {
   value: string;
   icon: React.ElementType;
   description: string;
-  highlight?: boolean;
+  variant?: "default" | "primary" | "teal" | "green";
 }
 
-function MetricCard({ title, value, icon: Icon, description, highlight }: MetricCardProps) {
+function MetricCard({ title, value, icon: Icon, description, variant = "default" }: MetricCardProps) {
+  const variants = {
+    default: {
+      card: "border-gray-200 bg-white hover:border-gray-300",
+      icon: "bg-gray-100 text-gray-600",
+      value: "text-gray-900",
+    },
+    primary: {
+      card: "border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 hover:border-emerald-300",
+      icon: "bg-emerald-500 text-white",
+      value: "text-emerald-700",
+    },
+    teal: {
+      card: "border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 hover:border-teal-300",
+      icon: "bg-teal-500 text-white",
+      value: "text-teal-700",
+    },
+    green: {
+      card: "border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:border-green-300",
+      icon: "bg-green-500 text-white",
+      value: "text-green-700",
+    },
+  };
+
+  const style = variants[variant];
+
   return (
-    <Card className={highlight ? "border-emerald-500 bg-emerald-50/50" : ""}>
-      <CardContent className="pt-6">
-        <div className="flex items-center space-x-2">
-          <Icon className={`h-4 w-4 ${highlight ? "text-emerald-600" : "text-muted-foreground"}`} />
-          <span className="text-sm text-muted-foreground">{title}</span>
+    <div className={`p-5 rounded-xl border transition-all hover:shadow-md ${style.card}`}>
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`p-2 rounded-lg ${style.icon}`}>
+          <Icon className="h-4 w-4" />
         </div>
-        <div className={`text-2xl font-bold mt-2 ${highlight ? "text-emerald-700" : ""}`}>
-          {value}
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">{description}</p>
-      </CardContent>
-    </Card>
+        <span className="text-sm font-medium text-gray-600">{title}</span>
+      </div>
+      <div className={`text-2xl font-bold ${style.value}`}>
+        {value}
+      </div>
+      <p className="text-xs text-gray-500 mt-1">{description}</p>
+    </div>
   );
 }
