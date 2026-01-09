@@ -196,7 +196,7 @@ export const predictionService = {
 
   // Analytics
   getPredictionAnalytics: () =>
-    callRPC<Record<string, never>, { prediction_analytics: unknown }>(
+    callRPC<Record<string, never>, { predictionAnalytics: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "GetPredictionAnalytics",
       {}

@@ -61,7 +61,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       {/* Basic Information Section */}
-      <div className="p-5 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50/50 to-white">
+      <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-blue-100">
             <Building2 className="h-4 w-4 text-blue-600" />
@@ -95,7 +95,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       </div>
 
       {/* Location Section */}
-      <div className="p-5 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50/50 to-white">
+      <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-emerald-100">
             <MapPin className="h-4 w-4 text-emerald-600" />
@@ -128,7 +128,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       </div>
 
       {/* Technical Specifications Section */}
-      <div className="p-5 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50/50 to-white">
+      <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-purple-100">
             <Cpu className="h-4 w-4 text-purple-600" />
@@ -204,7 +204,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
       </div>
 
       {/* Operational Parameters Section */}
-      <div className="p-5 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50/50 to-white">
+      <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-amber-100">
             <Settings className="h-4 w-4 text-amber-600" />
@@ -285,7 +285,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
         <Button
           type="submit"
           disabled={createMutation.isPending}
-          className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg shadow-blue-500/25"
+          className="bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/25"
         >
           {createMutation.isPending ? (
             <>

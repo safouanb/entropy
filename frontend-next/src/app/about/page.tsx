@@ -10,7 +10,7 @@ export default function AboutPage() {
   const { data: analytics } = useAnalytics();
 
   return (
-    <div className="container py-8 max-w-4xl">
+    <div className="container py-8 max-w-4xl mx-auto px-4">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">About PyRecycleHeat</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -132,7 +132,7 @@ export default function AboutPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }
 

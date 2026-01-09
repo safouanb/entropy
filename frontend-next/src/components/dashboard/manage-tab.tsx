@@ -43,10 +43,10 @@ export function ManageTab() {
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Data Centers Section */}
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="p-6 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg shadow-blue-500/25">
+              <div className="p-2.5 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/25">
                 <Server className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -56,7 +56,7 @@ export function ManageTab() {
             </div>
             <Dialog open={dcDialogOpen} onOpenChange={setDcDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-md shadow-blue-500/20">
+                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 shadow-md shadow-blue-500/20">
                   <Plus className="mr-2 h-4 w-4" />
                   Add
                 </Button>
@@ -94,7 +94,7 @@ export function ManageTab() {
               {dataCenters?.items?.map((dc) => (
                 <li
                   key={dc.id}
-                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gradient-to-r from-gray-50/50 to-white hover:border-blue-200 hover:shadow-md transition-all"
+                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-lg bg-blue-50 group-hover:bg-blue-100 transition-colors">
@@ -132,10 +132,10 @@ export function ManageTab() {
 
       {/* Carbon Credits Section */}
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="p-6 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/25">
+              <div className="p-2.5 rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/25">
                 <Leaf className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -145,7 +145,7 @@ export function ManageTab() {
             </div>
             <Dialog open={ccDialogOpen} onOpenChange={setCcDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20">
+                <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20">
                   <Plus className="mr-2 h-4 w-4" />
                   Add
                 </Button>
@@ -183,7 +183,7 @@ export function ManageTab() {
               {carbonCredits?.items?.map((cc) => (
                 <li
                   key={cc.id}
-                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gradient-to-r from-gray-50/50 to-white hover:border-emerald-200 hover:shadow-md transition-all"
+                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white hover:border-emerald-200 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 transition-colors">

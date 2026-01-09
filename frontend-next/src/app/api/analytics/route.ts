@@ -4,7 +4,8 @@ import { predictionService, BackendError } from "@/lib/backend-client";
 export async function GET() {
   try {
     const response = await predictionService.getPredictionAnalytics();
-    return NextResponse.json(response.prediction_analytics);
+    // Backend returns camelCase (protobuf JSON serialization)
+    return NextResponse.json(response.predictionAnalytics);
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json(

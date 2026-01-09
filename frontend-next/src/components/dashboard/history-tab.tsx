@@ -62,10 +62,10 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <div className="p-6 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 shadow-lg shadow-purple-500/25">
+            <div className="p-2.5 rounded-xl bg-purple-500 shadow-lg shadow-purple-500/25">
               <History className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -99,7 +99,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
           </div>
         ) : predictions?.items?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center mb-6">
+            <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-6">
               <FileJson className="h-10 w-10 text-gray-400" />
             </div>
             <h4 className="text-lg font-semibold text-gray-900 mb-2">No predictions yet</h4>
@@ -116,7 +116,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
               return (
                 <li
                   key={pred.id}
-                  className="group rounded-xl border border-gray-100 bg-gradient-to-r from-gray-50/50 to-white hover:border-purple-200 hover:shadow-md transition-all overflow-hidden"
+                  className="group rounded-xl border border-gray-100 bg-white hover:border-purple-200 hover:shadow-md transition-all overflow-hidden"
                 >
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-4">
