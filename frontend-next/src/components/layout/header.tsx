@@ -60,13 +60,13 @@ export function Header() {
             <div className="hidden lg:flex items-center gap-6">
               <StatBadge
                 icon={Zap}
-                value={analytics.total_data_centers || 0}
+                value={analytics.totalDataCenters || 0}
                 label="Sites"
                 color="emerald"
               />
               <StatBadge
                 icon={TrendingUp}
-                value={analytics.total_predictions || 0}
+                value={analytics.totalPredictions || 0}
                 label="Analyses"
                 color="teal"
               />

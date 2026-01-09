@@ -148,15 +148,15 @@ function DataCenterPopup({ dataCenter }: { dataCenter: DataCenter }) {
       <CardContent className="p-2 pt-0 text-xs space-y-1">
         <div className="flex justify-between">
           <span className="text-muted-foreground">IT Load:</span>
-          <span className="font-medium">{dataCenter.total_it_load_kw} kW</span>
+          <span className="font-medium">{dataCenter.totalItLoadKw} kW</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">PUE:</span>
           <span className="font-medium">{dataCenter.pue || "N/A"}</span>
         </div>
-        {dataCenter.dc_type && (
+        {dataCenter.dcType && (
           <Badge variant="secondary" className="text-xs mt-1">
-            {dataCenter.dc_type}
+            {dataCenter.dcType}
           </Badge>
         )}
       </CardContent>
@@ -176,17 +176,17 @@ function HeatSinkPopup({ heatSink }: { heatSink: HeatSink }) {
       <CardContent className="p-2 pt-0 text-xs space-y-1">
         <div className="flex justify-between">
           <span className="text-muted-foreground">Capacity:</span>
-          <span className="font-medium">{heatSink.capacity_mw} MW</span>
+          <span className="font-medium">{heatSink.capacityMw} MW</span>
         </div>
-        {heatSink.current_demand_mw && (
+        {heatSink.currentDemandMw && (
           <div className="flex justify-between">
             <span className="text-muted-foreground">Current Demand:</span>
-            <span className="font-medium">{heatSink.current_demand_mw} MW</span>
+            <span className="font-medium">{heatSink.currentDemandMw} MW</span>
           </div>
         )}
-        {heatSink.sink_type && (
+        {heatSink.sinkType && (
           <Badge variant="secondary" className="text-xs mt-1">
-            {heatSink.sink_type}
+            {heatSink.sinkType}
           </Badge>
         )}
       </CardContent>

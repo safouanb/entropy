@@ -28,7 +28,7 @@ export default function AboutPage() {
         <StatCard
           icon={Building2}
           label="Data Centers"
-          value={formatNumber(analytics?.total_data_centers || 0)}
+          value={formatNumber(analytics?.totalDataCenters || 0)}
           description="Active in system"
         />
         <StatCard
@@ -40,7 +40,7 @@ export default function AboutPage() {
         <StatCard
           icon={Users}
           label="Predictions"
-          value={formatNumber(analytics?.total_predictions || 0)}
+          value={formatNumber(analytics?.totalPredictions || 0)}
           description="Analyses completed"
         />
       </div>
