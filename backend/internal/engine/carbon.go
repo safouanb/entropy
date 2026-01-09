@@ -2,9 +2,10 @@ package engine
 
 // CarbonMetrics captures emissions and offsets.
 type CarbonMetrics struct {
-	AnnualCO2EmissionsKg float64
-	GridEnergyKWh        float64
-	RenewableEnergyKWh   float64
+	AnnualCO2EmissionsKg float64 `json:"annualCo2EmissionsKg"`
+	GridEnergyKWh        float64 `json:"gridEnergyKwh"`
+	RenewableEnergyKWh   float64 `json:"renewableEnergyKwh"`
+	AnnualCo2ReductionKg float64 `json:"annualCo2ReductionKg"` // Added for completeness with engine logic
 }
 
 // CalculateCarbon computes CO2 emissions based on annual energy and renewable share.

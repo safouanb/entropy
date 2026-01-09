@@ -8,9 +8,9 @@ import (
 
 // FinancialMetrics captures core investment KPIs.
 type FinancialMetrics struct {
-	NetPresentValue      float64
-	InternalRateOfReturn float64 // percent
-	SimplePaybackYears   float64
+	NetPresentValue      float64 `json:"netPresentValue"`
+	InternalRateOfReturn float64 `json:"internalRateOfReturn"` // percent
+	SimplePaybackYears   float64 `json:"simplePaybackYears"`
 }
 
 // CalculateFinancial computes NPV, IRR, and payback based on CAPEX and annual net cash flow.

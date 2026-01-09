@@ -349,22 +349,57 @@ func (h *predictionRPC) DeleteHeatSink(ctx context.Context, req *connect.Request
 }
 
 func (h *predictionRPC) CalculatePrediction(ctx context.Context, req *connect.Request[pyv1.CalculatePredictionRequest]) (*connect.Response[pyv1.CalculatePredictionResponse], error) {
-	id := req.Msg.GetDataCenterId()
-	resp, err := h.svc.Calculate(ctx, service.PredictionRequest{DataCenterID: id, AnalysisYears: 10})
+	svcReq := service.PredictionRequest{
+		DataCenterID:   req.Msg.GetDataCenterId(),
+		CarbonCreditID: req.Msg.GetCarbonCreditId(),
+		ScenarioName:   req.Msg.GetScenarioName(),
+		AnalysisYears:  int(req.Msg.GetAnalysisYears()),
+		DiscountRate:   req.Msg.GetDiscountRate(),
+	}
+
+	// Handle Heat Sink ID (take first if list provided)
+	if len(req.Msg.GetHeatSinkIds()) > 0 {
+		svcReq.HeatSinkID = req.Msg.GetHeatSinkIds()[0]
+	}
+
+	// Map optional custom overrides
+	if req.Msg.GetCustomPue() > 0 {
+		v := req.Msg.GetCustomPue()
+		svcReq.CustomPUE = &v
+	}
+	if req.Msg.GetCustomEfficiency() > 0 {
+		v := req.Msg.GetCustomEfficiency()
+		svcReq.CustomEfficiency = &v
+	}
+	if req.Msg.GetCustomElectricityRate() > 0 {
+		v := req.Msg.GetCustomElectricityRate()
+		svcReq.CustomElectricityRate = &v
+	}
+	if req.Msg.GetCustomCarbonPrice() > 0 {
+		v := req.Msg.GetCustomCarbonPrice()
+		svcReq.CustomCarbonPrice = &v
+	}
+
+	resp, err := h.svc.Calculate(ctx, svcReq)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
+
 	out := &pyv1.CalculatePredictionResponse{
-		DataCenterId: id,
+		DataCenterId: svcReq.DataCenterID,
 		EnergyMetrics: &pyv1.EnergyMetrics{
 			EffectiveItLoadKw: resp.EnergyMetrics.EffectiveITLoadKW,
 			TotalPowerKw:      resp.EnergyMetrics.TotalPowerKW,
 			AnnualEnergyKwh:   resp.EnergyMetrics.AnnualEnergyKWh,
 		},
 		HeatRecoveryMetrics: &pyv1.HeatRecoveryMetrics{
-			WasteHeatAvailableKw:  resp.HeatRecoveryMetrics.WasteHeatAvailableKW,
-			RecoverableHeatKw:     resp.HeatRecoveryMetrics.RecoverableHeatKW,
-			AnnualHeatRecoveryKwh: resp.HeatRecoveryMetrics.AnnualHeatRecoveryKWh,
+			WasteHeatAvailableKw:     resp.HeatRecoveryMetrics.WasteHeatAvailableKW,
+			RecoverableHeatKw:        resp.HeatRecoveryMetrics.RecoverableHeatKW,
+			AnnualHeatRecoveryKwh:    resp.HeatRecoveryMetrics.AnnualHeatRecoveryKWh,
+			EquivalentGasTherms:      resp.HeatRecoveryMetrics.EquivalentGasTherms,
+			AnnualGasCostSavings:     resp.HeatRecoveryMetrics.AnnualGasCostSavings,
+			Co2AvoidedKgPerYear:      resp.HeatRecoveryMetrics.CO2AvoidedKgPerYear,
+			DistanceEfficiencyFactor: resp.HeatRecoveryMetrics.DistanceEfficiency,
 		},
 		CarbonMetrics: &pyv1.CarbonMetrics{
 			AnnualCo2EmissionsKg: resp.CarbonMetrics.AnnualCO2EmissionsKg,
@@ -374,6 +409,11 @@ func (h *predictionRPC) CalculatePrediction(ctx context.Context, req *connect.Re
 			InternalRateOfReturn: resp.FinancialMetrics.InternalRateOfReturn,
 			SimplePaybackYears:   resp.FinancialMetrics.SimplePaybackYears,
 		},
+		SavingsMetrics: &pyv1.SavingsMetrics{
+			NetAnnualSavings: resp.HeatRecoveryMetrics.AnnualGasCostSavings, // Map gas savings to net savings as initial proxy
+		},
+		// Populate breakdown for frontend completeness if possible, though proto structure for breakdown might be needed.
+		// For now, mapping core metrics ensures the QuickCard works.
 	}
 	return connect.NewResponse(out), nil
 }

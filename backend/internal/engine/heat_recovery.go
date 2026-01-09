@@ -2,13 +2,14 @@ package engine
 
 // HeatRecoveryMetrics captures waste heat and recoverable heat KPIs.
 type HeatRecoveryMetrics struct {
-	WasteHeatAvailableKW  float64
-	RecoverableHeatKW     float64
-	AnnualHeatRecoveryKWh float64
-	EquivalentGasTherms   float64
-	AnnualGasCostSavings  float64
-	CO2AvoidedKgPerYear   float64
-	DistanceEfficiency    float64
+	WasteHeatAvailableKW  float64 `json:"wasteHeatAvailableKw"`
+	RecoverableHeatKW     float64 `json:"recoverableHeatKw"`
+	AnnualHeatRecoveryKWh float64 `json:"annualHeatRecoveryKwh"`
+	EquivalentGasTherms   float64 `json:"equivalentGasTherms"`
+	AnnualGasCostSavings  float64 `json:"annualGasCostSavings"`
+	CO2AvoidedKgPerYear   float64 `json:"co2AvoidedKgPerYear"`
+	DistanceEfficiency    float64 `json:"distanceEfficiency"` // aka distanceEfficiencyFactor in frontend
+	DistanceKM            float64 `json:"distanceKm"`
 }
 
 // CalculateHeatRecovery computes heat recovery given IT load, utilization, hours, and distance.
@@ -54,5 +55,6 @@ func (e *PredictionEngine) CalculateHeatRecovery(itLoadKW, utilizationPercent fl
 		AnnualGasCostSavings:  gasSavings,
 		CO2AvoidedKgPerYear:   co2Avoided,
 		DistanceEfficiency:    distanceEff,
+		DistanceKM:            distanceToSinkKM,
 	}
 }

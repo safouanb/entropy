@@ -329,23 +329,23 @@ func (s *PredictionService) GetPredictionAnalytics(ctx context.Context) (*Predic
 }
 
 type PredictionRequest struct {
-	DataCenterID          int64
-	CarbonCreditID        int64
-	HeatSinkID            int64
-	ScenarioName          string
-	AnalysisYears         int
-	DiscountRate          float64
-	CustomPUE             *float64
-	CustomEfficiency      *float64
-	CustomElectricityRate *float64
-	CustomCarbonPrice     *float64
+	DataCenterID          int64    `json:"dataCenterId"`
+	CarbonCreditID        int64    `json:"carbonCreditId"`
+	HeatSinkID            int64    `json:"heatSinkId"`
+	ScenarioName          string   `json:"scenarioName"`
+	AnalysisYears         int      `json:"analysisYears"`
+	DiscountRate          float64  `json:"discountRate"`
+	CustomPUE             *float64 `json:"customPue"`
+	CustomEfficiency      *float64 `json:"customEfficiency"`
+	CustomElectricityRate *float64 `json:"customElectricityRate"`
+	CustomCarbonPrice     *float64 `json:"customCarbonPrice"`
 }
 
 type PredictionResponse struct {
-	EnergyMetrics       engine.EnergyMetrics
-	HeatRecoveryMetrics engine.HeatRecoveryMetrics
-	CarbonMetrics       engine.CarbonMetrics
-	FinancialMetrics    engine.FinancialMetrics
+	EnergyMetrics       engine.EnergyMetrics       `json:"energyMetrics"`
+	HeatRecoveryMetrics engine.HeatRecoveryMetrics `json:"heatRecoveryMetrics"`
+	CarbonMetrics       engine.CarbonMetrics       `json:"carbonMetrics"`
+	FinancialMetrics    engine.FinancialMetrics    `json:"financialMetrics"`
 }
 
 func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest) (*PredictionResponse, error) {
@@ -359,7 +359,17 @@ func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest
 	hours := int(valInt64(dc.OperatingHoursYear, 8760))
 	energy := s.engine.CalculateEnergy(dc.TotalItLoadKw, pue, util, hours)
 
-	heatRec := s.engine.CalculateHeatRecovery(dc.TotalItLoadKw, util, hours, 0)
+	// Calculate distance to heat sink if selected
+	distanceKM := 0.0
+	if req.HeatSinkID != 0 {
+		hs, err := s.GetHeatSink(ctx, req.HeatSinkID)
+		if err != nil {
+			return nil, fmt.Errorf("get heat sink: %w", err)
+		}
+		distanceKM = engine.HaversineDistanceKM(dc.LocationLat, dc.LocationLng, hs.LocationLat, hs.LocationLng)
+	}
+
+	heatRec := s.engine.CalculateHeatRecovery(dc.TotalItLoadKw, util, hours, distanceKM)
 
 	carbon := s.engine.CalculateCarbon(energy.AnnualEnergyKWh, valFloat64(dc.RenewablePercent, 0))
 
@@ -368,7 +378,17 @@ func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest
 	if disc <= 0 {
 		disc = 0.08
 	}
-	totalCapex := 0.0
+	// Financial Assumptions:
+	// - Pipeline Cost: €1,500,000 per km.
+	//   Source: npro.energy estimates DN300/400 material cost at ~€600-900k/km.
+	//   Installation (civil works) in semi-urban areas typically adds 50-100% (Hard Dig factor).
+	// - Connection Cost: €500,000 (Fixed). Covers HEX/Pumping substation interface.
+	capexPerKM := 1500000.0
+	fixedConnectionCost := 500000.0
+	totalCapex := fixedConnectionCost
+	if distanceKM > 0 {
+		totalCapex += distanceKM * capexPerKM
+	}
 	fin := s.engine.CalculateFinancial(totalCapex, annualNet, req.AnalysisYears, disc)
 
 	return &PredictionResponse{
