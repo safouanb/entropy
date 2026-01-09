@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const MapContainer = dynamic(
@@ -13,14 +16,20 @@ const MapContainer = dynamic(
 );
 
 export default function MapPage() {
+  const [height, setHeight] = useState(600);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      setHeight(window.innerHeight - 56);
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
     <div className="h-[calc(100vh-56px)]">
-      <MapContainer height={-1} />
-      <style jsx>{`
-        div :global(.maplibregl-map) {
-          height: calc(100vh - 56px) !important;
-        }
-      `}</style>
+      <MapContainer height={height} />
     </div>
   );
 }
