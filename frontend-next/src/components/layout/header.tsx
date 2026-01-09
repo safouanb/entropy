@@ -17,16 +17,12 @@ export function Header() {
   const { data: analytics } = useAnalytics();
 
   return (
-    <header className="sticky top-0 z-50 w-full">
-      <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-gray-200/50" />
-      <div className="container relative flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
+      <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg">
-              <Leaf className="h-5 w-5 text-white" />
-            </div>
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500">
+            <Leaf className="h-5 w-5 text-white" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-lg leading-none tracking-tight">PyRecycleHeat</span>
@@ -47,7 +43,7 @@ export function Header() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow-md"
+                    ? "bg-emerald-500 text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >

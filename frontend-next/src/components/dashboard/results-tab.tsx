@@ -12,7 +12,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
   if (!prediction) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center mb-6">
+        <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-6">
           <Calculator className="h-10 w-10 text-gray-400" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">No Results Yet</h3>
@@ -26,24 +26,21 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
   const { financial_metrics, savings_metrics, energy_metrics, heat_recovery_metrics, carbon_metrics } = prediction;
   const grade = financial_metrics?.investment_grade || "N/A";
 
-  const getGradeGradient = (grade: string) => {
+  const getGradeColor = (grade: string) => {
     switch (grade) {
-      case "A": return "from-emerald-500 to-teal-500";
-      case "B": return "from-blue-500 to-cyan-500";
-      case "C": return "from-amber-500 to-yellow-500";
-      case "D": return "from-orange-500 to-red-500";
-      default: return "from-gray-500 to-slate-500";
+      case "A": return "bg-emerald-500";
+      case "B": return "bg-blue-500";
+      case "C": return "bg-amber-500";
+      case "D": return "bg-red-500";
+      default: return "bg-gray-500";
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Header Card with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl" />
-
-        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Header Card */}
+      <div className="rounded-2xl bg-slate-900 p-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-emerald-400 text-sm font-medium mb-1">Prediction Results</p>
             <h2 className="text-2xl font-bold text-white">{prediction.scenario_name}</h2>
@@ -52,7 +49,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className={`px-6 py-3 rounded-xl bg-gradient-to-r ${getGradeGradient(grade)} shadow-lg`}>
+            <div className={`px-6 py-3 rounded-xl ${getGradeColor(grade)}`}>
               <p className="text-white/80 text-xs font-medium">Investment Grade</p>
               <p className="text-white text-3xl font-bold">{grade}</p>
             </div>
@@ -120,10 +117,10 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
             description="Available waste heat"
           />
           <MetricCard
-            title="CO₂ Avoided"
+            title="CO2 Avoided"
             value={`${formatNumber((carbon_metrics?.annual_co2_reduction_kg || 0) / 1000)} tons`}
             icon={Leaf}
-            description="Annual CO₂ reduction"
+            description="Annual CO2 reduction"
             variant="green"
           />
           <MetricCard
@@ -148,7 +145,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gradient-to-r from-gray-50 to-gray-100/50">
+                  <tr className="bg-gray-50">
                     <th className="text-left py-4 px-6 font-semibold text-gray-700">Year</th>
                     <th className="text-right py-4 px-6 font-semibold text-gray-700">Cash Inflow</th>
                     <th className="text-right py-4 px-6 font-semibold text-gray-700">Cash Outflow</th>
@@ -160,8 +157,8 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
                   {prediction.yearly_breakdown.map((year) => (
                     <tr
                       key={year.year}
-                      className={`border-t border-gray-100 hover:bg-gray-50/50 transition-colors ${
-                        year.cumulative_cash_flow >= 0 ? "bg-emerald-50/30" : ""
+                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
+                        year.cumulative_cash_flow >= 0 ? "bg-emerald-50/50" : ""
                       }`}
                     >
                       <td className="py-4 px-6 font-medium text-gray-900">Year {year.year}</td>
@@ -209,17 +206,17 @@ function MetricCard({ title, value, icon: Icon, description, variant = "default"
       value: "text-gray-900",
     },
     primary: {
-      card: "border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 hover:border-emerald-300",
+      card: "border-emerald-200 bg-emerald-50 hover:border-emerald-300",
       icon: "bg-emerald-500 text-white",
       value: "text-emerald-700",
     },
     teal: {
-      card: "border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 hover:border-teal-300",
+      card: "border-teal-200 bg-teal-50 hover:border-teal-300",
       icon: "bg-teal-500 text-white",
       value: "text-teal-700",
     },
     green: {
-      card: "border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:border-green-300",
+      card: "border-green-200 bg-green-50 hover:border-green-300",
       icon: "bg-green-500 text-white",
       value: "text-green-700",
     },

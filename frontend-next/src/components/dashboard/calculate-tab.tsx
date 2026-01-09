@@ -69,7 +69,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         {/* Data Sources Section */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Data Center Selection */}
-          <div className="p-6 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:border-emerald-200 hover:shadow-md transition-all">
+          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-emerald-300 transition-colors">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-emerald-100">
                 <Building2 className="h-5 w-5 text-emerald-600" />
@@ -102,7 +102,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
           </div>
 
           {/* Carbon Credit Selection */}
-          <div className="p-6 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:border-teal-200 hover:shadow-md transition-all">
+          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-teal-300 transition-colors">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-teal-100">
                 <Leaf className="h-5 w-5 text-teal-600" />
@@ -200,7 +200,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         <Button
           type="submit"
           size="lg"
-          className="w-full h-14 text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
+          className="w-full h-14 text-base font-medium bg-emerald-500 hover:bg-emerald-600 transition-colors"
           disabled={!selectedDcId || calculateMutation.isPending}
         >
           {calculateMutation.isPending ? (
