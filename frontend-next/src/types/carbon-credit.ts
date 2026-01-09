@@ -1,25 +1,25 @@
 export interface CarbonCredit {
   id: number;
-  project_name: string;
-  credit_type?: string;
-  price_per_ton: number;
-  available_tons: number;
-  vintage_year?: number;
-  verification_standard?: string;
+  projectName: string;
+  creditType?: string;
+  pricePerTon: number;
+  availableTons: number;
+  vintageYear?: number;
+  verificationStandard?: string;
   location?: string;
-  project_description?: string;
-  created_at?: string;
+  projectDescription?: string;
+  createdAt?: string;
 }
 
 export interface CreateCarbonCreditInput {
-  project_name: string;
-  credit_type?: string;
-  price_per_ton: number;
-  available_tons: number;
-  vintage_year?: number;
-  verification_standard?: string;
+  projectName: string;
+  creditType?: string;
+  pricePerTon: number;
+  availableTons: number;
+  vintageYear?: number;
+  verificationStandard?: string;
   location?: string;
-  project_description?: string;
+  projectDescription?: string;
 }
 
 export interface UpdateCarbonCreditInput extends Partial<CreateCarbonCreditInput> {

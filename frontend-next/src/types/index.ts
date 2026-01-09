@@ -5,16 +5,16 @@ export * from "./prediction";
 
 export interface PaginationRequest {
   page?: number;
-  page_size?: number;
+  pageSize?: number;
 }
 
 export interface PaginationMetadata {
   page: number;
-  page_size: number;
-  total_count: number;
-  total_pages: number;
-  has_next: boolean;
-  has_previous: boolean;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 export interface ListResponse<T> {

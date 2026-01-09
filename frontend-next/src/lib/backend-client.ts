@@ -42,34 +42,35 @@ async function callRPC<TReq, TRes>(
 }
 
 // PredictionService client
+// Note: Protobuf JSON uses camelCase for field names
 export const predictionService = {
   // Data Centers
   listDataCenters: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { data_centers: unknown[]; pagination: unknown }>(
+    callRPC<{ pagination?: typeof pagination }, { dataCenters: unknown[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListDataCenters",
       { pagination }
     ),
 
   getDataCenter: (id: number) =>
-    callRPC<{ id: number }, { data_center: unknown }>(
+    callRPC<{ id: number }, { dataCenter: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "GetDataCenter",
       { id }
     ),
 
   createDataCenter: (dataCenter: unknown) =>
-    callRPC<{ data_center: unknown }, { data_center: unknown }>(
+    callRPC<{ dataCenter: unknown }, { dataCenter: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateDataCenter",
-      { data_center: dataCenter }
+      { dataCenter }
     ),
 
   updateDataCenter: (id: number, dataCenter: unknown) =>
-    callRPC<{ id: number; data_center: unknown }, { data_center: unknown }>(
+    callRPC<{ id: number; dataCenter: unknown }, { dataCenter: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "UpdateDataCenter",
-      { id, data_center: dataCenter }
+      { id, dataCenter }
     ),
 
   deleteDataCenter: (id: number) =>
@@ -81,31 +82,31 @@ export const predictionService = {
 
   // Carbon Credits
   listCarbonCredits: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { carbon_credits: unknown[]; pagination: unknown }>(
+    callRPC<{ pagination?: typeof pagination }, { carbonCredits: unknown[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListCarbonCredits",
       { pagination }
     ),
 
   getCarbonCredit: (id: number) =>
-    callRPC<{ id: number }, { carbon_credit: unknown }>(
+    callRPC<{ id: number }, { carbonCredit: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "GetCarbonCredit",
       { id }
     ),
 
   createCarbonCredit: (carbonCredit: unknown) =>
-    callRPC<{ carbon_credit: unknown }, { carbon_credit: unknown }>(
+    callRPC<{ carbonCredit: unknown }, { carbonCredit: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateCarbonCredit",
-      { carbon_credit: carbonCredit }
+      { carbonCredit }
     ),
 
   updateCarbonCredit: (id: number, carbonCredit: unknown) =>
-    callRPC<{ id: number; carbon_credit: unknown }, { carbon_credit: unknown }>(
+    callRPC<{ id: number; carbonCredit: unknown }, { carbonCredit: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "UpdateCarbonCredit",
-      { id, carbon_credit: carbonCredit }
+      { id, carbonCredit }
     ),
 
   deleteCarbonCredit: (id: number) =>
@@ -117,24 +118,24 @@ export const predictionService = {
 
   // Heat Sinks
   listHeatSinks: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { heat_sinks: unknown[]; pagination: unknown }>(
+    callRPC<{ pagination?: typeof pagination }, { heatSinks: unknown[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListHeatSinks",
       { pagination }
     ),
 
   getHeatSink: (id: number) =>
-    callRPC<{ id: number }, { heat_sink: unknown }>(
+    callRPC<{ id: number }, { heatSink: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "GetHeatSink",
       { id }
     ),
 
   createHeatSink: (heatSink: unknown) =>
-    callRPC<{ heat_sink: unknown }, { heat_sink: unknown }>(
+    callRPC<{ heatSink: unknown }, { heatSink: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateHeatSink",
-      { heat_sink: heatSink }
+      { heatSink }
     ),
 
   deleteHeatSink: (id: number) =>
@@ -146,22 +147,22 @@ export const predictionService = {
 
   listNearbyHeatSinks: (dataCenterId: number, maxDistanceKm: number, limit?: number) =>
     callRPC<
-      { data_center_id: number; max_distance_km: number; limit?: number },
-      { heat_sinks: unknown[] }
+      { dataCenterId: number; maxDistanceKm: number; limit?: number },
+      { heatSinks: unknown[] }
     >(
       "pyrecycleheat.v1.PredictionService",
       "ListNearbyHeatSinks",
-      { data_center_id: dataCenterId, max_distance_km: maxDistanceKm, limit }
+      { dataCenterId, maxDistanceKm, limit }
     ),
 
   // Predictions
   calculatePrediction: (input: {
-    data_center_id: number;
-    carbon_credit_id?: number;
-    heat_sink_ids?: number[];
-    scenario_name: string;
-    analysis_years?: number;
-    discount_rate?: number;
+    dataCenterId: number;
+    carbonCreditId?: number;
+    heatSinkIds?: number[];
+    scenarioName: string;
+    analysisYears?: number;
+    discountRate?: number;
   }) =>
     callRPC<typeof input, unknown>(
       "pyrecycleheat.v1.PredictionService",
@@ -170,18 +171,18 @@ export const predictionService = {
     ),
 
   listPredictionResults: (params?: {
-    pagination?: { page?: number; page_size?: number };
-    data_center_id?: number;
-    scenario_name?: string;
+    pagination?: { page?: number; pageSize?: number };
+    dataCenterId?: number;
+    scenarioName?: string;
   }) =>
-    callRPC<typeof params, { prediction_results: unknown[]; pagination: unknown }>(
+    callRPC<typeof params, { predictionResults: unknown[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListPredictionResults",
       params || {}
     ),
 
   getPredictionResult: (id: number) =>
-    callRPC<{ id: number }, { prediction_result: unknown }>(
+    callRPC<{ id: number }, { predictionResult: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "GetPredictionResult",
       { id }

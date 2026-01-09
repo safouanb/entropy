@@ -8,33 +8,33 @@ export interface DataCenter {
   name: string;
   location: Location;
   address?: string;
-  dc_type?: string;
-  total_it_load_kw: number;
+  dcType?: string;
+  totalItLoadKw: number;
   pue?: number;
-  utilization_percent?: number;
-  cooling_type?: string;
-  energy_source?: string;
-  renewable_percent?: number;
-  electricity_cost_kwh?: number;
-  operating_hours_year?: number;
-  heat_recovery_enabled?: boolean;
-  created_at?: string;
+  utilizationPercent?: number;
+  coolingType?: string;
+  energySource?: string;
+  renewablePercent?: number;
+  electricityCostKwh?: number;
+  operatingHoursYear?: number;
+  heatRecoveryEnabled?: boolean;
+  createdAt?: string;
 }
 
 export interface CreateDataCenterInput {
   name: string;
   location: Location;
   address?: string;
-  dc_type?: string;
-  total_it_load_kw: number;
+  dcType?: string;
+  totalItLoadKw: number;
   pue?: number;
-  utilization_percent?: number;
-  cooling_type?: string;
-  energy_source?: string;
-  renewable_percent?: number;
-  electricity_cost_kwh?: number;
-  operating_hours_year?: number;
-  heat_recovery_enabled?: boolean;
+  utilizationPercent?: number;
+  coolingType?: string;
+  energySource?: string;
+  renewablePercent?: number;
+  electricityCostKwh?: number;
+  operatingHoursYear?: number;
+  heatRecoveryEnabled?: boolean;
 }
 
 export interface UpdateDataCenterInput extends Partial<CreateDataCenterInput> {
