@@ -3,7 +3,6 @@ module github.com/pyrecycleheat/backend
 go 1.23
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20251209175733-2a1774d88802.1
 	connectrpc.com/connect v1.16.2
 	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpchealth v1.1.0
