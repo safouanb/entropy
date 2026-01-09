@@ -56,9 +56,9 @@ export function MapContainer({ height = 500, onSelectDataCenter, onSelectHeatSin
       <Map
         ref={mapRef}
         initialViewState={{
-          longitude: -122.4194,
-          latitude: 37.7749,
-          zoom: 11,
+          longitude: 4.9041,
+          latitude: 52.3676,
+          zoom: 10,
         }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAPLIBRE_STYLE}

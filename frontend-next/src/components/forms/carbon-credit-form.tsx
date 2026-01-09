@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Leaf, DollarSign, Shield, FileText } from "lucide-react";
+import { Loader2, Leaf, Euro, Shield, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,7 +65,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
             <Label htmlFor="projectName" className="text-gray-700">Project Name *</Label>
             <Input
               id="projectName"
-              placeholder="e.g., California Solar Farm Credits"
+              placeholder="e.g., North Sea Wind Farm"
               className="border-gray-200 focus:border-emerald-300 focus:ring-emerald-200"
               {...form.register("projectName")}
             />
@@ -139,7 +139,7 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
             <Label htmlFor="location" className="text-gray-700">Location/Region</Label>
             <Input
               id="location"
-              placeholder="e.g., California, USA"
+              placeholder="e.g., Zeeland, Netherlands"
               className="border-gray-200 focus:border-blue-300 focus:ring-blue-200"
               {...form.register("location")}
             />
@@ -151,13 +151,13 @@ export function CarbonCreditForm({ onSuccess }: CarbonCreditFormProps) {
       <div className="p-5 rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-amber-100">
-            <DollarSign className="h-4 w-4 text-amber-600" />
+            <Euro className="h-4 w-4 text-amber-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Pricing & Availability</h3>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="pricePerTon" className="text-gray-700">Price per Ton (USD) *</Label>
+            <Label htmlFor="pricePerTon" className="text-gray-700">Price per Ton (EUR) *</Label>
             <Input
               id="pricePerTon"
               type="number"

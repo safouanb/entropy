@@ -1,7 +1,7 @@
 // Default values for forms
 export const DEFAULTS = {
-  SF_LATITUDE: 37.7749,
-  SF_LONGITUDE: -122.4194,
+  DEFAULT_LATITUDE: 52.3676, // Amsterdam
+  DEFAULT_LONGITUDE: 4.9041,
   PUE: 1.5,
   UTILIZATION_PERCENT: 70,
   OPERATING_HOURS_YEAR: 8760,
@@ -78,9 +78,9 @@ export const INVESTMENT_GRADE_COLORS: Record<string, { bg: string; text: string 
 
 // Format helpers
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IE", {
     style: "currency",
-    currency: "USD",
+    currency: "EUR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);

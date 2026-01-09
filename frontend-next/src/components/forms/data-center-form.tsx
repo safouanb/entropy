@@ -30,8 +30,8 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
     defaultValues: {
       name: "",
       location: {
-        latitude: DEFAULTS.SF_LATITUDE,
-        longitude: DEFAULTS.SF_LONGITUDE,
+        latitude: DEFAULTS.DEFAULT_LATITUDE,
+        longitude: DEFAULTS.DEFAULT_LONGITUDE,
       },
       address: "",
       dcType: "enterprise",
@@ -73,7 +73,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
             <Label htmlFor="name" className="text-gray-700">Name *</Label>
             <Input
               id="name"
-              placeholder="e.g., SF Data Center 1"
+              placeholder="e.g., Amsterdam Data Center 1"
               className="border-gray-200 focus:border-blue-300 focus:ring-blue-200"
               {...form.register("name")}
             />
@@ -86,7 +86,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
             <Label htmlFor="address" className="text-gray-700">Address</Label>
             <Input
               id="address"
-              placeholder="e.g., 123 Tech Blvd, San Francisco"
+              placeholder="e.g., Science Park 404, Amsterdam"
               className="border-gray-200 focus:border-blue-300 focus:ring-blue-200"
               {...form.register("address")}
             />
@@ -268,7 +268,7 @@ export function DataCenterForm({ onSuccess }: DataCenterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="electricityCostKwh" className="text-gray-700">Electricity Cost ($/kWh)</Label>
+            <Label htmlFor="electricityCostKwh" className="text-gray-700">Electricity Cost (€/kWh)</Label>
             <Input
               id="electricityCostKwh"
               type="number"
