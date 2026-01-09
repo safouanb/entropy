@@ -157,7 +157,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {prediction.yearly_breakdown.map((year, index) => (
+                  {prediction.yearly_breakdown.map((year) => (
                     <tr
                       key={year.year}
                       className={`border-t border-gray-100 hover:bg-gray-50/50 transition-colors ${

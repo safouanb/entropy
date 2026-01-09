@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Recycle, Map, Info, Home, Activity } from "lucide-react";
+import { Leaf, Map, Info, LayoutDashboard, Zap, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { useAnalytics } from "@/hooks";
 
 const navItems = [
-  { href: "/", label: "Home", icon: Home },
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/map", label: "Map", icon: Map },
   { href: "/about", label: "About", icon: Info },
 ];
@@ -18,16 +17,25 @@ export function Header() {
   const { data: analytics } = useAnalytics();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Recycle className="h-6 w-6 text-emerald-600" />
-            <span className="font-bold text-lg">PyRecycleHeat</span>
-          </Link>
-        </div>
+    <header className="sticky top-0 z-50 w-full">
+      <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-gray-200/50" />
+      <div className="container relative flex h-16 items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg">
+              <Leaf className="h-5 w-5 text-white" />
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-lg leading-none tracking-tight">PyRecycleHeat</span>
+            <span className="text-[10px] text-muted-foreground font-medium tracking-wider uppercase">Heat Recovery Platform</span>
+          </div>
+        </Link>
 
-        <nav className="flex items-center space-x-6 text-sm font-medium">
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -37,36 +45,75 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center space-x-1 transition-colors hover:text-foreground/80",
-                  isActive ? "text-foreground" : "text-foreground/60"
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
                 <Icon className="h-4 w-4" />
-                <span>{item.label}</span>
+                {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="ml-auto flex items-center space-x-4">
+        {/* Stats */}
+        <div className="flex items-center gap-4">
           {analytics && (
-            <>
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <span>{analytics.total_data_centers || 0}</span>
-                <span>Sites</span>
-              </div>
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <span>{analytics.total_predictions || 0}</span>
-                <span>Predictions</span>
-              </div>
-            </>
+            <div className="hidden lg:flex items-center gap-6">
+              <StatBadge
+                icon={Zap}
+                value={analytics.total_data_centers || 0}
+                label="Sites"
+                color="emerald"
+              />
+              <StatBadge
+                icon={TrendingUp}
+                value={analytics.total_predictions || 0}
+                label="Analyses"
+                color="teal"
+              />
+            </div>
           )}
-          <Badge variant="outline" className="flex items-center space-x-1">
-            <Activity className="h-3 w-3 text-green-500" />
-            <span>Online</span>
-          </Badge>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-xs font-medium text-emerald-700">Online</span>
+          </div>
         </div>
       </div>
     </header>
+  );
+}
+
+function StatBadge({
+  icon: Icon,
+  value,
+  label,
+  color,
+}: {
+  icon: React.ElementType;
+  value: number;
+  label: string;
+  color: "emerald" | "teal";
+}) {
+  const colors = {
+    emerald: "text-emerald-600 bg-emerald-50",
+    teal: "text-teal-600 bg-teal-50",
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className={cn("p-1.5 rounded-lg", colors[color])}>
+        <Icon className="h-3.5 w-3.5" />
+      </div>
+      <div className="flex flex-col">
+        <span className="text-sm font-semibold leading-none">{value}</span>
+        <span className="text-[10px] text-muted-foreground">{label}</span>
+      </div>
+    </div>
   );
 }
