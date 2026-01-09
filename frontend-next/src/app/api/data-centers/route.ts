@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      items: response.data_centers,
+      items: response.dataCenters,
       pagination: response.pagination,
     });
   } catch (error) {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const response = await predictionService.createDataCenter(body);
-    return NextResponse.json(response.data_center, { status: 201 });
+    return NextResponse.json(response.dataCenter, { status: 201 });
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json(

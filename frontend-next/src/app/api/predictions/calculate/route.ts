@@ -5,20 +5,20 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    if (!body.data_center_id || !body.scenario_name) {
+    if (!body.dataCenterId || !body.scenarioName) {
       return NextResponse.json(
-        { code: "invalid_argument", message: "data_center_id and scenario_name are required" },
+        { code: "invalid_argument", message: "dataCenterId and scenarioName are required" },
         { status: 400 }
       );
     }
 
     const response = await predictionService.calculatePrediction({
-      data_center_id: body.data_center_id,
-      carbon_credit_id: body.carbon_credit_id,
-      heat_sink_ids: body.heat_sink_ids,
-      scenario_name: body.scenario_name,
-      analysis_years: body.analysis_years || 10,
-      discount_rate: body.discount_rate || 0.08,
+      dataCenterId: body.dataCenterId,
+      carbonCreditId: body.carbonCreditId,
+      heatSinkIds: body.heatSinkIds,
+      scenarioName: body.scenarioName,
+      analysisYears: body.analysisYears || 10,
+      discountRate: body.discountRate || 0.08,
     });
 
     return NextResponse.json(response, { status: 201 });

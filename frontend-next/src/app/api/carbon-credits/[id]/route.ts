@@ -7,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
   try {
     const { id } = await params;
     const response = await predictionService.getCarbonCredit(parseInt(id));
-    return NextResponse.json(response.carbon_credit);
+    return NextResponse.json(response.carbonCredit);
   } catch (error) {
     if (error instanceof BackendError) {
       const status = error.code === "not_found" ? 404 : 500;
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     const { id } = await params;
     const body = await request.json();
     const response = await predictionService.updateCarbonCredit(parseInt(id), body);
-    return NextResponse.json(response.carbon_credit);
+    return NextResponse.json(response.carbonCredit);
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json(

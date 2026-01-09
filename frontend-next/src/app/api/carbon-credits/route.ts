@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      items: response.carbon_credits,
+      items: response.carbonCredits,
       pagination: response.pagination,
     });
   } catch (error) {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const response = await predictionService.createCarbonCredit(body);
-    return NextResponse.json(response.carbon_credit, { status: 201 });
+    return NextResponse.json(response.carbonCredit, { status: 201 });
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json(

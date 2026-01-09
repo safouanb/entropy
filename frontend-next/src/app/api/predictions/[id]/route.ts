@@ -7,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
   try {
     const { id } = await params;
     const response = await predictionService.getPredictionResult(parseInt(id));
-    return NextResponse.json(response.prediction_result);
+    return NextResponse.json(response.predictionResult);
   } catch (error) {
     if (error instanceof BackendError) {
       const status = error.code === "not_found" ? 404 : 500;

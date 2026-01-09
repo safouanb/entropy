@@ -12,14 +12,14 @@ export async function GET(request: NextRequest) {
     const response = await predictionService.listPredictionResults({
       pagination: {
         page: page ? parseInt(page) : undefined,
-        page_size: pageSize ? parseInt(pageSize) : undefined,
+        pageSize: pageSize ? parseInt(pageSize) : undefined,
       },
-      data_center_id: dataCenterId ? parseInt(dataCenterId) : undefined,
-      scenario_name: scenarioName || undefined,
+      dataCenterId: dataCenterId ? parseInt(dataCenterId) : undefined,
+      scenarioName: scenarioName || undefined,
     });
 
     return NextResponse.json({
-      items: response.prediction_results,
+      items: response.predictionResults,
       pagination: response.pagination,
     });
   } catch (error) {

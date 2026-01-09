@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       limit ? parseInt(limit) : undefined
     );
 
-    return NextResponse.json({ items: response.heat_sinks });
+    return NextResponse.json({ items: response.heatSinks });
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json(
