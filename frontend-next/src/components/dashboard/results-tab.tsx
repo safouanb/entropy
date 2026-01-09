@@ -23,13 +23,13 @@ interface ResultsTabProps {
 export function ResultsTab({ prediction }: ResultsTabProps) {
   if (!prediction) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
-        <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-6">
-          <CalculatorIcon className="h-10 w-10 text-gray-400" />
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+        <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mb-4">
+          <CalculatorIcon className="h-8 w-8 text-emerald-500" />
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Results Yet</h3>
-        <p className="text-gray-500 max-w-md">
-          Run a calculation from the Calculate tab to see your heat recovery savings prediction here.
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Analyze</h3>
+        <p className="text-gray-500 max-w-sm text-sm mb-6">
+          Configure your data center parameters and run a prediction to see detailed financial and environmental results here.
         </p>
       </div>
     );

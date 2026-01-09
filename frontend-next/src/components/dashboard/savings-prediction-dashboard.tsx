@@ -16,6 +16,8 @@ import { ManageTab } from "./manage-tab";
 import { HistoryTab } from "./history-tab";
 import type { PredictionResult } from "@/types";
 
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+
 export function SavingsPredictionDashboard() {
   const [activeTab, setActiveTab] = useState("calculate");
   const [currentPrediction, setCurrentPrediction] = useState<PredictionResult | null>(null);
@@ -73,23 +75,33 @@ export function SavingsPredictionDashboard() {
           {/* Tab Content */}
           <div className="p-6">
             <TabsContent value="calculate" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <CalculateTab onPredictionComplete={handlePredictionComplete} />
+              <ErrorBoundary>
+                <CalculateTab onPredictionComplete={handlePredictionComplete} />
+              </ErrorBoundary>
             </TabsContent>
 
             <TabsContent value="results" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <ResultsTab prediction={currentPrediction} />
+              <ErrorBoundary>
+                <ResultsTab prediction={currentPrediction} />
+              </ErrorBoundary>
             </TabsContent>
 
             <TabsContent value="map" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <MapTab />
+              <ErrorBoundary>
+                <MapTab />
+              </ErrorBoundary>
             </TabsContent>
 
             <TabsContent value="manage" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <ManageTab />
+              <ErrorBoundary>
+                <ManageTab />
+              </ErrorBoundary>
             </TabsContent>
 
             <TabsContent value="history" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <HistoryTab onSelectPrediction={setCurrentPrediction} />
+              <ErrorBoundary>
+                <HistoryTab onSelectPrediction={setCurrentPrediction} />
+              </ErrorBoundary>
             </TabsContent>
           </div>
         </Tabs>
