@@ -105,7 +105,7 @@ export function ManageTab() {
                       <div className="flex items-center gap-3 mt-1">
                         <span className="inline-flex items-center gap-1 text-sm text-gray-500">
                           <Zap className="h-3.5 w-3.5" />
-                          {dc.total_it_load_kw} kW
+                          {dc.totalItLoadKw} kW
                         </span>
                         <span className="text-gray-300">|</span>
                         <span className="text-sm text-gray-500">
@@ -190,15 +190,15 @@ export function ManageTab() {
                       <Leaf className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{cc.project_name}</p>
+                      <p className="font-medium text-gray-900">{cc.projectName}</p>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="inline-flex items-center gap-1 text-sm text-gray-500">
                           <DollarSign className="h-3.5 w-3.5" />
-                          ${cc.price_per_ton}/ton
+                          ${cc.pricePerTon}/ton
                         </span>
                         <span className="text-gray-300">|</span>
                         <span className="text-sm text-emerald-600 font-medium">
-                          {cc.available_tons} tons available
+                          {cc.availableTons} tons available
                         </span>
                       </div>
                     </div>

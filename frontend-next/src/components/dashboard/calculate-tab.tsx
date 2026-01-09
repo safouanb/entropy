@@ -35,9 +35,9 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
   const form = useForm<CalculatePredictionFormData>({
     resolver: zodResolver(calculatePredictionSchema),
     defaultValues: {
-      scenario_name: "",
-      analysis_years: DEFAULTS.ANALYSIS_YEARS,
-      discount_rate: DEFAULTS.DISCOUNT_RATE,
+      scenarioName: "",
+      analysisYears: DEFAULTS.ANALYSIS_YEARS,
+      discountRate: DEFAULTS.DISCOUNT_RATE,
     },
   });
 
@@ -45,8 +45,8 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
     try {
       const result = await calculateMutation.mutateAsync({
         ...data,
-        data_center_id: parseInt(selectedDcId),
-        carbon_credit_id: selectedCcId && selectedCcId !== "none" ? parseInt(selectedCcId) : undefined,
+        dataCenterId: parseInt(selectedDcId),
+        carbonCreditId: selectedCcId && selectedCcId !== "none" ? parseInt(selectedCcId) : undefined,
       });
       toast.success("Prediction calculated successfully!");
       onPredictionComplete(result as PredictionResult);
@@ -88,7 +88,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
                   <SelectItem key={dc.id} value={String(dc.id)}>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{dc.name}</span>
-                      <span className="text-xs text-gray-500">({dc.total_it_load_kw} kW)</span>
+                      <span className="text-xs text-gray-500">({dc.totalItLoadKw} kW)</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -121,8 +121,8 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
                 {carbonCredits?.items?.map((cc) => (
                   <SelectItem key={cc.id} value={String(cc.id)}>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">{cc.project_name}</span>
-                      <span className="text-xs text-gray-500">(${cc.price_per_ton}/ton)</span>
+                      <span className="font-medium">{cc.projectName}</span>
+                      <span className="text-xs text-gray-500">(${cc.pricePerTon}/ton)</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -145,49 +145,49 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
 
           <div className="grid gap-6 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="scenario_name" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Label htmlFor="scenarioName" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <FileText className="h-4 w-4 text-gray-400" />
                 Scenario Name
               </Label>
               <Input
-                id="scenario_name"
+                id="scenarioName"
                 placeholder="e.g., Q1 2024 Baseline"
                 className="h-11 bg-gray-50 border-gray-200 focus:bg-white"
-                {...form.register("scenario_name")}
+                {...form.register("scenarioName")}
               />
-              {form.formState.errors.scenario_name && (
-                <p className="text-xs text-red-500">{form.formState.errors.scenario_name.message}</p>
+              {form.formState.errors.scenarioName && (
+                <p className="text-xs text-red-500">{form.formState.errors.scenarioName.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="analysis_years" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Label htmlFor="analysisYears" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <Clock className="h-4 w-4 text-gray-400" />
                 Analysis Period (Years)
               </Label>
               <Input
-                id="analysis_years"
+                id="analysisYears"
                 type="number"
                 min={1}
                 max={30}
                 className="h-11 bg-gray-50 border-gray-200 focus:bg-white"
-                {...form.register("analysis_years", { valueAsNumber: true })}
+                {...form.register("analysisYears", { valueAsNumber: true })}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="discount_rate" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Label htmlFor="discountRate" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <Percent className="h-4 w-4 text-gray-400" />
                 Discount Rate (%)
               </Label>
               <Input
-                id="discount_rate"
+                id="discountRate"
                 type="number"
                 step="0.1"
                 min={0}
                 max={30}
                 className="h-11 bg-gray-50 border-gray-200 focus:bg-white"
-                {...form.register("discount_rate", {
+                {...form.register("discountRate", {
                   setValueAs: (v) => (v ? parseFloat(v) / 100 : DEFAULTS.DISCOUNT_RATE),
                 })}
                 defaultValue={DEFAULTS.DISCOUNT_RATE * 100}

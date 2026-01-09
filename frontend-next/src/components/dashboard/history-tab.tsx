@@ -31,7 +31,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `prediction-${prediction.scenario_name}-${prediction.id}.json`;
+    a.download = `prediction-${prediction.scenarioName}-${prediction.id}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Prediction exported");
@@ -110,7 +110,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
         ) : (
           <ul className="space-y-3">
             {predictions?.items?.map((pred) => {
-              const grade = pred.financial_metrics?.investment_grade || "N/A";
+              const grade = pred.financialMetrics?.investmentGrade || "N/A";
               const gradeColor = getGradeColor(grade);
 
               return (
@@ -123,7 +123,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-3">
                           <h4 className="font-semibold text-gray-900 truncate">
-                            {pred.scenario_name}
+                            {pred.scenarioName}
                           </h4>
                           <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${gradeColor.bg} ${gradeColor.text} border ${gradeColor.border}`}>
                             Grade {grade}
@@ -137,7 +137,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                             <div>
                               <p className="text-xs text-gray-500">NPV</p>
                               <p className="text-sm font-semibold text-gray-900">
-                                {formatCurrency(pred.financial_metrics?.net_present_value || 0)}
+                                {formatCurrency(pred.financialMetrics?.netPresentValue || 0)}
                               </p>
                             </div>
                           </div>
@@ -148,7 +148,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                             <div>
                               <p className="text-xs text-gray-500">IRR</p>
                               <p className="text-sm font-semibold text-gray-900">
-                                {formatPercent(pred.financial_metrics?.internal_rate_of_return || 0)}
+                                {formatPercent(pred.financialMetrics?.internalRateOfReturn || 0)}
                               </p>
                             </div>
                           </div>
@@ -159,7 +159,7 @@ export function HistoryTab({ onSelectPrediction }: HistoryTabProps) {
                             <div>
                               <p className="text-xs text-gray-500">Payback</p>
                               <p className="text-sm font-semibold text-gray-900">
-                                {pred.financial_metrics?.simple_payback_years?.toFixed(1) || "N/A"} yrs
+                                {pred.financialMetrics?.simplePaybackYears?.toFixed(1) || "N/A"} yrs
                               </p>
                             </div>
                           </div>

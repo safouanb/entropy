@@ -52,17 +52,17 @@ export function HeroSection() {
           <div className="flex flex-wrap justify-center gap-8">
             <StatItem
               icon={Zap}
-              value={formatNumber(analytics?.total_data_centers || 0)}
+              value={formatNumber(analytics?.totalDataCenters || 0)}
               label="Active Sites"
             />
             <StatItem
               icon={TrendingUp}
-              value={formatNumber(analytics?.total_predictions || 0)}
+              value={formatNumber(analytics?.totalPredictions || 0)}
               label="Predictions Made"
             />
             <StatItem
               icon={Leaf}
-              value={analytics?.avg_annual_savings ? formatCurrency(analytics.avg_annual_savings) : "$0"}
+              value={analytics?.avgAnnualSavings ? formatCurrency(analytics.avgAnnualSavings) : "$0"}
               label="Avg. Annual Savings"
             />
           </div>

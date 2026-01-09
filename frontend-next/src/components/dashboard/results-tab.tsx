@@ -23,8 +23,8 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
     );
   }
 
-  const { financial_metrics, savings_metrics, energy_metrics, heat_recovery_metrics, carbon_metrics } = prediction;
-  const grade = financial_metrics?.investment_grade || "N/A";
+  const { financialMetrics, savingsMetrics, energyMetrics, heatRecoveryMetrics, carbonMetrics } = prediction;
+  const grade = financialMetrics?.investmentGrade || "N/A";
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
@@ -43,9 +43,9 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-emerald-400 text-sm font-medium mb-1">Prediction Results</p>
-            <h2 className="text-2xl font-bold text-white">{prediction.scenario_name}</h2>
+            <h2 className="text-2xl font-bold text-white">{prediction.scenarioName}</h2>
             <p className="text-slate-400 mt-1">
-              {prediction.analysis_years} year analysis at {formatPercent(prediction.discount_rate)} discount rate
+              {prediction.analysisYears} year analysis at {formatPercent(prediction.discountRate)} discount rate
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -68,26 +68,26 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             title="Annual Savings"
-            value={formatCurrency(savings_metrics?.net_annual_savings || 0)}
+            value={formatCurrency(savingsMetrics?.netAnnualSavings || 0)}
             icon={DollarSign}
             description="Net annual savings"
             variant="primary"
           />
           <MetricCard
             title="NPV"
-            value={formatCurrency(financial_metrics?.net_present_value || 0)}
+            value={formatCurrency(financialMetrics?.netPresentValue || 0)}
             icon={TrendingUp}
             description="Net Present Value"
           />
           <MetricCard
             title="IRR"
-            value={formatPercent(financial_metrics?.internal_rate_of_return || 0)}
+            value={formatPercent(financialMetrics?.internalRateOfReturn || 0)}
             icon={Award}
             description="Internal Rate of Return"
           />
           <MetricCard
             title="Payback Period"
-            value={`${formatNumber(financial_metrics?.simple_payback_years || 0, 1)} years`}
+            value={`${formatNumber(financialMetrics?.simplePaybackYears || 0, 1)} years`}
             icon={Clock}
             description="Simple payback"
           />
@@ -105,27 +105,27 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             title="Heat Recovery"
-            value={`${formatNumber((heat_recovery_metrics?.annual_heat_recovery_kwh || 0) / 1000)} MWh`}
+            value={`${formatNumber((heatRecoveryMetrics?.annualHeatRecoveryKwh || 0) / 1000)} MWh`}
             icon={Thermometer}
             description="Annual heat recovery"
             variant="teal"
           />
           <MetricCard
             title="Waste Heat Available"
-            value={`${formatNumber(energy_metrics?.waste_heat_kw || 0)} kW`}
+            value={`${formatNumber(energyMetrics?.wasteHeatKw || 0)} kW`}
             icon={Zap}
             description="Available waste heat"
           />
           <MetricCard
             title="CO2 Avoided"
-            value={`${formatNumber((carbon_metrics?.annual_co2_reduction_kg || 0) / 1000)} tons`}
+            value={`${formatNumber((carbonMetrics?.annualCo2ReductionKg || 0) / 1000)} tons`}
             icon={Leaf}
             description="Annual CO2 reduction"
             variant="green"
           />
           <MetricCard
             title="Gas Savings"
-            value={formatCurrency(heat_recovery_metrics?.annual_gas_cost_savings || 0)}
+            value={formatCurrency(heatRecoveryMetrics?.annualGasCostSavings || 0)}
             icon={DollarSign}
             description="Annual gas cost savings"
           />
@@ -133,7 +133,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
       </div>
 
       {/* Cash Flow Table */}
-      {prediction.yearly_breakdown && prediction.yearly_breakdown.length > 0 && (
+      {prediction.yearlyBreakdown && prediction.yearlyBreakdown.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-4">
             <div className="p-2 rounded-lg bg-blue-100">
@@ -154,29 +154,26 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {prediction.yearly_breakdown.map((year) => (
+                  {prediction.yearlyBreakdown.map((year) => (
                     <tr
                       key={year.year}
-                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
-                        year.cumulative_cash_flow >= 0 ? "bg-emerald-50/50" : ""
-                      }`}
+                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${year.cumulativeCashFlow >= 0 ? "bg-emerald-50/50" : ""
+                        }`}
                     >
                       <td className="py-4 px-6 font-medium text-gray-900">Year {year.year}</td>
                       <td className="text-right py-4 px-6 text-emerald-600 font-medium">
-                        {formatCurrency(year.cash_inflow)}
+                        {formatCurrency(year.cashInflow)}
                       </td>
                       <td className="text-right py-4 px-6 text-red-500">
-                        {formatCurrency(year.cash_outflow)}
+                        {formatCurrency(year.cashOutflow)}
                       </td>
-                      <td className={`text-right py-4 px-6 font-medium ${
-                        year.net_cash_flow >= 0 ? "text-emerald-600" : "text-red-500"
-                      }`}>
-                        {formatCurrency(year.net_cash_flow)}
+                      <td className={`text-right py-4 px-6 font-medium ${year.netCashFlow >= 0 ? "text-emerald-600" : "text-red-500"
+                        }`}>
+                        {formatCurrency(year.netCashFlow)}
                       </td>
-                      <td className={`text-right py-4 px-6 font-semibold ${
-                        year.cumulative_cash_flow >= 0 ? "text-emerald-700" : "text-red-600"
-                      }`}>
-                        {formatCurrency(year.cumulative_cash_flow)}
+                      <td className={`text-right py-4 px-6 font-semibold ${year.cumulativeCashFlow >= 0 ? "text-emerald-700" : "text-red-600"
+                        }`}>
+                        {formatCurrency(year.cumulativeCashFlow)}
                       </td>
                     </tr>
                   ))}
