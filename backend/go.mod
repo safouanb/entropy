@@ -8,7 +8,7 @@ require (
 	connectrpc.com/grpchealth v1.1.0
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/go-playground/validator/v10 v10.22.1
-	github.com/google/go-cmp v0.6.0
+	github.com/google/go-cmp v0.7.0
 	github.com/lmittmann/tint v1.0.5
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/paulmach/orb v0.11.1
@@ -25,7 +25,7 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/net v0.29.0
 	golang.org/x/sync v0.8.0
-	google.golang.org/protobuf v1.35.1
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
