@@ -229,34 +229,115 @@ func (s *PredictionService) ListNearbyHeatSinks(ctx context.Context, dataCenterI
 	if err != nil {
 		return nil, fmt.Errorf("list heat sinks: %w", err)
 	}
-	type pair struct {
-		hs   db.HeatSink
-		dist float64
+
+	type ScoredSink struct {
+		hs    db.HeatSink
+		score float64
+		dist  float64
 	}
-	pairs := make([]pair, 0, len(sinks))
-	for _, hs := range sinks {
-		d := engine.HaversineDistanceKM(dc.LocationLat, dc.LocationLng, hs.LocationLat, hs.LocationLng)
-		if d <= maxDistanceKM {
-			pairs = append(pairs, pair{hs: hs, dist: d})
+
+	candidates := make([]ScoredSink, 0, len(sinks))
+
+	// Scoring Weights
+	const (
+		wTemp = 0.4
+		wDist = 0.4
+		wCap  = 0.2
+	)
+
+	// Infer DC Supply Temp
+	dcSupplyTemp := 35.0 // Default Air
+	if dc.CoolingType.Valid {
+		switch dc.CoolingType.String {
+		case "liquid":
+			dcSupplyTemp = 65.0
+		case "immersion":
+			dcSupplyTemp = 50.0
 		}
 	}
-	// simple selection sort for top limit
-	n := int(limit)
-	if n <= 0 || n > len(pairs) {
-		n = len(pairs)
-	}
-	for i := 0; i < n; i++ {
-		minIdx := i
-		for j := i + 1; j < len(pairs); j++ {
-			if pairs[j].dist < pairs[minIdx].dist {
-				minIdx = j
+
+	for _, hs := range sinks {
+		dist := engine.HaversineDistanceKM(dc.LocationLat, dc.LocationLng, hs.LocationLat, hs.LocationLng)
+		if dist > maxDistanceKM {
+			continue
+		}
+
+		// 1. Distance Score (0-100): Decay to 0 at maxDistance
+		distScore := 0.0
+		if maxDistanceKM > 0 {
+			distScore = 100 * (1 - (dist / maxDistanceKM))
+		}
+		if distScore < 0 {
+			distScore = 0
+		}
+
+		// 2. Temperature Score (0-100)
+		// Perfect match if DC Supply >= Sink Req (Direct reuse)
+		// Penalty for gap requiring heat pumps
+		sinkReq := valFloat64(hs.TemperatureRequirementC, 60.0)
+		tempScore := 0.0
+		delta := sinkReq - dcSupplyTemp
+		if delta <= 0 {
+			// DC is hotter than required: Excellent (100)
+			tempScore = 100.0
+		} else {
+			// DC is colder: Penalty. Assume 2 pts lost per degree gap.
+			// e.g. Gap=30C -> 60 pts penalty -> Score 40.
+			tempScore = 100.0 - (delta * 2.0)
+		}
+		if tempScore < 0 {
+			tempScore = 0
+		}
+
+		// 3. Capacity Score (0-100)
+		// How well does DC waste heat cover the Sink demand?
+		// DC Waste ~ IT Load (simplified).
+		dcWaste := dc.TotalItLoadKw / 1000.0 // MW
+		sinkDemand := hs.CapacityMw          // MW
+		capScore := 0.0
+
+		if sinkDemand > 0 {
+			ratio := dcWaste / sinkDemand
+			if ratio >= 1.0 {
+				// DC covers full demand: Great (100)
+				capScore = 100.0
+			} else {
+				// Partial coverage: Linear score
+				capScore = 100.0 * ratio
 			}
 		}
-		pairs[i], pairs[minIdx] = pairs[minIdx], pairs[i]
+
+		// Total Weighted Score
+		totalScore := (distScore * wDist) + (tempScore * wTemp) + (capScore * wCap)
+
+		candidates = append(candidates, ScoredSink{
+			hs:    hs,
+			score: totalScore,
+			dist:  dist,
+		})
+	}
+
+	// Sort by Score Descending
+	// Simple selection sort
+	nCan := len(candidates)
+	for i := 0; i < nCan; i++ {
+		maxIdx := i
+		for j := i + 1; j < nCan; j++ {
+			if candidates[j].score > candidates[maxIdx].score {
+				maxIdx = j
+			}
+		}
+		candidates[i], candidates[maxIdx] = candidates[maxIdx], candidates[i]
+	}
+
+	// Return top 'limit'
+	n := int(limit)
+	if n <= 0 || n > nCan {
+		n = nCan
 	}
 	out := make([]db.HeatSink, 0, n)
 	for i := 0; i < n; i++ {
-		out = append(out, pairs[i].hs)
+		out = append(out, candidates[i].hs)
 	}
 	return out, nil
 }
