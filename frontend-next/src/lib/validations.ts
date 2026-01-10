@@ -53,6 +53,8 @@ export const calculatePredictionSchema = z.object({
   scenarioName: z.string().min(1, "Scenario name is required").max(255),
   analysisYears: z.number().min(1).max(30).optional(),
   discountRate: z.number().min(0).max(0.3).optional(),
+  customCapexPerKM: z.number().positive().optional(),
+  customConnectionCost: z.number().positive().optional(),
 });
 
 export type DataCenterFormData = z.infer<typeof dataCenterSchema>;

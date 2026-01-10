@@ -114,6 +114,8 @@ export interface CalculatePredictionInput {
   customEfficiency?: number;
   customElectricityRate?: number;
   customCarbonPrice?: number;
+  customCapexPerKM?: number;
+  customConnectionCost?: number;
 }
 
 export interface PredictionAnalytics {

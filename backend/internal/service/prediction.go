@@ -339,6 +339,8 @@ type PredictionRequest struct {
 	CustomEfficiency      *float64 `json:"customEfficiency"`
 	CustomElectricityRate *float64 `json:"customElectricityRate"`
 	CustomCarbonPrice     *float64 `json:"customCarbonPrice"`
+	CustomCapexPerKM      *float64 `json:"customCapexPerKM"`
+	CustomConnectionCost  *float64 `json:"customConnectionCost"`
 }
 
 type PredictionResponse struct {
@@ -379,12 +381,11 @@ func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest
 		disc = 0.08
 	}
 	// Financial Assumptions:
-	// - Pipeline Cost: €1,500,000 per km.
-	//   Source: npro.energy estimates DN300/400 material cost at ~€600-900k/km.
-	//   Installation (civil works) in semi-urban areas typically adds 50-100% (Hard Dig factor).
-	// - Connection Cost: €500,000 (Fixed). Covers HEX/Pumping substation interface.
-	capexPerKM := 1500000.0
-	fixedConnectionCost := 500000.0
+	// - Pipeline Cost: Default €1,500,000 per km (customizable).
+	// - Connection Cost: Default €500,000 (customizable).
+	capexPerKM := ptrOrDefaultFloat64(req.CustomCapexPerKM, 1500000.0)
+	fixedConnectionCost := ptrOrDefaultFloat64(req.CustomConnectionCost, 500000.0)
+
 	totalCapex := fixedConnectionCost
 	if distanceKM > 0 {
 		totalCapex += distanceKM * capexPerKM

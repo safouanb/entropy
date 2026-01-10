@@ -12,7 +12,8 @@ import {
   ClockIcon,
   ReceiptPercentIcon,
   DocumentTextIcon,
-  CalculatorIcon
+  CalculatorIcon,
+  BanknotesIcon
 } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -201,6 +202,49 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
                 })}
                 defaultValue={DEFAULTS.DISCOUNT_RATE * 100}
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Advanced Economic Assumptions */}
+        <div className="p-6 rounded-xl border border-gray-200 bg-white">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-lg bg-orange-100">
+              <BanknotesIcon className="h-5 w-5 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">Advanced Economic Assumptions</h3>
+              <p className="text-xs text-gray-500">Override default cost models (Optional)</p>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="customCapexPerKM" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                Pipeline Cost (€/km)
+              </Label>
+              <Input
+                id="customCapexPerKM"
+                type="number"
+                placeholder="Default: 1,500,000"
+                className="h-11 bg-gray-50 border-gray-200 focus:bg-white"
+                {...form.register("customCapexPerKM", { valueAsNumber: true })}
+              />
+              <p className="text-[10px] text-gray-400">Civil works + material cost per km</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="customConnectionCost" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                Connection Cost (€)
+              </Label>
+              <Input
+                id="customConnectionCost"
+                type="number"
+                placeholder="Default: 500,000"
+                className="h-11 bg-gray-50 border-gray-200 focus:bg-white"
+                {...form.register("customConnectionCost", { valueAsNumber: true })}
+              />
+              <p className="text-[10px] text-gray-400">HEX, pumps, and substation works</p>
             </div>
           </div>
         </div>
