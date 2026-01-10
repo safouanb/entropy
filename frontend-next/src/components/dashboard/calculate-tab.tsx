@@ -13,7 +13,8 @@ import {
   ReceiptPercentIcon,
   DocumentTextIcon,
   CalculatorIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  FireIcon
 } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDataCenters, useCarbonCredits, useCalculatePrediction } from "@/hooks";
+import { useDataCenters, useCarbonCredits, useCalculatePrediction, useNearbyHeatSinks } from "@/hooks";
 import { calculatePredictionSchema, type CalculatePredictionFormData } from "@/lib/validations";
 import { DEFAULTS } from "@/lib/constants";
 import type { PredictionResult } from "@/types";
@@ -37,6 +38,7 @@ interface CalculateTabProps {
 export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
   const [selectedDcId, setSelectedDcId] = useState<string>("");
   const [selectedCcId, setSelectedCcId] = useState<string>("");
+  const [selectedHsId, setSelectedHsId] = useState<string>("");
 
   const { data: dataCenters, isLoading: loadingDcs } = useDataCenters();
   const { data: carbonCredits, isLoading: loadingCcs } = useCarbonCredits();
@@ -56,6 +58,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
       const result = await calculateMutation.mutateAsync({
         ...data,
         dataCenterId: parseInt(selectedDcId),
+        heatSinkIds: selectedHsId && selectedHsId !== "none" ? [parseInt(selectedHsId)] : undefined,
         carbonCreditId: selectedCcId && selectedCcId !== "none" ? parseInt(selectedCcId) : undefined,
       });
       toast.success("Prediction calculated successfully!");
@@ -111,8 +114,26 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
             )}
           </div>
 
+          {/* Heat Sink Selection (Smart Matching) */}
+          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-rose-300 transition-colors">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 rounded-lg bg-rose-100">
+                <FireIcon className="h-5 w-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">Heat Sink</h3>
+                <p className="text-xs text-gray-500">Select a compatible heat consumer</p>
+              </div>
+            </div>
+            <HeatSinkSelect
+              dataCenterId={selectedDcId ? parseInt(selectedDcId) : undefined}
+              selectedId={selectedHsId}
+              onSelect={setSelectedHsId}
+            />
+          </div>
+
           {/* Carbon Credit Selection */}
-          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-teal-300 transition-colors">
+          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-teal-300 transition-colors lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-lg bg-teal-100">
                 <GlobeEuropeAfricaIcon className="h-5 w-5 text-teal-600" />
@@ -270,5 +291,53 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         </Button>
       </form>
     </div>
+  );
+}
+
+// New Smart Macthing Component
+function HeatSinkSelect({ dataCenterId, selectedId, onSelect }: { dataCenterId?: number, selectedId: string, onSelect: (id: string) => void }) {
+  const { data: nearbySinks, isLoading } = useNearbyHeatSinks(dataCenterId || 0, 50, 10);
+
+  // If no DC selected, show disabled state
+  if (!dataCenterId) {
+    return (
+      <Select disabled>
+        <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-400">
+          <SelectValue placeholder="Select Data Center first..." />
+        </SelectTrigger>
+      </Select>
+    );
+  }
+
+  return (
+    <Select value={selectedId} onValueChange={onSelect}>
+      <SelectTrigger className="h-12 bg-white border-gray-200">
+        <SelectValue placeholder={isLoading ? "Analyzing nearby sinks..." : "Select a heat sink"} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="none">None (No Transport)</SelectItem>
+        {nearbySinks?.items?.map((hs, index) => {
+          // We infer the "score" roughly by order since the backend sorts them. 
+          // Top 1 = High Match.
+          // Ideally backend exposes the score field, but for now we trust the sort order.
+          const isTop = index === 0;
+          return (
+            <SelectItem key={hs.id} value={String(hs.id)}>
+              <div className="flex items-center justify-between w-full gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{hs.name}</span>
+                  {isTop && <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-bold">BEST MATCH</span>}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <span>{hs.temperatureRequirementC}°C Req</span>
+                  <span>|</span>
+                  <span>{hs.capacityMw} MW</span>
+                </div>
+              </div>
+            </SelectItem>
+          );
+        })}
+      </SelectContent>
+    </Select>
   );
 }
