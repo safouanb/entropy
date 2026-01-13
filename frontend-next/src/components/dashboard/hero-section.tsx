@@ -4,7 +4,7 @@ import {
   BoltIcon,
   ArrowTrendingUpIcon,
   GlobeEuropeAfricaIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { useAnalytics } from "@/hooks";
 import { formatCurrency, formatNumber } from "@/lib/constants";
@@ -13,62 +13,60 @@ export function HeroSection() {
   const { data: analytics } = useAnalytics();
 
   return (
-    <div className="relative overflow-hidden bg-slate-900 pt-16 pb-32">
-      <div className="container mx-auto px-4 relative">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Badge */}
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-medium text-emerald-400">Heat Recovery Analysis Platform</span>
-          </div> */}
+    <div className="relative bg-slate-900 pt-24 pb-40">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl">
+          {/* Eyebrow */}
+          <p className="text-emerald-400 font-medium mb-4 tracking-wide text-sm uppercase">
+            Waste Heat Intelligence
+          </p>
 
-          {/* Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
-            Turn Waste Heat Into{" "}
-            <span className="text-emerald-400">
-              Sustainable Value
-            </span>
+          {/* Main heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-[1.1] tracking-tight">
+            The missing layer between
+            <br />
+            <span className="text-slate-400">data centers</span> and
+            <br />
+            <span className="text-slate-400">district heating.</span>
           </h1>
 
           {/* Subheading */}
-          <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-            Calculate potential savings from data center heat recovery projects.
-            Get detailed financial analysis, ROI projections, and carbon impact assessments.
+          <p className="text-xl text-slate-400 mb-12 max-w-2xl leading-relaxed">
+            We turn complex heat recovery engineering into standardized,
+            computable decisions. Get ROI projections, carbon impact,
+            and bankable analysis in minutes.
           </p>
 
           {/* CTA */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
+          <div className="flex flex-wrap items-center gap-4 mb-16">
             <a
               href="#dashboard"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-medium hover:bg-emerald-600 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-emerald-500 text-white font-semibold hover:bg-emerald-400 transition-colors"
             >
               Start Analysis
               <ArrowRightIcon className="w-4 h-4" />
             </a>
             <a
               href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-slate-300 font-medium hover:text-white transition-colors"
             >
-              Learn More
+              How it works
             </a>
           </div>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8">
-            <StatItem
-              icon={BoltIcon}
+          {/* Stats row */}
+          <div className="flex flex-wrap gap-12 pt-8 border-t border-slate-800">
+            <Stat
               value={formatNumber(analytics?.totalDataCenters || 0)}
-              label="Active Sites"
+              label="Active sites"
             />
-            <StatItem
-              icon={ArrowTrendingUpIcon}
+            <Stat
               value={formatNumber(analytics?.totalPredictions || 0)}
-              label="Predictions Made"
+              label="Analyses run"
             />
-            <StatItem
-              icon={GlobeEuropeAfricaIcon}
+            <Stat
               value={analytics?.avgAnnualSavings ? formatCurrency(analytics.avgAnnualSavings) : "$0"}
-              label="Avg. Annual Savings"
+              label="Avg. annual savings"
             />
           </div>
         </div>
@@ -77,24 +75,11 @@ export function HeroSection() {
   );
 }
 
-function StatItem({
-  icon: Icon,
-  value,
-  label,
-}: {
-  icon: React.ElementType;
-  value: string;
-  label: string;
-}) {
+function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-        <Icon className="w-5 h-5 text-emerald-400" />
-      </div>
-      <div className="text-left">
-        <div className="text-xl font-bold text-white">{value}</div>
-        <div className="text-xs text-slate-500">{label}</div>
-      </div>
+    <div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className="text-sm text-slate-500">{label}</div>
     </div>
   );
 }
