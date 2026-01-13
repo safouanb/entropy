@@ -7,19 +7,27 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/pyrecycleheat/backend/internal/compliance"
 	db "github.com/pyrecycleheat/backend/internal/database"
 	"github.com/pyrecycleheat/backend/internal/engine"
 )
 
 type PredictionService struct {
-	db      *sql.DB
-	queries *db.Queries
-	engine  *engine.PredictionEngine
-	logger  *slog.Logger
+	db               *sql.DB
+	queries          *db.Queries
+	engine           *engine.PredictionEngine
+	complianceEngine *compliance.Engine
+	logger           *slog.Logger
 }
 
 func NewPredictionService(dbConn *sql.DB, queries *db.Queries, engine *engine.PredictionEngine, logger *slog.Logger) *PredictionService {
-	return &PredictionService{db: dbConn, queries: queries, engine: engine, logger: logger}
+	return &PredictionService{
+		db:               dbConn,
+		queries:          queries,
+		engine:           engine,
+		complianceEngine: compliance.NewEngine(),
+		logger:           logger,
+	}
 }
 
 // Data Centers CRUD
@@ -479,4 +487,10 @@ func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest
 		CarbonMetrics:       carbon,
 		FinancialMetrics:    fin,
 	}, nil
+}
+
+// CheckCompliance assesses regulatory obligations for a Data Center.
+func (s *PredictionService) CheckCompliance(ctx context.Context, req compliance.ComplianceRequest) (compliance.ComplianceResult, error) {
+	s.logger.Info("Checking compliance", "jurisdiction", req.Jurisdiction, "load_kw", req.TotalITLoadKW)
+	return s.complianceEngine.Evaluate(req), nil
 }

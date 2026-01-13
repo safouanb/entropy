@@ -38,6 +38,10 @@ func NewConnectMux(sqlDB *sql.DB, queries *db.Queries, logger *slog.Logger) http
 	mux.Handle(dhPath, dhHandler)
 	mux.Handle(predPath, predHandler)
 
+	// Manual HTTP Handlers
+	compHandler := NewComplianceHandler(predSvc)
+	mux.HandleFunc("/api/compliance/check", compHandler.Check)
+
 	// gRPC health and reflection
 	healthPath, healthHandler := grpchealth.NewHandler(grpchealth.NewStaticChecker(
 		"pyrecycleheat.v1.DistrictHeatingService",

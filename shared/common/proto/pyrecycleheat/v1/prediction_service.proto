@@ -50,6 +50,8 @@ service PredictionService {
 
   rpc GetPredictionAnalytics(GetPredictionAnalyticsRequest)
       returns (GetPredictionAnalyticsResponse);
+
+  rpc CheckCompliance(CheckComplianceRequest) returns (CheckComplianceResponse);
 }
 
 message ListDataCentersRequest { PaginationRequest pagination = 1; }
@@ -138,4 +140,19 @@ message PredictionAnalytics {
 message GetPredictionAnalyticsRequest {}
 message GetPredictionAnalyticsResponse {
   PredictionAnalytics prediction_analytics = 1;
+}
+
+message CheckComplianceRequest {
+  string jurisdiction = 1 [ (buf.validate.field).string = {min_len : 1, max_len : 100} ];
+  double total_it_load_kw = 2 [ (buf.validate.field).double.gt = 0 ];
+  google.protobuf.Timestamp plan_date = 3;
+  bool heat_recovery_ready = 4;
+}
+
+message CheckComplianceResponse {
+  string status = 1;
+  string applicable_law = 2;
+  google.protobuf.Timestamp compliance_deadline = 3;
+  repeated string reasoning = 4;
+  repeated string remediation_steps = 5;
 }

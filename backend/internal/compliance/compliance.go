@@ -44,3 +44,31 @@ type ComplianceResult struct {
 type RuleEngine interface {
 	Check(req ComplianceRequest) ComplianceResult
 }
+
+// Engine is the entry point for compliance checks.
+type Engine struct {
+	rules map[Jurisdiction]RuleEngine
+}
+
+func NewEngine() *Engine {
+	return &Engine{
+		rules: map[Jurisdiction]RuleEngine{
+			JurisdictionEU:      &EURules{},
+			JurisdictionGermany: &GermanRules{},
+			JurisdictionNL:      &DutchRules{},
+		},
+	}
+}
+
+// Evaluate determines the compliance status for the given request.
+// It defaults to EU rules if the jurisdiction is not explicitly supported.
+func (e *Engine) Evaluate(req ComplianceRequest) ComplianceResult {
+	rule, ok := e.rules[req.Jurisdiction]
+	if !ok {
+		// Fallback or default to EU if in Europe?
+		// For now, if unknown, we use EU as a baseline or return generic.
+		// Let's use EU as baseline for "Other".
+		rule = &EURules{}
+	}
+	return rule.Check(req)
+}
