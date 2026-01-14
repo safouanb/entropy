@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import { saveDataCenter } from "@/lib/compliance";
+import { useForm } from "react-hook-form";
+import { saveDataCenter, checkCompliance } from "@/lib/compliance";
+import type { ComplianceRequest, ComplianceResult, Jurisdiction } from "@/lib/compliance";
 import {
     Dialog,
     DialogContent,
@@ -11,6 +13,14 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ArrowPathIcon, ExclamationTriangleIcon, InformationCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 export default function CompliancePage() {
     const [result, setResult] = useState<ComplianceResult | null>(null);
