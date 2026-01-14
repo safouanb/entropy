@@ -1,28 +1,24 @@
-"use client";
-
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { checkCompliance, ComplianceRequest, ComplianceResult, Jurisdiction } from "@/lib/compliance";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { saveDataCenter } from "@/lib/compliance";
 import {
-    ArrowPathIcon,
-    CheckCircleIcon,
-    ExclamationTriangleIcon,
-    InformationCircleIcon
-} from "@heroicons/react/24/outline";
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export default function CompliancePage() {
     const [result, setResult] = useState<ComplianceResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [projectName, setProjectName] = useState("");
+    const [saving, setSaving] = useState(false);
+    const [openSaveDialog, setOpenSaveDialog] = useState(false);
 
-    const { register, handleSubmit, setValue, watch } = useForm<ComplianceRequest>({
+    const { register, handleSubmit, setValue, watch, getValues } = useForm<ComplianceRequest>({
         defaultValues: {
             jurisdiction: "EU",
             totalItLoadKw: 0,
@@ -48,6 +44,28 @@ export default function CompliancePage() {
             setError("Failed to check compliance. Please try again.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!projectName) return;
+        setSaving(true);
+        try {
+            const data = getValues();
+            // Ensure number conversion
+            const payload = {
+                ...data,
+                totalItLoadKw: Number(data.totalItLoadKw),
+                planDate: new Date(data.planDate).toISOString(),
+            };
+            await saveDataCenter(payload, projectName);
+            toast.success("Project saved successfully!");
+            setOpenSaveDialog(false);
+            // Optional: Redirect to dashboard or cba
+        } catch (err) {
+            toast.error("Failed to save project.");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -167,6 +185,39 @@ export default function CompliancePage() {
                                     </div>
                                 )}
                             </CardContent>
+                            <CardFooter>
+                                <Dialog open={openSaveDialog} onOpenChange={setOpenSaveDialog}>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full" variant="outline">
+                                            Save to Dashboard
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Save Project</DialogTitle>
+                                            <DialogDescription>
+                                                Save this data center profile to your dashboard to reuse it for Cost-Benefit Analysis (CBA) and Marketplace matching.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="py-4">
+                                            <Label htmlFor="projectName" className="mb-2 block">Project Name</Label>
+                                            <Input
+                                                id="projectName"
+                                                placeholder="e.g. Frankfurt DC 1"
+                                                value={projectName}
+                                                onChange={(e) => setProjectName(e.target.value)}
+                                            />
+                                        </div>
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setOpenSaveDialog(false)}>Cancel</Button>
+                                            <Button onClick={handleSave} disabled={saving || !projectName}>
+                                                {saving && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
+                                                Save Project
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </CardFooter>
                         </Card>
                     )}
                 </div>

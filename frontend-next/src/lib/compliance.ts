@@ -33,3 +33,21 @@ export async function checkCompliance(req: ComplianceRequest): Promise<Complianc
 
     return res.json();
 }
+
+import { predictionService } from "./backend-client";
+
+export async function saveDataCenter(req: ComplianceRequest, name: string): Promise<any> {
+    const payload = {
+        name: name,
+        location: {
+            latitude: 52.3676, // Default to Amsterdam for MVP if no geo input
+            longitude: 4.9041
+        },
+        totalItLoadKw: req.totalItLoadKw,
+        heatRecoveryEnabled: req.heatRecoveryReady,
+        operatingHoursYear: 8760,
+        dcType: "hyperscale", // Default
+    };
+
+    return predictionService.createDataCenter(payload);
+}
