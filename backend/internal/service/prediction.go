@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/pyrecycleheat/backend/internal/compliance"
 	db "github.com/pyrecycleheat/backend/internal/database"
@@ -522,8 +523,35 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 	// 3. Calculate Scenarios
 	scenarios := s.engine.CalculateScenarios(input)
 
-	// 4. Determine Compliance & Justification (Phase 3 placeholder)
-	// For Phase 2, we just store scenarios.
+	// 4. Determine Compliance & Justification (Phase 3)
+	// Find best financial case for feasibility check
+	bestPayback := 999.0
+	for _, s := range scenarios {
+		// Use the optimistic payback (PaybackMinYears)
+		if s.PaybackMinYears > 0 && s.PaybackMinYears < bestPayback {
+			bestPayback = s.PaybackMinYears
+		}
+	}
+
+	// Prepare Compliance Request
+	dist := assessment.DistanceToOfftakerKm
+	compReq := compliance.ComplianceRequest{
+		Jurisdiction:        compliance.Jurisdiction(assessment.Jurisdiction),
+		TotalITLoadKW:       assessment.ThermalLoadMaxKw, // Using Max Thermal ~ IT Load
+		PlanDate:            time.Now().AddDate(1, 0, 0), // Future-looking (1 yr)
+		HeatRecoveryReady:   assessment.ExistingCooling == 1,
+		DistanceToNetworkKm: &dist,
+		BestPaybackYears:    &bestPayback,
+		HasHeatDemand:       assessment.DistanceToOfftakerKm < 5 || assessment.ExistingDhInfra == 1,
+	}
+
+	compResult := s.complianceEngine.Evaluate(compReq)
+
+	compJSON, err := json.Marshal(compResult)
+	if err != nil {
+		return nil, fmt.Errorf("marshal compliance: %w", err)
+	}
+
 	scenariosJSON, err := json.Marshal(scenarios)
 	if err != nil {
 		return nil, fmt.Errorf("marshal scenarios: %w", err)
@@ -533,7 +561,7 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 	updated, err := s.queries.UpdateAssessmentResults(ctx, db.UpdateAssessmentResultsParams{
 		ID:               assessmentID,
 		ScenarioResults:  sql.NullString{String: string(scenariosJSON), Valid: true},
-		ComplianceResult: sql.NullString{String: "{}", Valid: true}, // Placeholder
+		ComplianceResult: sql.NullString{String: string(compJSON), Valid: true},
 		Conclusion:       sql.NullString{String: "Assessment calculated successfully.", Valid: true},
 		Status:           "completed",
 		Column5:          "completed", // This matches CASE WHEN ? = 'completed' in query

@@ -29,6 +29,11 @@ type ComplianceRequest struct {
 	TotalITLoadKW     float64      `json:"totalItLoadKw"`     // Rated IT power
 	PlanDate          time.Time    `json:"planDate"`          // When is the DC commissioning?
 	HeatRecoveryReady bool         `json:"heatRecoveryReady"` // Is it already technically ready?
+
+	// Feasibility Context (Optional - populated if assessment ran)
+	DistanceToNetworkKm *float64 `json:"distanceToNetworkKm"`
+	BestPaybackYears    *float64 `json:"bestPaybackYears"`
+	HasHeatDemand       bool     `json:"hasHeatDemand"`
 }
 
 // ComplianceResult is the output of the engine.

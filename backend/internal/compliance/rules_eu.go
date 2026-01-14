@@ -21,9 +21,15 @@ func (r *EURules) Check(req ComplianceRequest) ComplianceResult {
 	}
 
 	if req.TotalITLoadKW >= 2500 {
-		res.Status = StatusMandatory
-		res.Reasoning = append(res.Reasoning, "IT Load exceeds 2.5MW: Feasibility study for heat reuse is likely MANDATORY under EED Art. 25.")
-		res.RemediationSteps = append(res.RemediationSteps, "Conduct a Cost-Benefit Analysis (CBA) compliant with Annex X.", "Assess nearby district heating networks.")
+
+		if req.BestPaybackYears != nil && *req.BestPaybackYears > 7.0 {
+			res.Status = StatusExempt
+			res.Reasoning = append(res.Reasoning, "EXEMPTION: Cost-Benefit Analysis likely negative (Payback > 7 years). Mandatory heat reuse waived.")
+		} else {
+			res.Status = StatusMandatory
+			res.Reasoning = append(res.Reasoning, "IT Load exceeds 2.5MW: Feasibility study for heat reuse is likely MANDATORY under EED Art. 25.")
+			res.RemediationSteps = append(res.RemediationSteps, "Conduct a Cost-Benefit Analysis (CBA) compliant with Annex X.", "Assess nearby district heating networks.")
+		}
 	} else if req.TotalITLoadKW >= 1000 {
 		res.Status = StatusMandatory // Or "Conditional"
 		res.Reasoning = append(res.Reasoning, "IT Load exceeds 1MW: Heat reuse feasibility study is strongly recommended/required by Member State implementation.")

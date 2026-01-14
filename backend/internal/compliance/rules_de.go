@@ -26,7 +26,17 @@ func (r *GermanRules) Check(req ComplianceRequest) ComplianceResult {
 	if isFutureBuild {
 		res.Status = StatusMandatory
 		res.Reasoning = append(res.Reasoning, "Commissioning after mid-2026: New data centers MUST utilize at least 10% of waste heat (rising to 20%).")
-		res.RemediationSteps = append(res.RemediationSteps, "Plan for 10% heat reuse capability immediately.", "Secure a heat offtaker or justify exemption via 'Waste Heat Inquiry'.")
+
+		// Economic Feasibility Check (Exemption Logic)
+		if req.BestPaybackYears != nil && *req.BestPaybackYears > 5.0 {
+			res.Status = StatusExempt
+			res.Reasoning = append(res.Reasoning, "EXEMPTION: Investment is not economically feasible (Payback > 5 years). Requirement waived under EnEfG economic hardship clause.")
+		} else if req.DistanceToNetworkKm != nil && *req.DistanceToNetworkKm > 5.0 && !req.HasHeatDemand {
+			res.Status = StatusExempt
+			res.Reasoning = append(res.Reasoning, "EXEMPTION: No nearby heating network or heat sink within reasonable distance (> 5km).")
+		} else {
+			res.RemediationSteps = append(res.RemediationSteps, "Plan for 10% heat reuse capability immediately.", "Secure a heat offtaker or justify exemption via 'Waste Heat Inquiry'.")
+		}
 	} else {
 		// Existing or near-term checks
 		if req.TotalITLoadKW >= 2500 {
