@@ -64,10 +64,10 @@ export default function CBAPage() {
         setCreatingSink(true);
         try {
             // Approximate location near the selected DC for MVP (or 0,0)
-            // @ts-ignore
-            const selectedDC = dcData?.dataCenters?.find((d: any) => d.id === selectedDcId);
-            const lat = selectedDC?.location?.latitude || 52.3676;
-            const lng = selectedDC?.location?.longitude || 4.9041;
+            // @ts-ignore - prototyping: accessing dynamic location properties
+            const selectedDC = dcData?.dataCenters?.find((d: any) => d.id === selectedDcId) as any;
+            const lat = selectedDC?.location?.latitude || selectedDC?.locationLat || 52.3676;
+            const lng = selectedDC?.location?.longitude || selectedDC?.locationLng || 4.9041;
 
             const payload = {
                 name: newSink.name,

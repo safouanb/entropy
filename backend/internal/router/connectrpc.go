@@ -42,6 +42,11 @@ func NewConnectMux(sqlDB *sql.DB, queries *db.Queries, logger *slog.Logger) http
 	compHandler := NewComplianceHandler(predSvc)
 	mux.HandleFunc("/api/compliance/check", compHandler.Check)
 
+	// Assessment handlers (Entropy V1 core)
+	assessmentHandler := NewAssessmentHandler(queries)
+	mux.Handle("/api/v1/assessments", assessmentHandler)
+	mux.Handle("/api/v1/assessments/", assessmentHandler)
+
 	// gRPC health and reflection
 	healthPath, healthHandler := grpchealth.NewHandler(grpchealth.NewStaticChecker(
 		"pyrecycleheat.v1.DistrictHeatingService",

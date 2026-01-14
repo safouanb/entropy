@@ -24,6 +24,12 @@ func New(db DBTX) *Queries {
 func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	q := Queries{db: db}
 	var err error
+	if q.countAssessmentsStmt, err = db.PrepareContext(ctx, countAssessments); err != nil {
+		return nil, fmt.Errorf("error preparing query CountAssessments: %w", err)
+	}
+	if q.countAssessmentsByStatusStmt, err = db.PrepareContext(ctx, countAssessmentsByStatus); err != nil {
+		return nil, fmt.Errorf("error preparing query CountAssessmentsByStatus: %w", err)
+	}
 	if q.countCarbonCreditsStmt, err = db.PrepareContext(ctx, countCarbonCredits); err != nil {
 		return nil, fmt.Errorf("error preparing query CountCarbonCredits: %w", err)
 	}
@@ -45,6 +51,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.countRoutesStmt, err = db.PrepareContext(ctx, countRoutes); err != nil {
 		return nil, fmt.Errorf("error preparing query CountRoutes: %w", err)
 	}
+	if q.createAssessmentStmt, err = db.PrepareContext(ctx, createAssessment); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateAssessment: %w", err)
+	}
 	if q.createCarbonCreditStmt, err = db.PrepareContext(ctx, createCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateCarbonCredit: %w", err)
 	}
@@ -65,6 +74,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.createRouteStmt, err = db.PrepareContext(ctx, createRoute); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateRoute: %w", err)
+	}
+	if q.deleteAssessmentStmt, err = db.PrepareContext(ctx, deleteAssessment); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteAssessment: %w", err)
 	}
 	if q.deleteCarbonCreditStmt, err = db.PrepareContext(ctx, deleteCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteCarbonCredit: %w", err)
@@ -89,6 +101,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.getAnalyticsSummaryStmt, err = db.PrepareContext(ctx, getAnalyticsSummary); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAnalyticsSummary: %w", err)
+	}
+	if q.getAssessmentStmt, err = db.PrepareContext(ctx, getAssessment); err != nil {
+		return nil, fmt.Errorf("error preparing query GetAssessment: %w", err)
+	}
+	if q.getAssessmentsByJurisdictionStmt, err = db.PrepareContext(ctx, getAssessmentsByJurisdiction); err != nil {
+		return nil, fmt.Errorf("error preparing query GetAssessmentsByJurisdiction: %w", err)
 	}
 	if q.getCarbonCreditStmt, err = db.PrepareContext(ctx, getCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query GetCarbonCredit: %w", err)
@@ -117,6 +135,15 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getRouteStmt, err = db.PrepareContext(ctx, getRoute); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoute: %w", err)
 	}
+	if q.incrementAssessmentVersionStmt, err = db.PrepareContext(ctx, incrementAssessmentVersion); err != nil {
+		return nil, fmt.Errorf("error preparing query IncrementAssessmentVersion: %w", err)
+	}
+	if q.listAssessmentsStmt, err = db.PrepareContext(ctx, listAssessments); err != nil {
+		return nil, fmt.Errorf("error preparing query ListAssessments: %w", err)
+	}
+	if q.listAssessmentsByStatusStmt, err = db.PrepareContext(ctx, listAssessmentsByStatus); err != nil {
+		return nil, fmt.Errorf("error preparing query ListAssessmentsByStatus: %w", err)
+	}
 	if q.listCarbonCreditsStmt, err = db.PrepareContext(ctx, listCarbonCredits); err != nil {
 		return nil, fmt.Errorf("error preparing query ListCarbonCredits: %w", err)
 	}
@@ -137,6 +164,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.listRoutesStmt, err = db.PrepareContext(ctx, listRoutes); err != nil {
 		return nil, fmt.Errorf("error preparing query ListRoutes: %w", err)
+	}
+	if q.updateAssessmentInputsStmt, err = db.PrepareContext(ctx, updateAssessmentInputs); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateAssessmentInputs: %w", err)
+	}
+	if q.updateAssessmentResultsStmt, err = db.PrepareContext(ctx, updateAssessmentResults); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateAssessmentResults: %w", err)
 	}
 	if q.updateCarbonCreditStmt, err = db.PrepareContext(ctx, updateCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCarbonCredit: %w", err)
@@ -161,6 +194,16 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 
 func (q *Queries) Close() error {
 	var err error
+	if q.countAssessmentsStmt != nil {
+		if cerr := q.countAssessmentsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing countAssessmentsStmt: %w", cerr)
+		}
+	}
+	if q.countAssessmentsByStatusStmt != nil {
+		if cerr := q.countAssessmentsByStatusStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing countAssessmentsByStatusStmt: %w", cerr)
+		}
+	}
 	if q.countCarbonCreditsStmt != nil {
 		if cerr := q.countCarbonCreditsStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing countCarbonCreditsStmt: %w", cerr)
@@ -196,6 +239,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing countRoutesStmt: %w", cerr)
 		}
 	}
+	if q.createAssessmentStmt != nil {
+		if cerr := q.createAssessmentStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createAssessmentStmt: %w", cerr)
+		}
+	}
 	if q.createCarbonCreditStmt != nil {
 		if cerr := q.createCarbonCreditStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createCarbonCreditStmt: %w", cerr)
@@ -229,6 +277,11 @@ func (q *Queries) Close() error {
 	if q.createRouteStmt != nil {
 		if cerr := q.createRouteStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createRouteStmt: %w", cerr)
+		}
+	}
+	if q.deleteAssessmentStmt != nil {
+		if cerr := q.deleteAssessmentStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteAssessmentStmt: %w", cerr)
 		}
 	}
 	if q.deleteCarbonCreditStmt != nil {
@@ -269,6 +322,16 @@ func (q *Queries) Close() error {
 	if q.getAnalyticsSummaryStmt != nil {
 		if cerr := q.getAnalyticsSummaryStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getAnalyticsSummaryStmt: %w", cerr)
+		}
+	}
+	if q.getAssessmentStmt != nil {
+		if cerr := q.getAssessmentStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getAssessmentStmt: %w", cerr)
+		}
+	}
+	if q.getAssessmentsByJurisdictionStmt != nil {
+		if cerr := q.getAssessmentsByJurisdictionStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getAssessmentsByJurisdictionStmt: %w", cerr)
 		}
 	}
 	if q.getCarbonCreditStmt != nil {
@@ -316,6 +379,21 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getRouteStmt: %w", cerr)
 		}
 	}
+	if q.incrementAssessmentVersionStmt != nil {
+		if cerr := q.incrementAssessmentVersionStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing incrementAssessmentVersionStmt: %w", cerr)
+		}
+	}
+	if q.listAssessmentsStmt != nil {
+		if cerr := q.listAssessmentsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listAssessmentsStmt: %w", cerr)
+		}
+	}
+	if q.listAssessmentsByStatusStmt != nil {
+		if cerr := q.listAssessmentsByStatusStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listAssessmentsByStatusStmt: %w", cerr)
+		}
+	}
 	if q.listCarbonCreditsStmt != nil {
 		if cerr := q.listCarbonCreditsStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listCarbonCreditsStmt: %w", cerr)
@@ -349,6 +427,16 @@ func (q *Queries) Close() error {
 	if q.listRoutesStmt != nil {
 		if cerr := q.listRoutesStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listRoutesStmt: %w", cerr)
+		}
+	}
+	if q.updateAssessmentInputsStmt != nil {
+		if cerr := q.updateAssessmentInputsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateAssessmentInputsStmt: %w", cerr)
+		}
+	}
+	if q.updateAssessmentResultsStmt != nil {
+		if cerr := q.updateAssessmentResultsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateAssessmentResultsStmt: %w", cerr)
 		}
 	}
 	if q.updateCarbonCreditStmt != nil {
@@ -420,6 +508,8 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 type Queries struct {
 	db                                   DBTX
 	tx                                   *sql.Tx
+	countAssessmentsStmt                 *sql.Stmt
+	countAssessmentsByStatusStmt         *sql.Stmt
 	countCarbonCreditsStmt               *sql.Stmt
 	countDataCentersStmt                 *sql.Stmt
 	countDemandSitesStmt                 *sql.Stmt
@@ -427,6 +517,7 @@ type Queries struct {
 	countHeatSinksStmt                   *sql.Stmt
 	countPredictionResultsStmt           *sql.Stmt
 	countRoutesStmt                      *sql.Stmt
+	createAssessmentStmt                 *sql.Stmt
 	createCarbonCreditStmt               *sql.Stmt
 	createDataCenterStmt                 *sql.Stmt
 	createDemandSiteStmt                 *sql.Stmt
@@ -434,6 +525,7 @@ type Queries struct {
 	createHeatSinkStmt                   *sql.Stmt
 	createPredictionResultStmt           *sql.Stmt
 	createRouteStmt                      *sql.Stmt
+	deleteAssessmentStmt                 *sql.Stmt
 	deleteCarbonCreditStmt               *sql.Stmt
 	deleteDataCenterStmt                 *sql.Stmt
 	deleteDemandSiteStmt                 *sql.Stmt
@@ -442,6 +534,8 @@ type Queries struct {
 	deletePredictionResultStmt           *sql.Stmt
 	deleteRouteStmt                      *sql.Stmt
 	getAnalyticsSummaryStmt              *sql.Stmt
+	getAssessmentStmt                    *sql.Stmt
+	getAssessmentsByJurisdictionStmt     *sql.Stmt
 	getCarbonCreditStmt                  *sql.Stmt
 	getDataCenterStmt                    *sql.Stmt
 	getDemandSiteStmt                    *sql.Stmt
@@ -451,6 +545,9 @@ type Queries struct {
 	getPredictionResultsByDataCenterStmt *sql.Stmt
 	getPredictionResultsByScenarioStmt   *sql.Stmt
 	getRouteStmt                         *sql.Stmt
+	incrementAssessmentVersionStmt       *sql.Stmt
+	listAssessmentsStmt                  *sql.Stmt
+	listAssessmentsByStatusStmt          *sql.Stmt
 	listCarbonCreditsStmt                *sql.Stmt
 	listDataCentersStmt                  *sql.Stmt
 	listDemandSitesStmt                  *sql.Stmt
@@ -458,6 +555,8 @@ type Queries struct {
 	listHeatSinksStmt                    *sql.Stmt
 	listPredictionResultsStmt            *sql.Stmt
 	listRoutesStmt                       *sql.Stmt
+	updateAssessmentInputsStmt           *sql.Stmt
+	updateAssessmentResultsStmt          *sql.Stmt
 	updateCarbonCreditStmt               *sql.Stmt
 	updateDataCenterStmt                 *sql.Stmt
 	updateDemandSiteStmt                 *sql.Stmt
@@ -470,6 +569,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
 		db:                                   tx,
 		tx:                                   tx,
+		countAssessmentsStmt:                 q.countAssessmentsStmt,
+		countAssessmentsByStatusStmt:         q.countAssessmentsByStatusStmt,
 		countCarbonCreditsStmt:               q.countCarbonCreditsStmt,
 		countDataCentersStmt:                 q.countDataCentersStmt,
 		countDemandSitesStmt:                 q.countDemandSitesStmt,
@@ -477,6 +578,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		countHeatSinksStmt:                   q.countHeatSinksStmt,
 		countPredictionResultsStmt:           q.countPredictionResultsStmt,
 		countRoutesStmt:                      q.countRoutesStmt,
+		createAssessmentStmt:                 q.createAssessmentStmt,
 		createCarbonCreditStmt:               q.createCarbonCreditStmt,
 		createDataCenterStmt:                 q.createDataCenterStmt,
 		createDemandSiteStmt:                 q.createDemandSiteStmt,
@@ -484,6 +586,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		createHeatSinkStmt:                   q.createHeatSinkStmt,
 		createPredictionResultStmt:           q.createPredictionResultStmt,
 		createRouteStmt:                      q.createRouteStmt,
+		deleteAssessmentStmt:                 q.deleteAssessmentStmt,
 		deleteCarbonCreditStmt:               q.deleteCarbonCreditStmt,
 		deleteDataCenterStmt:                 q.deleteDataCenterStmt,
 		deleteDemandSiteStmt:                 q.deleteDemandSiteStmt,
@@ -492,6 +595,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		deletePredictionResultStmt:           q.deletePredictionResultStmt,
 		deleteRouteStmt:                      q.deleteRouteStmt,
 		getAnalyticsSummaryStmt:              q.getAnalyticsSummaryStmt,
+		getAssessmentStmt:                    q.getAssessmentStmt,
+		getAssessmentsByJurisdictionStmt:     q.getAssessmentsByJurisdictionStmt,
 		getCarbonCreditStmt:                  q.getCarbonCreditStmt,
 		getDataCenterStmt:                    q.getDataCenterStmt,
 		getDemandSiteStmt:                    q.getDemandSiteStmt,
@@ -501,6 +606,9 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getPredictionResultsByDataCenterStmt: q.getPredictionResultsByDataCenterStmt,
 		getPredictionResultsByScenarioStmt:   q.getPredictionResultsByScenarioStmt,
 		getRouteStmt:                         q.getRouteStmt,
+		incrementAssessmentVersionStmt:       q.incrementAssessmentVersionStmt,
+		listAssessmentsStmt:                  q.listAssessmentsStmt,
+		listAssessmentsByStatusStmt:          q.listAssessmentsByStatusStmt,
 		listCarbonCreditsStmt:                q.listCarbonCreditsStmt,
 		listDataCentersStmt:                  q.listDataCentersStmt,
 		listDemandSitesStmt:                  q.listDemandSitesStmt,
@@ -508,6 +616,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		listHeatSinksStmt:                    q.listHeatSinksStmt,
 		listPredictionResultsStmt:            q.listPredictionResultsStmt,
 		listRoutesStmt:                       q.listRoutesStmt,
+		updateAssessmentInputsStmt:           q.updateAssessmentInputsStmt,
+		updateAssessmentResultsStmt:          q.updateAssessmentResultsStmt,
 		updateCarbonCreditStmt:               q.updateCarbonCreditStmt,
 		updateDataCenterStmt:                 q.updateDataCenterStmt,
 		updateDemandSiteStmt:                 q.updateDemandSiteStmt,

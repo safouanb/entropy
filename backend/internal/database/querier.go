@@ -10,6 +10,8 @@ import (
 )
 
 type Querier interface {
+	CountAssessments(ctx context.Context) (int64, error)
+	CountAssessmentsByStatus(ctx context.Context, status string) (int64, error)
 	CountCarbonCredits(ctx context.Context) (int64, error)
 	CountDataCenters(ctx context.Context) (int64, error)
 	CountDemandSites(ctx context.Context) (int64, error)
@@ -17,6 +19,7 @@ type Querier interface {
 	CountHeatSinks(ctx context.Context) (int64, error)
 	CountPredictionResults(ctx context.Context) (int64, error)
 	CountRoutes(ctx context.Context) (int64, error)
+	CreateAssessment(ctx context.Context, arg CreateAssessmentParams) (FeasibilityAssessment, error)
 	CreateCarbonCredit(ctx context.Context, arg CreateCarbonCreditParams) (CarbonCredit, error)
 	CreateDataCenter(ctx context.Context, arg CreateDataCenterParams) (DataCenter, error)
 	CreateDemandSite(ctx context.Context, arg CreateDemandSiteParams) (DemandSite, error)
@@ -24,6 +27,7 @@ type Querier interface {
 	CreateHeatSink(ctx context.Context, arg CreateHeatSinkParams) (HeatSink, error)
 	CreatePredictionResult(ctx context.Context, arg CreatePredictionResultParams) (PredictionResult, error)
 	CreateRoute(ctx context.Context, arg CreateRouteParams) (Route, error)
+	DeleteAssessment(ctx context.Context, id int64) error
 	DeleteCarbonCredit(ctx context.Context, id int64) error
 	DeleteDataCenter(ctx context.Context, id int64) error
 	DeleteDemandSite(ctx context.Context, id int64) error
@@ -32,6 +36,8 @@ type Querier interface {
 	DeletePredictionResult(ctx context.Context, id int64) error
 	DeleteRoute(ctx context.Context, id int64) error
 	GetAnalyticsSummary(ctx context.Context) (GetAnalyticsSummaryRow, error)
+	GetAssessment(ctx context.Context, id int64) (FeasibilityAssessment, error)
+	GetAssessmentsByJurisdiction(ctx context.Context, arg GetAssessmentsByJurisdictionParams) ([]FeasibilityAssessment, error)
 	GetCarbonCredit(ctx context.Context, id int64) (CarbonCredit, error)
 	GetDataCenter(ctx context.Context, id int64) (DataCenter, error)
 	GetDemandSite(ctx context.Context, id int64) (DemandSite, error)
@@ -41,6 +47,9 @@ type Querier interface {
 	GetPredictionResultsByDataCenter(ctx context.Context, dataCenterID int64) ([]PredictionResult, error)
 	GetPredictionResultsByScenario(ctx context.Context, scenarioName sql.NullString) ([]PredictionResult, error)
 	GetRoute(ctx context.Context, id int64) (Route, error)
+	IncrementAssessmentVersion(ctx context.Context, id int64) (FeasibilityAssessment, error)
+	ListAssessments(ctx context.Context, arg ListAssessmentsParams) ([]FeasibilityAssessment, error)
+	ListAssessmentsByStatus(ctx context.Context, arg ListAssessmentsByStatusParams) ([]FeasibilityAssessment, error)
 	ListCarbonCredits(ctx context.Context, arg ListCarbonCreditsParams) ([]CarbonCredit, error)
 	ListDataCenters(ctx context.Context, arg ListDataCentersParams) ([]DataCenter, error)
 	ListDemandSites(ctx context.Context, arg ListDemandSitesParams) ([]DemandSite, error)
@@ -48,6 +57,8 @@ type Querier interface {
 	ListHeatSinks(ctx context.Context, arg ListHeatSinksParams) ([]HeatSink, error)
 	ListPredictionResults(ctx context.Context, arg ListPredictionResultsParams) ([]PredictionResult, error)
 	ListRoutes(ctx context.Context, arg ListRoutesParams) ([]Route, error)
+	UpdateAssessmentInputs(ctx context.Context, arg UpdateAssessmentInputsParams) (FeasibilityAssessment, error)
+	UpdateAssessmentResults(ctx context.Context, arg UpdateAssessmentResultsParams) (FeasibilityAssessment, error)
 	UpdateCarbonCredit(ctx context.Context, arg UpdateCarbonCreditParams) (CarbonCredit, error)
 	UpdateDataCenter(ctx context.Context, arg UpdateDataCenterParams) (DataCenter, error)
 	UpdateDemandSite(ctx context.Context, arg UpdateDemandSiteParams) (DemandSite, error)

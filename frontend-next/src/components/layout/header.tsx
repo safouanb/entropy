@@ -9,15 +9,17 @@ import {
   Squares2X2Icon,
   BoltIcon,
   ArrowTrendingUpIcon,
-  ScaleIcon
+  ScaleIcon,
+  DocumentTextIcon
 } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import { useAnalytics } from "@/hooks";
 
 const navItems = [
+  { href: "/assessment/new", label: "New Assessment", icon: DocumentTextIcon },
   { href: "/", label: "Dashboard", icon: Squares2X2Icon },
-  { href: "/map", label: "Map", icon: MapIcon },
   { href: "/compliance", label: "Compliance", icon: ScaleIcon },
+  { href: "/map", label: "Map", icon: MapIcon },
   { href: "/about", label: "About", icon: InformationCircleIcon },
 ];
 

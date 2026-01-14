@@ -72,6 +72,35 @@ type DemandSiteMetric struct {
 	CreatedAt         string          `json:"created_at"`
 }
 
+type FeasibilityAssessment struct {
+	ID                    int64          `json:"id"`
+	Version               int64          `json:"version"`
+	ProjectName           string         `json:"project_name"`
+	DcLocationLat         float64        `json:"dc_location_lat"`
+	DcLocationLng         float64        `json:"dc_location_lng"`
+	ThermalLoadMinKw      float64        `json:"thermal_load_min_kw"`
+	ThermalLoadMaxKw      float64        `json:"thermal_load_max_kw"`
+	AvailabilityProfile   string         `json:"availability_profile"`
+	UptimeConstraint      string         `json:"uptime_constraint"`
+	ExistingCooling       int64          `json:"existing_cooling"`
+	InvestmentWillingness string         `json:"investment_willingness"`
+	DistanceToOfftakerKm  float64        `json:"distance_to_offtaker_km"`
+	HeatDemandProfile     string         `json:"heat_demand_profile"`
+	SupplyTempRequiredC   float64        `json:"supply_temp_required_c"`
+	ExistingDhInfra       int64          `json:"existing_dh_infra"`
+	Jurisdiction          string         `json:"jurisdiction"`
+	ApplicableRegulation  string         `json:"applicable_regulation"`
+	TimeHorizonYears      int64          `json:"time_horizon_years"`
+	Status                string         `json:"status"`
+	ScenarioResults       sql.NullString `json:"scenario_results"`
+	ComplianceResult      sql.NullString `json:"compliance_result"`
+	Conclusion            sql.NullString `json:"conclusion"`
+	CreatedAt             string         `json:"created_at"`
+	UpdatedAt             sql.NullString `json:"updated_at"`
+	SubmittedAt           sql.NullString `json:"submitted_at"`
+	CompletedAt           sql.NullString `json:"completed_at"`
+}
+
 type HeatCenter struct {
 	ID                int64           `json:"id"`
 	Name              string          `json:"name"`
