@@ -43,7 +43,7 @@ func NewConnectMux(sqlDB *sql.DB, queries *db.Queries, logger *slog.Logger) http
 	mux.HandleFunc("/api/compliance/check", compHandler.Check)
 
 	// Assessment handlers (Entropy V1 core)
-	assessmentHandler := NewAssessmentHandler(queries)
+	assessmentHandler := NewAssessmentHandler(queries, predSvc)
 	mux.Handle("/api/v1/assessments", assessmentHandler)
 	mux.Handle("/api/v1/assessments/", assessmentHandler)
 

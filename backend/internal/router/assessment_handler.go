@@ -7,15 +7,17 @@ import (
 	"strings"
 
 	db "github.com/pyrecycleheat/backend/internal/database"
+	"github.com/pyrecycleheat/backend/internal/service"
 )
 
 // AssessmentHandler handles HTTP requests for feasibility assessments
 type AssessmentHandler struct {
 	queries *db.Queries
+	svc     *service.PredictionService
 }
 
-func NewAssessmentHandler(queries *db.Queries) *AssessmentHandler {
-	return &AssessmentHandler{queries: queries}
+func NewAssessmentHandler(queries *db.Queries, svc *service.PredictionService) *AssessmentHandler {
+	return &AssessmentHandler{queries: queries, svc: svc}
 }
 
 // CreateAssessmentRequest maps the frontend intake form
@@ -82,9 +84,20 @@ func (h *AssessmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Calculate Results Immediately (Synchronous for V1)
+	updatedAssessment, err := h.svc.RunFeasibilityAssessment(r.Context(), assessment.ID)
+	if err != nil {
+		// Log error but return partial success? Or fail?
+		// Better to fail or return the draft with error warning.
+		// For now, let's return the draft and log error, or fail 500.
+		// Let's return 500 so client knows calculation failed.
+		http.Error(w, "Created assessment but failed to calculate: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(assessment)
+	json.NewEncoder(w).Encode(updatedAssessment)
 }
 
 // List handles GET /api/v1/assessments

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -493,4 +494,53 @@ func (s *PredictionService) Calculate(ctx context.Context, req PredictionRequest
 func (s *PredictionService) CheckCompliance(ctx context.Context, req compliance.ComplianceRequest) (compliance.ComplianceResult, error) {
 	s.logger.Info("Checking compliance", "jurisdiction", req.Jurisdiction, "load_kw", req.TotalITLoadKW)
 	return s.complianceEngine.Evaluate(req), nil
+}
+
+// RunFeasibilityAssessment executes the scenario engine for a given assessment ID.
+func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assessmentID int64) (*db.FeasibilityAssessment, error) {
+	// 1. Fetch Assessment
+	assessment, err := s.queries.GetAssessment(ctx, assessmentID)
+	if err != nil {
+		return nil, fmt.Errorf("get assessment: %w", err)
+	}
+
+	// 2. Map to Engine Input
+	input := engine.FeasibilityInput{
+		ThermalLoadMinKw:      assessment.ThermalLoadMinKw,
+		ThermalLoadMaxKw:      assessment.ThermalLoadMaxKw,
+		DistanceKm:            assessment.DistanceToOfftakerKm,
+		SupplyTempRequiredC:   assessment.SupplyTempRequiredC,
+		ExistingCooling:       assessment.ExistingCooling == 1,
+		ExistingDHInfra:       assessment.ExistingDhInfra == 1,
+		AvailabilityProfile:   assessment.AvailabilityProfile,
+		InvestmentWillingness: assessment.InvestmentWillingness,
+		TimeHorizonYears:      int(assessment.TimeHorizonYears),
+		// Defaults or inferred
+		TemperatureSourceC: 30.0, // assumption
+	}
+
+	// 3. Calculate Scenarios
+	scenarios := s.engine.CalculateScenarios(input)
+
+	// 4. Determine Compliance & Justification (Phase 3 placeholder)
+	// For Phase 2, we just store scenarios.
+	scenariosJSON, err := json.Marshal(scenarios)
+	if err != nil {
+		return nil, fmt.Errorf("marshal scenarios: %w", err)
+	}
+
+	// 5. Update DB
+	updated, err := s.queries.UpdateAssessmentResults(ctx, db.UpdateAssessmentResultsParams{
+		ID:               assessmentID,
+		ScenarioResults:  sql.NullString{String: string(scenariosJSON), Valid: true},
+		ComplianceResult: sql.NullString{String: "{}", Valid: true}, // Placeholder
+		Conclusion:       sql.NullString{String: "Assessment calculated successfully.", Valid: true},
+		Status:           "completed",
+		Column5:          "completed", // This matches CASE WHEN ? = 'completed' in query
+	})
+	if err != nil {
+		return nil, fmt.Errorf("update assessment results: %w", err)
+	}
+
+	return &updated, nil
 }
