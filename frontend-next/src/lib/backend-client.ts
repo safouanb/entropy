@@ -163,6 +163,10 @@ export const predictionService = {
     scenarioName: string;
     analysisYears?: number;
     discountRate?: number;
+    customPue?: number;
+    customEfficiency?: number;
+    customElectricityRate?: number;
+    customCarbonPrice?: number;
   }) =>
     callRPC<typeof input, unknown>(
       "pyrecycleheat.v1.PredictionService",

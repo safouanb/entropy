@@ -21,7 +21,7 @@ export default function CBAPage() {
     // Fetch Data Centers
     const { data: dcData, isLoading: dcLoading } = useQuery({
         queryKey: ["data-centers"],
-        queryFn: () => predictionService.listDataCenters(),
+        queryFn: () => predictionService.listDataCenters({ page_size: 100 }),
     });
 
     // Nearby Sinks Logic
@@ -41,6 +41,14 @@ export default function CBAPage() {
     // Financials State
     const [prediction, setPrediction] = useState<any>(null);
     const [calculating, setCalculating] = useState(false);
+
+    // Sensitivity Analysis State
+    const [params, setParams] = useState({
+        analysisYears: 15,
+        discountRate: 0.05,
+        electricityPrice: 0.15,
+        heatPrice: 0.08
+    });
 
     const handleProjectSelect = (id: string) => {
         setSelectedDcId(id);
@@ -85,7 +93,11 @@ export default function CBAPage() {
             const res = await predictionService.calculatePrediction({
                 dataCenterId: Number(selectedDcId),
                 heatSinkIds: [Number(selectedSinkId)],
-                scenarioName: "CBA Draft " + new Date().toLocaleDateString()
+                scenarioName: "CBA Draft " + new Date().toLocaleDateString(),
+                analysisYears: params.analysisYears,
+                discountRate: Number(params.discountRate),
+                customElectricityRate: Number(params.electricityPrice),
+                // We could also pass customPue, customEfficiency etc. if we added inputs
             });
             setPrediction(res);
         } catch (e) {
@@ -225,103 +237,167 @@ export default function CBAPage() {
                 </TabsContent>
 
                 <TabsContent value="financials">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Economic Feasibility</CardTitle>
-                            <CardDescription>Estimate CAPEX, OPEX, and Return on Investment for this connection.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            {!prediction && !calculating && (
-                                <div className="text-center py-8">
-                                    <Button size="lg" onClick={handleCalculate}>Run Financial Analysis</Button>
-                                </div>
-                            )}
-
-                            {calculating && (
-                                <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                                    <ArrowPathIcon className="h-8 w-8 animate-spin text-primary" />
-                                    <p className="text-muted-foreground">Running CBA Engine...</p>
-                                </div>
-                            )}
-
-                            {prediction && (
-                                <div className="grid gap-6 md:grid-cols-2">
-                                    {/* KPIs */}
-                                    <div className="grid grid-cols-2 gap-4 col-span-2">
-                                        <div className="p-4 bg-secondary/20 rounded-lg border">
-                                            <div className="text-sm text-muted-foreground">Net Present Value (NPV)</div>
-                                            <div className="text-2xl font-bold">€ {
-                                                // @ts-ignore
-                                                prediction.predictionResult?.netPresentValue?.toLocaleString() || "N/A"
-                                            }</div>
-                                        </div>
-                                        <div className="p-4 bg-secondary/20 rounded-lg border">
-                                            <div className="text-sm text-muted-foreground">IRR</div>
-                                            {/* @ts-ignore */}
-                                            <div className="text-2xl font-bold">{prediction.predictionResult?.internalRateReturn?.toFixed(1) || "0"}%</div>
-                                        </div>
-                                        <div className="p-4 bg-secondary/20 rounded-lg border">
-                                            <div className="text-sm text-muted-foreground">Payback Period</div>
-                                            {/* @ts-ignore */}
-                                            <div className="text-2xl font-bold">{prediction.predictionResult?.paybackPeriodYears?.toFixed(1) || "0"} Years</div>
-                                        </div>
-                                        <div className="p-4 bg-secondary/20 rounded-lg border">
-                                            <div className="text-sm text-muted-foreground">CO2 Savings</div>
-                                            {/* @ts-ignore */}
-                                            <div className="text-2xl font-bold">{prediction.predictionResult?.annualCo2ReductionKg?.toLocaleString() || "0"} kg/yr</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Details */}
-                                    <div className="space-y-2">
-                                        <h4 className="font-semibold">Investment</h4>
-                                        <div className="flex justify-between text-sm border-b py-2">
-                                            <span>Total CAPEX</span>
-                                            {/* @ts-ignore */}
-                                            <span>€ {prediction.predictionResult?.totalCapex?.toLocaleString() || "0"}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm border-b py-2">
-                                            <span>Annual OPEX</span>
-                                            {/* @ts-ignore */}
-                                            <span>€ {prediction.predictionResult?.annualOpex?.toLocaleString() || "0"}</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <h4 className="font-semibold">Returns</h4>
-                                        <div className="flex justify-between text-sm border-b py-2">
-                                            <span>Annual Savings</span>
-                                            {/* @ts-ignore */}
-                                            <span>€ {prediction.predictionResult?.annualSavings?.toLocaleString() || "0"}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm border-b py-2">
-                                            <span>Heat Sales</span>
-                                            {/* @ts-ignore */}
-                                            <span>{prediction.predictionResult?.annualHeatRecoveryKwh?.toLocaleString() || "0"} kWh</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                        {prediction && (
-                            <CardHeader className="border-t pt-6 mt-4">
-                                <div className="w-full">
-                                    {/* @ts-ignore */}
-                                    <PDFDownloadLink
-                                        document={<CBAReportDocument data={{ ...prediction, scenarioName: "CBA Draft " + new Date().toISOString() }} />}
-                                        fileName="cba_report.pdf"
-                                    >
-                                        {/* @ts-ignore */}
-                                        {({ blob, url, loading, error }) => (
-                                            <Button disabled={loading} className="w-full" variant="secondary">
-                                                <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
-                                                {loading ? 'Generating Document...' : 'Download Compliant PDF Report'}
-                                            </Button>
-                                        )}
-                                    </PDFDownloadLink>
-                                </div>
+                    <div className="grid gap-6 md:grid-cols-3">
+                        <Card className="col-span-1 border-blue-100">
+                            <CardHeader>
+                                <CardTitle>Sensitivity Analysis</CardTitle>
+                                <CardDescription>Adjust economic parameters to stress-test your business case.</CardDescription>
                             </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Analysis Period (Years)</Label>
+                                    <Input
+                                        type="number"
+                                        value={params.analysisYears}
+                                        onChange={e => setParams({ ...params, analysisYears: parseInt(e.target.value) })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Discount Rate (WACC)</Label>
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={params.discountRate}
+                                            onChange={e => setParams({ ...params, discountRate: parseFloat(e.target.value) })}
+                                        />
+                                        <span className="text-xs text-muted-foreground">{(params.discountRate * 100).toFixed(0)}%</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Electricity Price (€/kWh)</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={params.electricityPrice}
+                                        onChange={e => setParams({ ...params, electricityPrice: parseFloat(e.target.value) })}
+                                    />
+                                </div>
+                                {/* 
+                            Note: Heat Price is not directly an input to predictionService yet in frontend client, but typically key for revenue.
+                            Assuming backend uses electricity cost for savings or fixed heat price params.
+                        */}
+                                <Button onClick={handleCalculate} className="w-full mt-4">
+                                    {calculating && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
+                                    Recalculate
+                                </Button>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="md:col-span-2">
+                            <CardHeader>
+                                <CardTitle>Economic Feasibility</CardTitle>
+                                <CardDescription>Estimate CAPEX, OPEX, and Return on Investment for this connection.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {!prediction && !calculating && (
+                                    <div className="text-center py-8">
+                                        <p className="text-muted-foreground mb-4">Select parameters and run analysis.</p>
+                                        <Button size="lg" onClick={handleCalculate}>Run Initial Analysis</Button>
+                                    </div>
+                                )}
+
+                                {calculating && (
+                                    <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                                        <ArrowPathIcon className="h-8 w-8 animate-spin text-primary" />
+                                        <p className="text-muted-foreground">Running CBA Engine...</p>
+                                    </div>
+                                )}
+
+                                {prediction && (
+                                    <div className="grid gap-6 md:grid-cols-2">
+                                        {/* KPIs */}
+                                        <div className="grid grid-cols-2 gap-4 col-span-2">
+                                            <div className="p-4 bg-secondary/20 rounded-lg border">
+                                                <div className="text-sm text-muted-foreground">Net Present Value (NPV)</div>
+                                                <div className="text-2xl font-bold">€ {
+                                                    // @ts-ignore
+                                                    prediction.predictionResult?.netPresentValue?.toLocaleString() || "N/A"
+                                                }</div>
+                                            </div>
+                                            <div className="p-4 bg-secondary/20 rounded-lg border">
+                                                <div className="text-sm text-muted-foreground">IRR</div>
+                                                {/* @ts-ignore */}
+                                                <div className="text-2xl font-bold">{prediction.predictionResult?.internalRateReturn?.toFixed(1) || "0"}%</div>
+                                            </div>
+                                            <div className="p-4 bg-secondary/20 rounded-lg border">
+                                                <div className="text-sm text-muted-foreground">Payback Period</div>
+                                                {/* @ts-ignore */}
+                                                <div className="text-2xl font-bold">{prediction.predictionResult?.paybackPeriodYears?.toFixed(1) || "0"} Years</div>
+                                            </div>
+                                            <div className="p-4 bg-secondary/20 rounded-lg border">
+                                                <div className="text-sm text-muted-foreground">CO2 Savings</div>
+                                                {/* @ts-ignore */}
+                                                <div className="text-2xl font-bold">{prediction.predictionResult?.annualCo2ReductionKg?.toLocaleString() || "0"} kg/yr</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Details */}
+                                        <div className="space-y-2">
+                                            <h4 className="font-semibold">Investment</h4>
+                                            <div className="flex justify-between text-sm border-b py-2">
+                                                <span>Total CAPEX</span>
+                                                {/* @ts-ignore */}
+                                                <span>€ {prediction.predictionResult?.totalCapex?.toLocaleString() || "0"}</span>
+                                            </div>
+                                            <div className="flex justify-between text-sm border-b py-2">
+                                                <span>Annual OPEX</span>
+                                                {/* @ts-ignore */}
+                                                <span>€ {prediction.predictionResult?.annualOpex?.toLocaleString() || "0"}</span>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <h4 className="font-semibold">Returns</h4>
+                                            <div className="flex justify-between text-sm border-b py-2">
+                                                <span>Annual Savings</span>
+                                                {/* @ts-ignore */}
+                                                <span>€ {prediction.predictionResult?.annualSavings?.toLocaleString() || "0"}</span>
+                                            </div>
+                                            <div className="flex justify-between text-sm border-b py-2">
+                                                <span>Heat Sales</span>
+                                                {/* @ts-ignore */}
+                                                <span>{prediction.predictionResult?.annualHeatRecoveryKwh?.toLocaleString() || "0"} kWh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </CardContent>
+                            {prediction && (
+                                <CardHeader className="border-t pt-6 mt-4">
+                                    {/* Only show Report button here if desired, or relying on Tab 4 */}
+                                    <Button className="w-full" variant="secondary" onClick={() => setActiveTab("report")}>Proceed to Report Generation</Button>
+                                </CardHeader>
+                            )}
+                        </Card>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="report">
+                    <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-lg space-y-4">
+                        <h3 className="text-xl font-semibold">CBA Report Generation</h3>
+                        <p className="text-center text-muted-foreground max-w-md">
+                            Generate a PDF report compliant with DIN EN 17463 / Energy Efficiency Act (EnEfG).
+                        </p>
+
+                        {prediction && (
+                            <div className="w-full max-w-sm">
+
+                                {/* @ts-ignore */}
+                                <PDFDownloadLink
+                                    document={<CBAReportDocument data={{ ...prediction, scenarioName: "CBA Draft " + new Date().toISOString() }} />}
+                                    fileName="cba_report.pdf"
+                                >
+                                    {/* @ts-ignore */}
+                                    {({ blob, url, loading, error }) => (
+                                        <Button disabled={loading} className="w-full" variant="default">
+                                            <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
+                                            {loading ? 'Generating Document...' : 'Download Compliant PDF Report'}
+                                        </Button>
+                                    )}
+                                </PDFDownloadLink>
+                            </div>
                         )}
-                    </Card>
+                    </div>
                 </TabsContent>
             </Tabs>
         </div>

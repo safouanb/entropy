@@ -3,7 +3,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { predictionService } from "@/lib/backend-client";
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
@@ -18,7 +17,7 @@ export default function MapPage() {
     // In a real app we might want a specific endpoint for 'all nodes' or cluster them
     const { data: dcData, isLoading: dcLoading } = useQuery({
         queryKey: ["data-centers-map"],
-        queryFn: () => predictionService.listDataCenters(100), // Get up to 100
+        queryFn: () => predictionService.listDataCenters({ page_size: 100 }), // Get up to 100
     });
 
     // Hack: We don't have a 'listAllSinks' easily accessible without a DC, or we do?
@@ -34,7 +33,7 @@ export default function MapPage() {
 
     const { data: sinksData, isLoading: sinksLoading } = useQuery({
         queryKey: ["heat-sinks-map"],
-        queryFn: () => predictionService.listHeatSinks(100),
+        queryFn: () => predictionService.listHeatSinks({ page_size: 100 }),
     });
 
     return (
@@ -65,10 +64,8 @@ export default function MapPage() {
                         </div>
                     ) : (
                         <HeatMapClient
-                            // @ts-ignore
-                            dataCenters={dcData?.dataCenters || []}
-                            // @ts-ignore
-                            heatSinks={sinksData?.heatSinks || []}
+                            dataCenters={(dcData as any)?.dataCenters || []}
+                            heatSinks={(sinksData as any)?.heatSinks || []}
                         />
                     )}
                 </CardContent>

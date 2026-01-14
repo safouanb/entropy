@@ -33,9 +33,20 @@ const sinkIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+interface Location {
+    latitude: number;
+    longitude: number;
+}
+interface MapNode {
+    id: number | string;
+    name: string;
+    location?: Location;
+    [key: string]: any;
+}
+
 interface MapProps {
-    dataCenters: any[];
-    heatSinks: any[];
+    dataCenters: MapNode[];
+    heatSinks: MapNode[];
 }
 
 export default function HeatMapClient({ dataCenters, heatSinks }: MapProps) {
