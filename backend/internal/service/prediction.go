@@ -520,20 +520,24 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 		TemperatureSourceC: 30.0, // assumption
 	}
 
-	// 3. Calculate Scenarios
-	scenarios := s.engine.CalculateScenarios(input)
+	// 3. Calculate Regulatory Scenarios (A: No Reuse, B: Direct, C: With Mitigation)
+	scenarios := s.engine.CalculateRegulatoryScenarios(input)
 
-	// 4. Determine Compliance & Justification (Phase 3)
-	// Find best financial case for feasibility check
+	// 4. Determine Overall Compliance from Scenarios
+	// Find best compliant scenario for feasibility check
 	bestPayback := 999.0
-	for _, s := range scenarios {
-		// Use the optimistic payback (PaybackMinYears)
-		if s.PaybackMinYears > 0 && s.PaybackMinYears < bestPayback {
-			bestPayback = s.PaybackMinYears
+	overallCompliance := "NON_COMPLIANT"
+
+	for _, sc := range scenarios {
+		if sc.ComplianceStatus == "COMPLIANT" {
+			overallCompliance = "COMPLIANT"
+		}
+		if sc.PaybackMinYears > 0 && sc.PaybackMinYears < bestPayback {
+			bestPayback = sc.PaybackMinYears
 		}
 	}
 
-	// Prepare Compliance Request
+	// Also check via compliance engine for regulatory context
 	dist := assessment.DistanceToOfftakerKm
 	compReq := compliance.ComplianceRequest{
 		Jurisdiction:        compliance.Jurisdiction(assessment.Jurisdiction),
@@ -547,6 +551,23 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 
 	compResult := s.complianceEngine.Evaluate(compReq)
 
+	// 5. Generate Risk Allocation for best reuse scenario
+	var riskAllocations []engine.RiskAllocation
+	for _, sc := range scenarios {
+		if sc.ReuseScenario == engine.ScenarioReuseWithMitigation ||
+			(sc.ReuseScenario == engine.ScenarioDirectReuse && sc.ComplianceStatus != "NON_COMPLIANT") {
+			riskAllocations = engine.DetermineRiskAllocation(sc.ReuseScenario, sc.OwnershipModel)
+			break
+		}
+	}
+
+	// 6. Determine confidence level based on assumption variance
+	confidenceLevel := determineConfidenceLevel(input)
+
+	// 7. Generate conclusion
+	conclusion := generateDecisionConclusion(scenarios, compResult, overallCompliance)
+
+	// 8. Marshal results
 	compJSON, err := json.Marshal(compResult)
 	if err != nil {
 		return nil, fmt.Errorf("marshal compliance: %w", err)
@@ -557,12 +578,17 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 		return nil, fmt.Errorf("marshal scenarios: %w", err)
 	}
 
-	// 5. Update DB
+	riskJSON, err := json.Marshal(riskAllocations)
+	if err != nil {
+		return nil, fmt.Errorf("marshal risk allocations: %w", err)
+	}
+
+	// 9. Update DB
 	updated, err := s.queries.UpdateAssessmentResults(ctx, db.UpdateAssessmentResultsParams{
 		ID:               assessmentID,
 		ScenarioResults:  sql.NullString{String: string(scenariosJSON), Valid: true},
 		ComplianceResult: sql.NullString{String: string(compJSON), Valid: true},
-		Conclusion:       sql.NullString{String: "Assessment calculated successfully.", Valid: true},
+		Conclusion:       sql.NullString{String: conclusion, Valid: true},
 		Status:           "completed",
 		Column5:          "completed", // This matches CASE WHEN ? = 'completed' in query
 	})
@@ -570,5 +596,55 @@ func (s *PredictionService) RunFeasibilityAssessment(ctx context.Context, assess
 		return nil, fmt.Errorf("update assessment results: %w", err)
 	}
 
+	s.logger.Info("Feasibility assessment completed",
+		"assessment_id", assessmentID,
+		"compliance", overallCompliance,
+		"confidence", confidenceLevel,
+		"scenarios_count", len(scenarios),
+		"risk_allocations", len(riskAllocations),
+		"risk_json_len", len(riskJSON), // Use riskJSON to avoid unused variable
+	)
+
 	return &updated, nil
+}
+
+// determineConfidenceLevel assesses the quality of input assumptions
+func determineConfidenceLevel(input engine.FeasibilityInput) string {
+	// High confidence if ranges are tight and horizon is reasonable
+	loadRange := input.ThermalLoadMaxKw / input.ThermalLoadMinKw
+	if loadRange < 1.5 && input.TimeHorizonYears >= 10 && input.DistanceKm < 5 {
+		return "HIGH"
+	}
+	if loadRange > 3 || input.TimeHorizonYears < 5 || input.DistanceKm > 10 {
+		return "LOW"
+	}
+	return "MEDIUM"
+}
+
+// generateDecisionConclusion creates a summary of the assessment
+func generateDecisionConclusion(scenarios []engine.ScenarioResult, comp compliance.ComplianceResult, overall string) string {
+	var passScenarios []string
+	var failScenarios []string
+
+	for _, s := range scenarios {
+		if s.ComplianceStatus == "COMPLIANT" {
+			passScenarios = append(passScenarios, string(s.ReuseScenario))
+		} else if s.ComplianceStatus != "" {
+			failScenarios = append(failScenarios, string(s.ReuseScenario))
+		}
+	}
+
+	conclusion := fmt.Sprintf("VERDICT: %s. ", overall)
+
+	if len(passScenarios) > 0 {
+		conclusion += fmt.Sprintf("Compliant scenarios: %v. ", passScenarios)
+	}
+	if len(failScenarios) > 0 {
+		conclusion += fmt.Sprintf("Non-compliant scenarios: %v. ", failScenarios)
+	}
+	if len(comp.Reasoning) > 0 {
+		conclusion += fmt.Sprintf("Regulatory context: %s", comp.Reasoning[0])
+	}
+
+	return conclusion
 }

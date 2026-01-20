@@ -1,14 +1,32 @@
 package engine
 
-// ScenarioResult captures the feasibility metrics for a specific ownership model.
+// ReuseScenario represents the physical configuration of heat reuse
+type ReuseScenario string
+
+const (
+	ScenarioNoReuse             ReuseScenario = "NO_REUSE"
+	ScenarioDirectReuse         ReuseScenario = "DIRECT_REUSE"
+	ScenarioReuseWithMitigation ReuseScenario = "REUSE_WITH_MITIGATION"
+)
+
+// ScenarioResult captures the feasibility metrics for a specific configuration
 type ScenarioResult struct {
-	OwnershipModel string `json:"ownershipModel"` // "DC_OWNS", "UTILITY_OWNS", "THIRD_PARTY"
+	ReuseScenario  ReuseScenario `json:"reuseScenario"`
+	OwnershipModel string        `json:"ownershipModel"` // "DC_OWNS", "UTILITY_OWNS", "THIRD_PARTY"
+
+	// Compliance
+	ComplianceStatus string `json:"complianceStatus"` // "COMPLIANT", "NON_COMPLIANT", "CONDITIONAL"
+	ComplianceReason string `json:"complianceReason"`
+	FailureMode      string `json:"failureMode"` // What breaks this scenario
+	RiskOwner        string `json:"riskOwner"`   // Primary risk bearer
 
 	// Infrastructure
 	RequiresHeatExchanger bool    `json:"requiresHeatExchanger"`
 	RequiresPipeline      bool    `json:"requiresPipeline"`
 	PipelineLengthKm      float64 `json:"pipelineLengthKm"`
 	RequiresHeatPump      bool    `json:"requiresHeatPump"`
+	RequiresMitigation    bool    `json:"requiresMitigation"` // Storage or other mitigation
+	MitigationType        string  `json:"mitigationType"`     // "THERMAL_STORAGE", "DEMAND_AGGREGATION", etc.
 
 	// Heat Delivered (after losses)
 	HeatDeliveredMinMwhYear float64 `json:"heatDeliveredMinMwhYear"`
@@ -33,6 +51,9 @@ type ScenarioResult struct {
 	// Emissions
 	CO2AvoidedMinKgYear float64 `json:"co2AvoidedMinKgYear"`
 	CO2AvoidedMaxKgYear float64 `json:"co2AvoidedMaxKgYear"`
+
+	// Regulatory Exposure (for No Reuse scenario)
+	RegulatoryExposure string `json:"regulatoryExposure"` // Description of regulatory risk
 }
 
 // FeasibilityInput captures the assumptions from the intake form.
@@ -234,4 +255,175 @@ func (e *PredictionEngine) evaluateScenario(model string, input FeasibilityInput
 	res.CO2AvoidedMaxKgYear = co2BaseMax - co2PenaltyMin // Best case
 
 	return res
+}
+
+// CalculateRegulatoryScenarios generates results for all 3 reuse configurations:
+// A: No Reuse, B: Direct Reuse, C: Reuse with Mitigation
+func (e *PredictionEngine) CalculateRegulatoryScenarios(input FeasibilityInput) []ScenarioResult {
+	results := make([]ScenarioResult, 0, 5)
+
+	// Scenario A: No Reuse (Baseline)
+	noReuse := e.evaluateNoReuseScenario(input)
+	results = append(results, noReuse)
+
+	// Scenario B: Direct Reuse (for each ownership model that makes sense)
+	// We pick the most likely ownership model based on investment willingness
+	ownership := determineOwnershipModel(input.InvestmentWillingness)
+	directReuse := e.evaluateScenario(ownership, input)
+	directReuse.ReuseScenario = ScenarioDirectReuse
+	directReuse.FailureMode = determineFailureMode(input)
+	directReuse.RiskOwner = determineRiskOwner(ownership)
+	directReuse.ComplianceStatus = "CONDITIONAL"
+	directReuse.ComplianceReason = "Compliance achievable if offtaker contract and technical integration completed"
+	results = append(results, directReuse)
+
+	// Scenario C: Reuse with Mitigation (storage)
+	withMitigation := e.evaluateScenarioWithMitigation(ownership, input)
+	results = append(results, withMitigation)
+
+	return results
+}
+
+// evaluateNoReuseScenario calculates the baseline with no heat reuse
+func (e *PredictionEngine) evaluateNoReuseScenario(input FeasibilityInput) ScenarioResult {
+	// Calculate baseline emissions (what would be avoided with reuse)
+	hoursPerYear := 8760.0
+	if input.AvailabilityProfile == "peak" {
+		hoursPerYear = 4000.0
+	}
+
+	gasCo2Factor := 0.202 // kg/kWh (Natural gas)
+	heatMin := input.ThermalLoadMinKw * hoursPerYear / 1000.0
+	heatMax := input.ThermalLoadMaxKw * hoursPerYear / 1000.0
+	co2EmissionsMin := heatMin * 1000 * gasCo2Factor
+	co2EmissionsMax := heatMax * 1000 * gasCo2Factor
+
+	return ScenarioResult{
+		ReuseScenario:    ScenarioNoReuse,
+		OwnershipModel:   "N/A",
+		ComplianceStatus: "NON_COMPLIANT",
+		ComplianceReason: "No heat reuse implemented; fails mandatory requirements under applicable regulation",
+		FailureMode:      "Regulatory non-compliance; potential fines and permit risk",
+		RiskOwner:        "DC_OPERATOR",
+
+		// No infrastructure
+		RequiresHeatExchanger: false,
+		RequiresPipeline:      false,
+		RequiresHeatPump:      false,
+		RequiresMitigation:    false,
+
+		// No heat delivered
+		HeatDeliveredMinMwhYear: 0,
+		HeatDeliveredMaxMwhYear: 0,
+
+		// No CAPEX (but hidden regulatory cost)
+		CapexMinEur:              0,
+		CapexMaxEur:              0,
+		InvestmentRequiredMinEur: 0,
+		InvestmentRequiredMaxEur: 0,
+		OpexMinEurYear:           0,
+		OpexMaxEurYear:           0,
+
+		// No payback/IRR applicable
+		PaybackMinYears: 0,
+		PaybackMaxYears: 0,
+		IRRMinPercent:   0,
+		IRRMaxPercent:   0,
+
+		// Negative CO2 impact (emissions NOT avoided)
+		CO2AvoidedMinKgYear: -co2EmissionsMin,
+		CO2AvoidedMaxKgYear: -co2EmissionsMax,
+
+		RegulatoryExposure: "Full regulatory exposure: potential fines, permit denial, reputational risk, and inability to meet sustainability commitments",
+	}
+}
+
+// evaluateScenarioWithMitigation adds storage/mitigation to a base scenario
+func (e *PredictionEngine) evaluateScenarioWithMitigation(ownership string, input FeasibilityInput) ScenarioResult {
+	// Start with direct reuse as base
+	base := e.evaluateScenario(ownership, input)
+
+	// Adjust for mitigation
+	base.ReuseScenario = ScenarioReuseWithMitigation
+	base.RequiresMitigation = true
+	base.MitigationType = "THERMAL_STORAGE"
+
+	// Storage adds CAPEX but reduces risk
+	// Assume mobile thermal storage: €50-100k for typical DC scale
+	storageCostMin := 50000.0
+	storageCostMax := 100000.0
+
+	base.CapexMinEur += storageCostMin
+	base.CapexMaxEur += storageCostMax
+	base.InvestmentRequiredMinEur += storageCostMin * 0.5 // Often shared
+	base.InvestmentRequiredMaxEur += storageCostMax * 0.5
+
+	// Storage adds minor OPEX (maintenance)
+	base.OpexMinEurYear += storageCostMin * 0.02
+	base.OpexMaxEurYear += storageCostMax * 0.03
+
+	// Recalculate financials with new CAPEX
+	gasPrice := 0.08
+	valueMin := base.HeatDeliveredMinMwhYear * 1000 * gasPrice
+	valueMax := base.HeatDeliveredMaxMwhYear * 1000 * gasPrice
+	cashFlowMin := valueMin - base.OpexMaxEurYear
+	cashFlowMax := valueMax - base.OpexMinEurYear
+
+	pessimistic := e.CalculateFinancial(base.CapexMaxEur, cashFlowMin, input.TimeHorizonYears, 0.06)
+	optimistic := e.CalculateFinancial(base.CapexMinEur, cashFlowMax, input.TimeHorizonYears, 0.06)
+
+	base.PaybackMaxYears = pessimistic.SimplePaybackYears
+	base.PaybackMinYears = optimistic.SimplePaybackYears
+	base.IRRMinPercent = pessimistic.InternalRateOfReturn
+	base.IRRMaxPercent = optimistic.InternalRateOfReturn
+
+	// Compliance improves with mitigation
+	base.ComplianceStatus = "COMPLIANT"
+	base.ComplianceReason = "Compliance achieved through heat reuse with temporal decoupling via storage"
+	base.FailureMode = "Storage capacity undersizing or maintenance failure"
+	base.RiskOwner = "SHARED"
+
+	return base
+}
+
+// determineOwnershipModel selects the most appropriate ownership based on investment willingness
+func determineOwnershipModel(willingness string) string {
+	switch willingness {
+	case "high":
+		return "DC_OWNS"
+	case "medium":
+		return "THIRD_PARTY"
+	case "low":
+		return "UTILITY_OWNS"
+	default:
+		return "THIRD_PARTY"
+	}
+}
+
+// determineFailureMode identifies what breaks the direct reuse scenario
+func determineFailureMode(input FeasibilityInput) string {
+	if input.DistanceKm > 5 {
+		return "Distance too far for economical pipeline; heat losses exceed viable threshold"
+	}
+	if input.SupplyTempRequiredC > 60 && input.TemperatureSourceC < 40 {
+		return "Temperature mismatch requires expensive heat pump; economics deteriorate"
+	}
+	if input.AvailabilityProfile == "peak" {
+		return "Intermittent availability creates demand mismatch; offtaker reliability risk"
+	}
+	return "Time-horizon mismatch between DC operations and offtaker contract duration"
+}
+
+// determineRiskOwner identifies who bears primary risk based on ownership
+func determineRiskOwner(ownership string) string {
+	switch ownership {
+	case "DC_OWNS":
+		return "DC_OPERATOR"
+	case "UTILITY_OWNS":
+		return "OFFTAKER"
+	case "THIRD_PARTY":
+		return "ESCO"
+	default:
+		return "SHARED"
+	}
 }

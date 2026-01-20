@@ -94,3 +94,28 @@ SELECT * FROM feasibility_assessments
 WHERE jurisdiction = ?
 ORDER BY created_at DESC
 LIMIT ? OFFSET ?;
+
+-- name: UpdateAssessmentDecisionRecord :one
+UPDATE feasibility_assessments SET
+    stakeholders_json = ?,
+    risk_allocation_json = ?,
+    audit_trail_json = ?,
+    record_version = ?,
+    prepared_by = ?,
+    confidence_level = ?,
+    updated_at = datetime('now')
+WHERE id = ?
+RETURNING *;
+
+-- name: UpdateAssessmentFullResults :one
+UPDATE feasibility_assessments SET
+    scenario_results = ?,
+    compliance_result = ?,
+    risk_allocation_json = ?,
+    conclusion = ?,
+    confidence_level = ?,
+    status = ?,
+    updated_at = datetime('now'),
+    completed_at = CASE WHEN ? = 'completed' THEN datetime('now') ELSE completed_at END
+WHERE id = ?
+RETURNING *;
