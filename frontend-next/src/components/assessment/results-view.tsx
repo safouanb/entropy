@@ -134,19 +134,50 @@ export function AssessmentResultsView({ id }: AssessmentResultsViewProps) {
                     <p className="text-xs text-gray-400 mt-1">
                         This is not a pitch. This is the product.
                     </p>
+                    {assessment.status === 'finalized' && (
+                        <span className="inline-flex items-center mt-2 px-3 py-1 rounded-full text-xs font-medium bg-gray-900 text-white">
+                            🔒 FINALIZED — Record Locked
+                        </span>
+                    )}
                 </div>
 
-                <PDFDownloadLink
-                    document={<DecisionRecordDocument data={assessment} />}
-                    fileName={`entropy_decision_record_${assessment.id}.pdf`}
-                >
-                    {({ loading: pdfLoading }) => (
-                        <Button disabled={pdfLoading} className="gap-2 bg-gray-900 hover:bg-gray-800">
-                            <Download className="w-4 h-4" />
-                            {pdfLoading ? 'Preparing...' : 'Download Official Record'}
+                <div className="flex gap-2">
+                    {assessment.status !== 'finalized' && (
+                        <Button
+                            variant="outline"
+                            onClick={async () => {
+                                if (confirm('Finalize this record? This will lock it from further changes.')) {
+                                    try {
+                                        const res = await fetch(`/api/v1/assessments/${assessment.id}/finalize`, {
+                                            method: 'POST'
+                                        });
+                                        if (res.ok) {
+                                            window.location.reload();
+                                        }
+                                    } catch (e) {
+                                        console.error('Failed to finalize', e);
+                                    }
+                                }
+                            }}
+                            className="gap-2"
+                        >
+                            <Shield className="w-4 h-4" />
+                            Finalize Record
                         </Button>
                     )}
-                </PDFDownloadLink>
+
+                    <PDFDownloadLink
+                        document={<DecisionRecordDocument data={assessment} />}
+                        fileName={`entropy_decision_record_${assessment.id}.pdf`}
+                    >
+                        {({ loading: pdfLoading }) => (
+                            <Button disabled={pdfLoading} className="gap-2 bg-gray-900 hover:bg-gray-800">
+                                <Download className="w-4 h-4" />
+                                {pdfLoading ? 'Preparing...' : 'Download Official Record'}
+                            </Button>
+                        )}
+                    </PDFDownloadLink>
+                </div>
             </div>
 
             {/* Overall Verdict Card */}
