@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { predictionService, BackendError } from "@/lib/backend-client";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -17,16 +19,12 @@ export async function GET(request: NextRequest) {
       pagination: response.pagination,
     });
   } catch (error) {
-    if (error instanceof BackendError) {
-      return NextResponse.json(
-        { code: error.code, message: error.message },
-        { status: 500 }
-      );
-    }
-    return NextResponse.json(
-      { code: "internal", message: "Failed to fetch carbon credits" },
-      { status: 500 }
-    );
+    // Return empty list instead of 500 when backend unavailable
+    console.error("Carbon credits fetch failed:", error instanceof BackendError ? error.message : error);
+    return NextResponse.json({
+      items: [],
+      pagination: { total: 0, page: 1, pageSize: 10 },
+    });
   }
 }
 
