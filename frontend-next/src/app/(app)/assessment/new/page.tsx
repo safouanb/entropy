@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,10 @@ import { Slider } from "@/components/ui/slider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowPathIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import { ArrowLeft, ArrowRight, Loader2, Shield, Building2, Thermometer, Scale } from "lucide-react";
 
-// Structured intake schema - capturing ASSUMPTIONS, not data
 interface AssessmentIntake {
     projectName: string;
-    // Data Center Side
     dcLocationLat: number;
     dcLocationLng: number;
     thermalLoadMinKw: number;
@@ -24,22 +22,26 @@ interface AssessmentIntake {
     uptimeConstraint: "99" | "99.9" | "99.99" | "99.999";
     existingCooling: boolean;
     investmentWillingness: "low" | "medium" | "high";
-    // Utility Side
     distanceToOfftakerKm: number;
     heatDemandProfile: "constant" | "seasonal_winter" | "seasonal_summer";
     supplyTempRequiredC: number;
     existingDHInfra: boolean;
-    // Context
     jurisdiction: "EU" | "DE" | "NL" | "BE" | "FR" | "UK" | "OTHER";
     applicableRegulation: "EED" | "EnEfG" | "local" | "none";
     timeHorizonYears: number;
 }
 
 const THERMAL_LOAD_PRESETS = [
-    { label: "Small (100-500 kW)", min: 100, max: 500 },
-    { label: "Medium (500-2000 kW)", min: 500, max: 2000 },
-    { label: "Large (2-10 MW)", min: 2000, max: 10000 },
-    { label: "Hyperscale (10+ MW)", min: 10000, max: 100000 },
+    { label: "Small", sub: "100-500 kW", min: 100, max: 500 },
+    { label: "Medium", sub: "500-2 MW", min: 500, max: 2000 },
+    { label: "Large", sub: "2-10 MW", min: 2000, max: 10000 },
+    { label: "Hyperscale", sub: "10+ MW", min: 10000, max: 100000 },
+];
+
+const steps = [
+    { n: 1, label: "Heat Source", icon: Building2 },
+    { n: 2, label: "Heat Demand", icon: Thermometer },
+    { n: 3, label: "Regulatory", icon: Scale },
 ];
 
 export default function NewAssessmentPage() {
@@ -51,8 +53,8 @@ export default function NewAssessmentPage() {
         projectName: "",
         dcLocationLat: 52.37,
         dcLocationLng: 4.90,
-        thermalLoadMinKw: 500,
-        thermalLoadMaxKw: 2000,
+        thermalLoadMinKw: 2000,
+        thermalLoadMaxKw: 10000,
         availabilityProfile: "base",
         uptimeConstraint: "99.9",
         existingCooling: true,
@@ -61,8 +63,8 @@ export default function NewAssessmentPage() {
         heatDemandProfile: "constant",
         supplyTempRequiredC: 60,
         existingDHInfra: false,
-        jurisdiction: "EU",
-        applicableRegulation: "EED",
+        jurisdiction: "DE",
+        applicableRegulation: "EnEfG",
         timeHorizonYears: 15,
     });
 
@@ -85,379 +87,333 @@ export default function NewAssessmentPage() {
     };
 
     return (
-        <div className="container mx-auto py-10 max-w-4xl space-y-8">
-            <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                    <DocumentTextIcon className="h-8 w-8" />
-                    New Feasibility Assessment
-                </h1>
-                <p className="text-muted-foreground">
-                    Capture assumptions to generate a regulator-acceptable feasibility record.
-                </p>
-            </div>
+        <div className="min-h-screen bg-black text-white">
+            {/* Header */}
+            <header className="border-b border-white/10">
+                <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                    </Link>
+                    <div className="flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-emerald-400" />
+                        <span className="font-bold">NEW DECISION RECORD</span>
+                    </div>
+                    <div className="w-16" />
+                </div>
+            </header>
 
             {/* Progress Steps */}
-            <div className="flex items-center gap-2 text-sm">
-                {[
-                    { n: 1, label: "Heat Source" },
-                    { n: 2, label: "Heat Demand" },
-                    { n: 3, label: "Regulatory Context" },
-                ].map((s, i) => (
-                    <div key={s.n} className="flex items-center">
-                        <button
-                            onClick={() => setStep(s.n)}
-                            className={`flex items-center gap-2 px-3 py-1 rounded-full transition-colors ${step === s.n
-                                    ? "bg-primary text-primary-foreground"
-                                    : step > s.n
-                                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                                        : "bg-muted text-muted-foreground"
-                                }`}
-                        >
-                            <span className="font-semibold">{s.n}</span>
-                            <span>{s.label}</span>
-                        </button>
-                        {i < 2 && <div className="w-8 h-px bg-border mx-2" />}
+            <div className="border-b border-white/10 bg-white/5">
+                <div className="max-w-4xl mx-auto px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        {steps.map((s, i) => (
+                            <div key={s.n} className="flex items-center flex-1">
+                                <button
+                                    onClick={() => setStep(s.n)}
+                                    className={`flex items-center gap-3 transition ${step === s.n
+                                            ? 'text-white'
+                                            : step > s.n
+                                                ? 'text-emerald-400'
+                                                : 'text-gray-500'
+                                        }`}
+                                >
+                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${step === s.n
+                                            ? 'bg-white text-black'
+                                            : step > s.n
+                                                ? 'bg-emerald-500/20 text-emerald-400'
+                                                : 'bg-white/10 text-gray-500'
+                                        }`}>
+                                        <s.icon className="w-5 h-5" />
+                                    </div>
+                                    <div className="hidden sm:block">
+                                        <div className="text-xs text-gray-500">Step {s.n}</div>
+                                        <div className="font-medium">{s.label}</div>
+                                    </div>
+                                </button>
+                                {i < steps.length - 1 && (
+                                    <div className={`flex-1 h-px mx-4 ${step > s.n ? 'bg-emerald-500' : 'bg-white/10'}`} />
+                                )}
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
 
-            {/* Step 1: Data Center / Heat Source */}
-            {step === 1 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Data Center (Heat Source)</CardTitle>
-                        <CardDescription>
-                            Define the thermal characteristics and constraints of your data center.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="projectName">Project Name</Label>
-                            <Input
-                                id="projectName"
-                                value={form.projectName}
-                                onChange={(e) => setForm({ ...form, projectName: e.target.value })}
-                                placeholder="e.g., Amsterdam DC1 Heat Reuse Assessment"
-                            />
+            {/* Form Content */}
+            <div className="max-w-4xl mx-auto px-6 py-12">
+                {/* Step 1: Data Center / Heat Source */}
+                {step === 1 && (
+                    <div className="space-y-8">
+                        <div>
+                            <h2 className="text-2xl font-bold mb-2">Data Center (Heat Source)</h2>
+                            <p className="text-gray-400">Define the thermal characteristics of your facility.</p>
                         </div>
 
-                        <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-6">
                             <div className="space-y-2">
-                                <Label>Latitude</Label>
+                                <Label className="text-white">Project Name</Label>
                                 <Input
-                                    type="number"
-                                    step="0.0001"
-                                    value={form.dcLocationLat}
-                                    onChange={(e) => setForm({ ...form, dcLocationLat: parseFloat(e.target.value) })}
+                                    value={form.projectName}
+                                    onChange={(e) => setForm({ ...form, projectName: e.target.value })}
+                                    placeholder="e.g., Frankfurt Hyperscale DC"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label>Longitude</Label>
-                                <Input
-                                    type="number"
-                                    step="0.0001"
-                                    value={form.dcLocationLng}
-                                    onChange={(e) => setForm({ ...form, dcLocationLng: parseFloat(e.target.value) })}
-                                />
-                            </div>
-                        </div>
 
-                        <div className="space-y-4">
-                            <Label>Thermal Load Range (kW)</Label>
-                            <div className="flex gap-2 flex-wrap">
-                                {THERMAL_LOAD_PRESETS.map((preset) => (
-                                    <Button
-                                        key={preset.label}
-                                        variant={form.thermalLoadMinKw === preset.min && form.thermalLoadMaxKw === preset.max ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => setForm({ ...form, thermalLoadMinKw: preset.min, thermalLoadMaxKw: preset.max })}
-                                    >
-                                        {preset.label}
-                                    </Button>
-                                ))}
-                            </div>
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2">
-                                    <span className="text-sm text-muted-foreground">Minimum: {form.thermalLoadMinKw.toLocaleString()} kW</span>
-                                    <Slider
-                                        value={[form.thermalLoadMinKw]}
-                                        onValueChange={([v]) => setForm({ ...form, thermalLoadMinKw: Math.min(v, form.thermalLoadMaxKw) })}
-                                        min={50}
-                                        max={100000}
-                                        step={50}
+                                    <Label className="text-white">Latitude</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        value={form.dcLocationLat}
+                                        onChange={(e) => setForm({ ...form, dcLocationLat: parseFloat(e.target.value) })}
+                                        className="bg-white/5 border-white/10 text-white font-mono"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <span className="text-sm text-muted-foreground">Maximum: {form.thermalLoadMaxKw.toLocaleString()} kW</span>
-                                    <Slider
-                                        value={[form.thermalLoadMaxKw]}
-                                        onValueChange={([v]) => setForm({ ...form, thermalLoadMaxKw: Math.max(v, form.thermalLoadMinKw) })}
-                                        min={50}
-                                        max={100000}
-                                        step={50}
+                                    <Label className="text-white">Longitude</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        value={form.dcLocationLng}
+                                        onChange={(e) => setForm({ ...form, dcLocationLng: parseFloat(e.target.value) })}
+                                        className="bg-white/5 border-white/10 text-white font-mono"
                                     />
                                 </div>
                             </div>
+
+                            <div className="space-y-4">
+                                <Label className="text-white">Thermal Load Range</Label>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    {THERMAL_LOAD_PRESETS.map((preset) => (
+                                        <button
+                                            key={preset.label}
+                                            onClick={() => setForm({ ...form, thermalLoadMinKw: preset.min, thermalLoadMaxKw: preset.max })}
+                                            className={`p-4 rounded-lg border transition text-left ${form.thermalLoadMinKw === preset.min && form.thermalLoadMaxKw === preset.max
+                                                    ? 'border-emerald-500 bg-emerald-500/10'
+                                                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <div className="font-semibold">{preset.label}</div>
+                                            <div className="text-sm text-gray-400">{preset.sub}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <Label className="text-white">Investment Willingness</Label>
+                                <RadioGroup
+                                    value={form.investmentWillingness}
+                                    onValueChange={(v) => setForm({ ...form, investmentWillingness: v as any })}
+                                    className="grid grid-cols-3 gap-3"
+                                >
+                                    {[
+                                        { value: "low", label: "Low", sub: "Min CAPEX" },
+                                        { value: "medium", label: "Medium", sub: "Balanced" },
+                                        { value: "high", label: "High", sub: "Max efficiency" },
+                                    ].map((opt) => (
+                                        <label
+                                            key={opt.value}
+                                            className={`p-4 rounded-lg border cursor-pointer transition ${form.investmentWillingness === opt.value
+                                                    ? 'border-emerald-500 bg-emerald-500/10'
+                                                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <RadioGroupItem value={opt.value} className="sr-only" />
+                                            <div className="font-semibold">{opt.label}</div>
+                                            <div className="text-sm text-gray-400">{opt.sub}</div>
+                                        </label>
+                                    ))}
+                                </RadioGroup>
+                            </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <Label>Availability Profile</Label>
-                            <RadioGroup
-                                value={form.availabilityProfile}
-                                onValueChange={(v) => setForm({ ...form, availabilityProfile: v as "base" | "peak" })}
-                                className="flex gap-4"
+                        <div className="flex justify-end pt-6 border-t border-white/10">
+                            <Button
+                                onClick={() => setStep(2)}
+                                className="bg-white text-black hover:bg-gray-100 gap-2"
                             >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="base" id="base" />
-                                    <Label htmlFor="base" className="font-normal">Base Load (24/7)</Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="peak" id="peak" />
-                                    <Label htmlFor="peak" className="font-normal">Peak Load (Variable)</Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label>Uptime Requirement</Label>
-                            <RadioGroup
-                                value={form.uptimeConstraint}
-                                onValueChange={(v) => setForm({ ...form, uptimeConstraint: v as any })}
-                                className="flex flex-wrap gap-4"
-                            >
-                                {["99", "99.9", "99.99", "99.999"].map((u) => (
-                                    <div key={u} className="flex items-center space-x-2">
-                                        <RadioGroupItem value={u} id={`uptime-${u}`} />
-                                        <Label htmlFor={`uptime-${u}`} className="font-normal">{u}%</Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="existingCooling"
-                                checked={form.existingCooling}
-                                onCheckedChange={(v) => setForm({ ...form, existingCooling: v === true })}
-                            />
-                            <Label htmlFor="existingCooling" className="font-normal">Existing cooling infrastructure in place</Label>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label>Investment Willingness</Label>
-                            <RadioGroup
-                                value={form.investmentWillingness}
-                                onValueChange={(v) => setForm({ ...form, investmentWillingness: v as any })}
-                                className="flex gap-4"
-                            >
-                                {[
-                                    { value: "low", label: "Low (min CAPEX)" },
-                                    { value: "medium", label: "Medium" },
-                                    { value: "high", label: "High (max efficiency)" },
-                                ].map((opt) => (
-                                    <div key={opt.value} className="flex items-center space-x-2">
-                                        <RadioGroupItem value={opt.value} id={`invest-${opt.value}`} />
-                                        <Label htmlFor={`invest-${opt.value}`} className="font-normal">{opt.label}</Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
-                        </div>
-
-                        <div className="flex justify-end pt-4">
-                            <Button onClick={() => setStep(2)}>Continue to Heat Demand →</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-
-            {/* Step 2: Utility / Off-taker Side */}
-            {step === 2 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Utility / Off-taker (Heat Demand)</CardTitle>
-                        <CardDescription>
-                            Define the heat demand characteristics and existing infrastructure.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-4">
-                            <Label>Distance to Off-taker: {form.distanceToOfftakerKm} km</Label>
-                            <Slider
-                                value={[form.distanceToOfftakerKm]}
-                                onValueChange={([v]) => setForm({ ...form, distanceToOfftakerKm: v })}
-                                min={0.1}
-                                max={20}
-                                step={0.1}
-                            />
-                            <p className="text-sm text-muted-foreground">
-                                Typical: 0-2km (optimal), 2-5km (feasible), 5-10km (challenging), 10+ km (costly)
-                            </p>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label>Heat Demand Profile</Label>
-                            <RadioGroup
-                                value={form.heatDemandProfile}
-                                onValueChange={(v) => setForm({ ...form, heatDemandProfile: v as any })}
-                                className="flex flex-wrap gap-4"
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="constant" id="constant" />
-                                    <Label htmlFor="constant" className="font-normal">Constant (Industrial)</Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="seasonal_winter" id="seasonal_winter" />
-                                    <Label htmlFor="seasonal_winter" className="font-normal">Seasonal - Winter Peak</Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="seasonal_summer" id="seasonal_summer" />
-                                    <Label htmlFor="seasonal_summer" className="font-normal">Seasonal - Summer Peak</Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
-
-                        <div className="space-y-4">
-                            <Label>Supply Temperature Requirement: {form.supplyTempRequiredC}°C</Label>
-                            <Slider
-                                value={[form.supplyTempRequiredC]}
-                                onValueChange={([v]) => setForm({ ...form, supplyTempRequiredC: v })}
-                                min={30}
-                                max={120}
-                                step={5}
-                            />
-                            <p className="text-sm text-muted-foreground">
-                                30-50°C (low-temp DH), 50-70°C (standard DH), 70-90°C (industrial), 90°C+ (high-grade)
-                            </p>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="existingDHInfra"
-                                checked={form.existingDHInfra}
-                                onCheckedChange={(v) => setForm({ ...form, existingDHInfra: v === true })}
-                            />
-                            <Label htmlFor="existingDHInfra" className="font-normal">Existing district heating infrastructure nearby</Label>
-                        </div>
-
-                        <div className="flex justify-between pt-4">
-                            <Button variant="outline" onClick={() => setStep(1)}>← Back</Button>
-                            <Button onClick={() => setStep(3)}>Continue to Regulatory Context →</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-
-            {/* Step 3: Context */}
-            {step === 3 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Regulatory Context</CardTitle>
-                        <CardDescription>
-                            Define the jurisdiction and applicable regulations for compliance assessment.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-3">
-                            <Label>Jurisdiction</Label>
-                            <Select
-                                value={form.jurisdiction}
-                                onValueChange={(v) => setForm({ ...form, jurisdiction: v as any })}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="EU">European Union (General)</SelectItem>
-                                    <SelectItem value="DE">Germany (EnEfG)</SelectItem>
-                                    <SelectItem value="NL">Netherlands</SelectItem>
-                                    <SelectItem value="BE">Belgium</SelectItem>
-                                    <SelectItem value="FR">France</SelectItem>
-                                    <SelectItem value="UK">United Kingdom</SelectItem>
-                                    <SelectItem value="OTHER">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label>Applicable Regulation</Label>
-                            <RadioGroup
-                                value={form.applicableRegulation}
-                                onValueChange={(v) => setForm({ ...form, applicableRegulation: v as any })}
-                                className="grid gap-2"
-                            >
-                                <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                                    <RadioGroupItem value="EED" id="eed" />
-                                    <Label htmlFor="eed" className="flex-1 cursor-pointer">
-                                        <span className="font-semibold">EU Energy Efficiency Directive (EED)</span>
-                                        <p className="text-sm text-muted-foreground">Art. 26 requires cost-benefit analysis for new DCs &gt;100kW</p>
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                                    <RadioGroupItem value="EnEfG" id="enefg" />
-                                    <Label htmlFor="enefg" className="flex-1 cursor-pointer">
-                                        <span className="font-semibold">German Energy Efficiency Act (EnEfG)</span>
-                                        <p className="text-sm text-muted-foreground">Mandatory heat reuse for DCs &gt;1MW from 2025</p>
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                                    <RadioGroupItem value="local" id="local" />
-                                    <Label htmlFor="local" className="flex-1 cursor-pointer">
-                                        <span className="font-semibold">Local Regulation</span>
-                                        <p className="text-sm text-muted-foreground">Municipal or regional requirements</p>
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                                    <RadioGroupItem value="none" id="none" />
-                                    <Label htmlFor="none" className="flex-1 cursor-pointer">
-                                        <span className="font-semibold">No Specific Regulation</span>
-                                        <p className="text-sm text-muted-foreground">Voluntary assessment for business case</p>
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
-
-                        <div className="space-y-4">
-                            <Label>Assessment Time Horizon: {form.timeHorizonYears} years</Label>
-                            <Slider
-                                value={[form.timeHorizonYears]}
-                                onValueChange={([v]) => setForm({ ...form, timeHorizonYears: v })}
-                                min={5}
-                                max={30}
-                                step={1}
-                            />
-                            <p className="text-sm text-muted-foreground">
-                                Typical: 10 years (conservative), 15 years (standard), 20+ years (long-term infrastructure)
-                            </p>
-                        </div>
-
-                        <div className="flex justify-between pt-6 border-t">
-                            <Button variant="outline" onClick={() => setStep(2)}>← Back</Button>
-                            <Button onClick={handleSubmit} disabled={submitting || !form.projectName}>
-                                {submitting && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
-                                Generate Feasibility Assessment
+                                Continue <ArrowRight className="w-4 h-4" />
                             </Button>
                         </div>
-                    </CardContent>
-                </Card>
-            )}
+                    </div>
+                )}
 
-            {/* Summary Preview */}
-            {form.projectName && (
-                <Card className="bg-muted/30">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Assessment Preview</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm space-y-2">
-                        <div className="grid gap-x-6 gap-y-1 md:grid-cols-3">
-                            <div><span className="text-muted-foreground">Project:</span> {form.projectName || "—"}</div>
-                            <div><span className="text-muted-foreground">Thermal Load:</span> {form.thermalLoadMinKw.toLocaleString()}–{form.thermalLoadMaxKw.toLocaleString()} kW</div>
-                            <div><span className="text-muted-foreground">Distance:</span> {form.distanceToOfftakerKm} km</div>
-                            <div><span className="text-muted-foreground">Jurisdiction:</span> {form.jurisdiction}</div>
-                            <div><span className="text-muted-foreground">Regulation:</span> {form.applicableRegulation}</div>
-                            <div><span className="text-muted-foreground">Time Horizon:</span> {form.timeHorizonYears} years</div>
+                {/* Step 2: Heat Demand */}
+                {step === 2 && (
+                    <div className="space-y-8">
+                        <div>
+                            <h2 className="text-2xl font-bold mb-2">Utility / Off-taker (Heat Demand)</h2>
+                            <p className="text-gray-400">Define the heat demand characteristics.</p>
                         </div>
-                    </CardContent>
-                </Card>
+
+                        <div className="space-y-6">
+                            <div className="space-y-4">
+                                <div className="flex justify-between">
+                                    <Label className="text-white">Distance to Off-taker</Label>
+                                    <span className="font-mono text-emerald-400">{form.distanceToOfftakerKm} km</span>
+                                </div>
+                                <Slider
+                                    value={[form.distanceToOfftakerKm]}
+                                    onValueChange={([v]) => setForm({ ...form, distanceToOfftakerKm: v })}
+                                    min={0.1}
+                                    max={20}
+                                    step={0.1}
+                                    className="py-4"
+                                />
+                                <p className="text-sm text-gray-500">
+                                    0-2km optimal • 2-5km feasible • 5-10km challenging
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between">
+                                    <Label className="text-white">Supply Temperature Required</Label>
+                                    <span className="font-mono text-emerald-400">{form.supplyTempRequiredC}°C</span>
+                                </div>
+                                <Slider
+                                    value={[form.supplyTempRequiredC]}
+                                    onValueChange={([v]) => setForm({ ...form, supplyTempRequiredC: v })}
+                                    min={30}
+                                    max={120}
+                                    step={5}
+                                    className="py-4"
+                                />
+                            </div>
+
+                            <div className="flex items-center gap-3 p-4 rounded-lg border border-white/10 bg-white/5">
+                                <Checkbox
+                                    id="existingDHInfra"
+                                    checked={form.existingDHInfra}
+                                    onCheckedChange={(v) => setForm({ ...form, existingDHInfra: v === true })}
+                                />
+                                <Label htmlFor="existingDHInfra" className="cursor-pointer">
+                                    Existing district heating infrastructure nearby
+                                </Label>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between pt-6 border-t border-white/10">
+                            <Button variant="outline" onClick={() => setStep(1)} className="gap-2 border-white/20 text-white hover:bg-white/10">
+                                <ArrowLeft className="w-4 h-4" /> Back
+                            </Button>
+                            <Button onClick={() => setStep(3)} className="bg-white text-black hover:bg-gray-100 gap-2">
+                                Continue <ArrowRight className="w-4 h-4" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Step 3: Regulatory Context */}
+                {step === 3 && (
+                    <div className="space-y-8">
+                        <div>
+                            <h2 className="text-2xl font-bold mb-2">Regulatory Context</h2>
+                            <p className="text-gray-400">Define jurisdiction and applicable regulations.</p>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="space-y-3">
+                                <Label className="text-white">Jurisdiction</Label>
+                                <Select
+                                    value={form.jurisdiction}
+                                    onValueChange={(v) => setForm({ ...form, jurisdiction: v as any })}
+                                >
+                                    <SelectTrigger className="bg-white/5 border-white/10 text-white h-12">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="DE">Germany (EnEfG)</SelectItem>
+                                        <SelectItem value="NL">Netherlands</SelectItem>
+                                        <SelectItem value="EU">European Union (General)</SelectItem>
+                                        <SelectItem value="BE">Belgium</SelectItem>
+                                        <SelectItem value="FR">France</SelectItem>
+                                        <SelectItem value="UK">United Kingdom</SelectItem>
+                                        <SelectItem value="OTHER">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-3">
+                                <Label className="text-white">Applicable Regulation</Label>
+                                <RadioGroup
+                                    value={form.applicableRegulation}
+                                    onValueChange={(v) => setForm({ ...form, applicableRegulation: v as any })}
+                                    className="space-y-3"
+                                >
+                                    {[
+                                        { value: "EnEfG", label: "German Energy Efficiency Act (EnEfG)", desc: "Mandatory heat reuse for DCs >1MW from 2025" },
+                                        { value: "EED", label: "EU Energy Efficiency Directive", desc: "Art. 26 cost-benefit analysis for new DCs >100kW" },
+                                        { value: "local", label: "Local Regulation", desc: "Municipal or regional requirements" },
+                                        { value: "none", label: "Voluntary", desc: "No regulation, business case only" },
+                                    ].map((opt) => (
+                                        <label
+                                            key={opt.value}
+                                            className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition ${form.applicableRegulation === opt.value
+                                                    ? 'border-emerald-500 bg-emerald-500/10'
+                                                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <RadioGroupItem value={opt.value} className="mt-1" />
+                                            <div>
+                                                <div className="font-semibold">{opt.label}</div>
+                                                <div className="text-sm text-gray-400">{opt.desc}</div>
+                                            </div>
+                                        </label>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between">
+                                    <Label className="text-white">Time Horizon</Label>
+                                    <span className="font-mono text-emerald-400">{form.timeHorizonYears} years</span>
+                                </div>
+                                <Slider
+                                    value={[form.timeHorizonYears]}
+                                    onValueChange={([v]) => setForm({ ...form, timeHorizonYears: v })}
+                                    min={5}
+                                    max={30}
+                                    step={1}
+                                    className="py-4"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between pt-6 border-t border-white/10">
+                            <Button variant="outline" onClick={() => setStep(2)} className="gap-2 border-white/20 text-white hover:bg-white/10">
+                                <ArrowLeft className="w-4 h-4" /> Back
+                            </Button>
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={submitting || !form.projectName}
+                                className="bg-emerald-500 hover:bg-emerald-600 text-black font-semibold gap-2"
+                            >
+                                {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                                Generate Decision Record
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Preview Footer */}
+            {form.projectName && (
+                <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur border-t border-white/10">
+                    <div className="max-w-4xl mx-auto px-6 py-4">
+                        <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-6">
+                                <div><span className="text-gray-500">Project:</span> <span className="font-medium">{form.projectName}</span></div>
+                                <div><span className="text-gray-500">Load:</span> <span className="font-mono">{form.thermalLoadMinKw.toLocaleString()}–{form.thermalLoadMaxKw.toLocaleString()} kW</span></div>
+                                <div><span className="text-gray-500">Distance:</span> <span className="font-mono">{form.distanceToOfftakerKm} km</span></div>
+                            </div>
+                            <div className="text-gray-500 font-mono">{form.jurisdiction} • {form.applicableRegulation}</div>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
