@@ -1,121 +1,170 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  SparklesIcon,
-  ScaleIcon,
-  CpuChipIcon,
-  BuildingLibraryIcon,
-  GlobeEuropeAfricaIcon
-} from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Zap, Target, Brain } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="container py-12 max-w-4xl mx-auto px-4">
-      {/* Header / Manifesto Start */}
-      <div className="mb-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-          The Gap Between <span className="text-emerald-500">Interest</span> and <span className="text-emerald-500">Feasibility</span>
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Entropy exists because one of the largest energy inefficiencies in modern society has quietly been normalized.
-        </p>
-      </div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Header */}
+      <header className="border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+            <ArrowLeft className="w-4 h-4" />
+            Home
+          </Link>
+          <span className="font-bold">ABOUT ENTROPY</span>
+          <div className="w-16" />
+        </div>
+      </header>
 
-      <div className="space-y-16">
+      {/* Hero */}
+      <section className="py-24 px-6 border-b border-white/10">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
+            The Gap Between <span className="text-emerald-400">Interest</span> and{" "}
+            <span className="text-emerald-400">Feasibility</span>
+          </h1>
+          <p className="text-xl text-gray-400 leading-relaxed">
+            Entropy exists because one of the largest energy inefficiencies in modern
+            society has quietly been normalized.
+          </p>
+        </div>
+      </section>
+
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-6 py-16 space-y-20">
         {/* The Problem */}
-        <section className="prose prose-gray max-w-none">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900">The Absurdity of Normalized Waste</h2>
-          <p className="text-gray-600 leading-7">
-            Data centers generate enormous amounts of low- to mid-grade heat as a byproduct of computation, and that heat is almost always discarded into the air or water. At the same time, cities, residential buildings, campuses, and industrial facilities spend billions each year producing heat through gas, electricity, or centralized district heating systems.
-          </p>
-          <p className="text-gray-600 leading-7 mt-4">
-            The absurdity is not technological; the physics are well understood. The absurdity is organizational, informational, and economic. Every potential heat reuse project helps, yet most die in the same place: the gap between interest and feasibility. That gap is filled today by slow, bespoke engineering studies, consultants, and spreadsheets.
-          </p>
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-red-400" />
+            </div>
+            <h2 className="text-2xl font-bold">The Absurdity of Normalized Waste</h2>
+          </div>
+          <div className="text-gray-400 leading-relaxed space-y-4">
+            <p>
+              Data centers generate enormous amounts of low- to mid-grade heat as a byproduct
+              of computation, and that heat is almost always discarded into the air or water.
+              At the same time, cities spend billions each year producing heat through gas
+              and electricity.
+            </p>
+            <p>
+              The absurdity is not technological — the physics are well understood. The absurdity
+              is organizational, informational, and economic. Every potential heat reuse project
+              dies in the same place: <span className="text-white font-medium">the gap between
+                interest and feasibility</span>.
+            </p>
+          </div>
         </section>
 
         {/* The Solution */}
-        <section className="grid gap-8 md:grid-cols-2 items-center bg-slate-50 p-8 rounded-2xl border border-slate-100">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900">Entropy is the Intelligence Layer</h2>
-            <p className="text-gray-600 leading-7 mb-6">
-              Entropy is a software platform that turns waste heat reuse from an expert-driven, manual, and opaque process into a computable, standardized, and repeatable decision.
-            </p>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <CpuChipIcon className="h-6 w-6 text-emerald-500 shrink-0" />
-                <span className="text-sm text-gray-700">Turns opaque engineering studies into instant feasibility scores.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <ScaleIcon className="h-6 w-6 text-emerald-500 shrink-0" />
-                <span className="text-sm text-gray-700">Aligns incentives between data centers and municipalities.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <GlobeEuropeAfricaIcon className="h-6 w-6 text-emerald-500 shrink-0" />
-                <span className="text-sm text-gray-700">Makes waste heat visible, legible, and actionable.</span>
-              </li>
-            </ul>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-full flex flex-col justify-center">
-            <blockquote className="text-lg italic text-slate-700 mb-4 border-l-4 border-emerald-500 pl-4">
-              "The product does not replace engineering; it precedes it. It determines whether engineering is worth doing at all."
-            </blockquote>
-            <p className="text-sm text-slate-500 font-medium">— The Entropy Thesis</p>
-          </div>
-        </section>
-
-        {/* The Analogy */}
         <section>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-emerald-100">
-              <BuildingLibraryIcon className="h-5 w-5 text-emerald-600" />
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <Brain className="w-5 h-5 text-emerald-400" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900">The Airbnb for Waste Heat</h2>
+            <h2 className="text-2xl font-bold">We Are The Decision Authority</h2>
           </div>
-          <p className="text-gray-600 leading-7">
-            Airbnb did not create new housing stock; it made unused capacity legible, comparable, and accessible. It abstracted away the complexity of zoning, trust, and pricing. Entropy applies the same logic to waste heat. It does not generate heat or consume it. It makes heat visible as a resource, evaluates its viability, and connects it to demand.
-          </p>
+          <div className="text-gray-400 leading-relaxed space-y-4 mb-8">
+            <p>
+              Entropy is not a dashboard. Not a marketplace. Not an analytics tool you can
+              optionally use. We are the <span className="text-white font-medium">accountable
+                decision layer</span> between policy intent and infrastructure execution.
+            </p>
+            <p>
+              We determine what is defensible, not what must be built. The product does not
+              replace engineering — it precedes it. It determines whether engineering is
+              worth doing at all.
+            </p>
+          </div>
+
+          {/* Quote */}
+          <div className="border-l-2 border-emerald-500 pl-6 py-4 bg-white/5 rounded-r-lg">
+            <p className="text-lg text-white italic">
+              "We don't just model scenarios — we stand behind one."
+            </p>
+          </div>
         </section>
 
-        {/* The Vision */}
-        <section className="grid gap-6 md:grid-cols-3">
-          <VisionCard
-            title="Software First"
-            description="We are not a hardware or construction business. We are an intelligence business. Our defensibility lies in data models and feasibility logic."
-          />
-          <VisionCard
-            title="Pragmatism"
-            description="We are not driven by symbolism alone. Projects move forward not because they are theoretically elegant, but because they make financial sense."
-          />
-          <VisionCard
-            title="Invisible System"
-            description="Entropy's ambition is to become invisible: the default system people use to understand waste heat. When feasibility is no longer a bottleneck, reuse becomes the norm."
-          />
+        {/* The Four Layers */}
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+              <Target className="w-5 h-5 text-blue-400" />
+            </div>
+            <h2 className="text-2xl font-bold">Where We Sit</h2>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { level: "1", name: "Execution", desc: "Installing assets, running projects", opacity: "opacity-40" },
+              { level: "2", name: "Enablement", desc: "Tools and analytics — nice, but optional", opacity: "opacity-50" },
+              { level: "3", name: "Decision Authority", desc: "What is viable. What is compliant. Who bears risk.", highlight: true },
+              { level: "4", name: "Standard", desc: "Required. Embedded. The dream.", opacity: "opacity-70" },
+            ].map((layer, i) => (
+              <div
+                key={i}
+                className={`p-5 rounded-xl border transition ${layer.highlight
+                    ? "border-emerald-500 bg-emerald-500/10"
+                    : `border-white/10 bg-white/5 ${layer.opacity}`
+                  }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold ${layer.highlight ? "bg-emerald-500 text-black" : "bg-white/10 text-white"
+                      }`}
+                  >
+                    {layer.level}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-lg">{layer.name}</div>
+                    <div className="text-sm text-gray-400">{layer.desc}</div>
+                  </div>
+                  {layer.highlight && (
+                    <div className="text-sm font-mono text-emerald-400">← ENTROPY</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
-        <div className="text-center pt-8 border-t border-gray-100">
-          <p className="text-lg font-medium text-gray-900 mb-2">Turning Waste into Opportunity</p>
-          <p className="text-slate-500">
-            By introducing computation where intuition and bureaucracy once dominated.
-          </p>
-        </div>
+        {/* Vision Cards */}
+        <section>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { title: "Software First", desc: "We are an intelligence business. Our defensibility lies in data models and feasibility logic." },
+              { title: "Pragmatism", desc: "Projects move forward not because they are elegant, but because they make financial sense." },
+              { title: "Invisible System", desc: "The ambition is to become the default. When feasibility is no longer a bottleneck, reuse becomes the norm." },
+            ].map((card, i) => (
+              <div key={i} className="p-6 rounded-xl border border-white/10 bg-white/5">
+                <h3 className="font-semibold mb-2">{card.title}</h3>
+                <p className="text-sm text-gray-400">{card.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="text-center py-12 border-t border-white/10">
+          <p className="text-gray-400 mb-6">Ready to see it in action?</p>
+          <Link
+            href="/assessment/new"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition group"
+          >
+            Create Your First Decision Record
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </section>
       </div>
-    </div>
-  );
-}
 
-function VisionCard({ title, description }: { title: string; description: string }) {
-  return (
-    <Card className="bg-white border-slate-200">
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          <SparklesIcon className="h-5 w-5 text-emerald-500" />
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center text-sm text-gray-500">
+          Entropy © 2026 — The decision authority for heat reuse compliance.
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed">
-          {description}
-        </p>
-      </CardContent>
-    </Card>
+      </footer>
+    </div>
   );
 }
