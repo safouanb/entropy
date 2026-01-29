@@ -273,8 +273,8 @@ func (e *PredictionEngine) CalculateRegulatoryScenarios(input FeasibilityInput) 
 	directReuse.ReuseScenario = ScenarioDirectReuse
 	directReuse.FailureMode = determineFailureMode(input)
 	directReuse.RiskOwner = determineRiskOwner(ownership)
-	directReuse.ComplianceStatus = "CONDITIONAL"
-	directReuse.ComplianceReason = "Compliance achievable if offtaker contract and technical integration completed"
+	directReuse.ComplianceStatus = "REQUIRES_ASSESSMENT"
+	directReuse.ComplianceReason = "Heat reuse infrastructure planned but compliance depends on jurisdiction-specific requirements (ERF targets, CBA results, offtaker agreements). Run a compliance check to verify."
 	results = append(results, directReuse)
 
 	// Scenario C: Reuse with Mitigation (storage)
@@ -301,9 +301,9 @@ func (e *PredictionEngine) evaluateNoReuseScenario(input FeasibilityInput) Scena
 	return ScenarioResult{
 		ReuseScenario:    ScenarioNoReuse,
 		OwnershipModel:   "N/A",
-		ComplianceStatus: "NON_COMPLIANT",
-		ComplianceReason: "No heat reuse implemented; fails mandatory requirements under applicable regulation",
-		FailureMode:      "Regulatory non-compliance; potential fines and permit risk",
+		ComplianceStatus: "REQUIRES_ASSESSMENT",
+		ComplianceReason: "No heat reuse implemented. Compliance status depends on applicable jurisdiction, facility size, commissioning date, and available exemptions. Run a compliance check to determine regulatory obligations.",
+		FailureMode:      "Potential regulatory exposure if waste heat reuse is mandatory under applicable law and no exemption applies",
 		RiskOwner:        "DC_OPERATOR",
 
 		// No infrastructure
@@ -334,7 +334,7 @@ func (e *PredictionEngine) evaluateNoReuseScenario(input FeasibilityInput) Scena
 		CO2AvoidedMinKgYear: -co2EmissionsMin,
 		CO2AvoidedMaxKgYear: -co2EmissionsMax,
 
-		RegulatoryExposure: "Full regulatory exposure: potential fines, permit denial, reputational risk, and inability to meet sustainability commitments",
+		RegulatoryExposure: "Potential regulatory exposure depending on jurisdiction — may include fines (up to EUR 100,000 under EnEfG), permit conditions, or mandatory measure requirements. Run a compliance check to assess.",
 	}
 }
 
@@ -377,9 +377,9 @@ func (e *PredictionEngine) evaluateScenarioWithMitigation(ownership string, inpu
 	base.IRRMinPercent = pessimistic.InternalRateOfReturn
 	base.IRRMaxPercent = optimistic.InternalRateOfReturn
 
-	// Compliance improves with mitigation
-	base.ComplianceStatus = "COMPLIANT"
-	base.ComplianceReason = "Compliance achieved through heat reuse with temporal decoupling via storage"
+	// Mitigation improves compliance posture but does not guarantee compliance.
+	base.ComplianceStatus = "REQUIRES_ASSESSMENT"
+	base.ComplianceReason = "Heat reuse with mitigation (storage) strengthens compliance posture. Actual compliance depends on whether jurisdiction-specific ERF targets, CBA requirements, or payback thresholds are met. Run a compliance check to verify."
 	base.FailureMode = "Storage capacity undersizing or maintenance failure"
 	base.RiskOwner = "SHARED"
 

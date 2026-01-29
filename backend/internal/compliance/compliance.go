@@ -36,13 +36,23 @@ type ComplianceRequest struct {
 	HasHeatDemand       bool     `json:"hasHeatDemand"`
 }
 
+// RegulatoryReference identifies a specific provision in legislation.
+type RegulatoryReference struct {
+	Law     string `json:"law"`     // e.g. "Energieeffizienzgesetz (EnEfG)"
+	Section string `json:"section"` // e.g. "§11(2)"
+	Summary string `json:"summary"` // Short human-readable summary of the provision
+	URL     string `json:"url"`     // Link to official source (EUR-Lex, BGBL, etc.)
+}
+
 // ComplianceResult is the output of the engine.
 type ComplianceResult struct {
-	Status             ComplianceStatus `json:"status"`
-	ApplicableLaw      string           `json:"applicableLaw"`
-	ComplianceDeadline *time.Time       `json:"complianceDeadline,omitempty"`
-	Reasoning          []string         `json:"reasoning"`
-	RemediationSteps   []string         `json:"remediationSteps"`
+	Status             ComplianceStatus     `json:"status"`
+	ApplicableLaw      string               `json:"applicableLaw"`
+	ComplianceDeadline *time.Time           `json:"complianceDeadline,omitempty"`
+	Reasoning          []string             `json:"reasoning"`
+	RemediationSteps   []string             `json:"remediationSteps"`
+	Citations          []RegulatoryReference `json:"citations"`
+	Disclaimer         string               `json:"disclaimer"`
 }
 
 // RuleEngine defines the interface for jurisdiction-specific logic.

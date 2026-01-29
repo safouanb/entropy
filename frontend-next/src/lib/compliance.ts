@@ -10,12 +10,21 @@ export interface ComplianceRequest {
     heatRecoveryReady: boolean;
 }
 
+export interface RegulatoryReference {
+    law: string;
+    section: string;
+    summary: string;
+    url: string;
+}
+
 export interface ComplianceResult {
     status: ComplianceStatus;
     applicableLaw: string;
     complianceDeadline?: string;
     reasoning: string[];
     remediationSteps: string[];
+    citations: RegulatoryReference[];
+    disclaimer: string;
 }
 
 export async function checkCompliance(req: ComplianceRequest): Promise<ComplianceResult> {
