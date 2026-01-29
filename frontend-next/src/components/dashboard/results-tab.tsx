@@ -214,13 +214,13 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
 interface MetricCardProps {
   title: string;
   value: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
   variant?: "default" | "primary" | "teal" | "green";
 }
 
 function MetricCard({ title, value, icon: Icon, description, variant = "default" }: MetricCardProps) {
-  const variants = {
+  const variants: Record<NonNullable<MetricCardProps["variant"]>, { card: string; icon: string; value: string }> = {
     default: {
       card: "border-gray-200 bg-white hover:border-gray-300",
       icon: "bg-gray-100 text-gray-600",

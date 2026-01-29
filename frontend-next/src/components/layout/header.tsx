@@ -27,6 +27,9 @@ export function Header() {
   const pathname = usePathname();
   const { data: analytics } = useAnalytics();
 
+  // Hide the app header on the landing page (it has its own nav)
+  if (pathname === "/") return null;
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
@@ -102,7 +105,7 @@ function StatBadge({
   label,
   color,
 }: {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   value: number;
   label: string;
   color: "emerald" | "teal";
