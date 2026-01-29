@@ -23,7 +23,6 @@ import {
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Squares2X2Icon },
     { href: "/assessment", label: "Assessments", icon: DocumentTextIcon }, // Was New Assessment, but Assessments covers list.
-    { href: "/assessment/new", label: "New Project", icon: PlusIcon }, // Explicit new action
     { href: "/records", label: "Records", icon: ArchiveBoxIcon },
     { href: "/map", label: "Infrastructure Map", icon: MapIcon },
     { href: "/compliance", label: "Compliance", icon: ScaleIcon },

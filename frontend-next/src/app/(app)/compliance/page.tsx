@@ -18,6 +18,7 @@ import {
     ShieldCheckIcon,
     ArrowPathIcon
 } from "@heroicons/react/24/outline";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // --- Types ---
 
@@ -166,42 +167,51 @@ export default function CompliancePage() {
             <div className="min-h-[400px]">
                 {activeTab === "regulations" && (
                     <div className="border border-white/10 rounded-xl overflow-hidden bg-zinc-900/30">
-                        <Table>
-                            <TableHeader className="bg-white/5">
-                                <TableRow className="border-white/10 hover:bg-transparent">
-                                    <TableHead className="w-[300px] text-zinc-400">Regulation</TableHead>
-                                    <TableHead className="text-zinc-400">Status</TableHead>
-                                    <TableHead className="text-zinc-400">Key Metric</TableHead>
-                                    <TableHead className="text-zinc-400">Last Verified</TableHead>
-                                    <TableHead className="text-right text-zinc-400">Action Required</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {regulations.map((item) => (
-                                    <TableRow key={item.id} className="border-white/5 hover:bg-white/5 transition-colors group">
-                                        <TableCell>
-                                            <div className="font-medium text-white">{item.regulation}</div>
-                                            <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <StatusBadge status={item.status} />
-                                        </TableCell>
-                                        <TableCell className="font-mono text-sm text-zinc-300">
-                                            {item.metric}
-                                        </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">
-                                            {new Date(item.lastChecked).toLocaleDateString()}
-                                            <span className="text-xs text-zinc-600 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                {new Date(item.lastChecked).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className="text-right text-sm text-white/80">
-                                            {item.nextAction}
-                                        </TableCell>
+                        {regulations.length === 0 ? (
+                            <EmptyState
+                                title="No regulations to monitor"
+                                description="Your compliance framework is currently empty."
+                                actionLabel="Add Regulation"
+                                onAction={() => { }}
+                            />
+                        ) : (
+                            <Table>
+                                <TableHeader className="bg-white/5">
+                                    <TableRow className="border-white/10 hover:bg-transparent">
+                                        <TableHead className="w-[300px] text-zinc-400">Regulation</TableHead>
+                                        <TableHead className="text-zinc-400">Status</TableHead>
+                                        <TableHead className="text-zinc-400">Key Metric</TableHead>
+                                        <TableHead className="text-zinc-400">Last Verified</TableHead>
+                                        <TableHead className="text-right text-zinc-400">Action Required</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {regulations.map((item) => (
+                                        <TableRow key={item.id} className="border-white/5 hover:bg-white/5 transition-colors group">
+                                            <TableCell>
+                                                <div className="font-medium text-white">{item.regulation}</div>
+                                                <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <StatusBadge status={item.status} />
+                                            </TableCell>
+                                            <TableCell className="font-mono text-sm text-zinc-300">
+                                                {item.metric}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">
+                                                {new Date(item.lastChecked).toLocaleDateString()}
+                                                <span className="text-xs text-zinc-600 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {new Date(item.lastChecked).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-right text-sm text-white/80">
+                                                {item.nextAction}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        )}
                     </div>
                 )}
 

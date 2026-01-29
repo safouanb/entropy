@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 function getIconForType(type: string) {
     switch (type) {
@@ -111,22 +112,31 @@ export default function ExecutiveDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                        {[
-                            { time: "10 min ago", user: "System", action: "Automatic crawl of Frankfurt_DC_04 regulations updated.", icon: GlobeEuropeAfricaIcon },
-                            { time: "2 hours ago", user: "Admin", action: "Approved new conceptual design for Munich Alpha.", icon: ShieldCheckIcon },
-                            { time: "5 hours ago", user: "System", action: "Energy price forecast updated from ENTSO-E.", icon: ArrowTrendingUpIcon },
-                            { time: "Yesterday", user: "User_Demo", action: "Created new assessment: Berlin Edge Node.", icon: ClockIcon },
-                        ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
-                                <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                                    <item.icon className="w-5 h-5 text-zinc-400" />
-                                </div>
-                                <div className="flex-1">
-                                    <div className="text-sm text-zinc-300">{item.action}</div>
-                                    <div className="text-xs text-zinc-500 mt-1">{item.user} • {item.time}</div>
-                                </div>
+                        {[116, 117, 118, 119].length === 0 ? ( // NOTE: Hardcoded mock array length check simulation for preview
+                            <div className="py-8">
+                                <EmptyState
+                                    title="No recent activity"
+                                    description="System events and user actions will appear here."
+                                />
                             </div>
-                        ))}
+                        ) : (
+                            [
+                                { time: "10 min ago", user: "System", action: "Automatic crawl of Frankfurt_DC_04 regulations updated.", icon: GlobeEuropeAfricaIcon },
+                                { time: "2 hours ago", user: "Admin", action: "Approved new conceptual design for Munich Alpha.", icon: ShieldCheckIcon },
+                                { time: "5 hours ago", user: "System", action: "Energy price forecast updated from ENTSO-E.", icon: ArrowTrendingUpIcon },
+                                { time: "Yesterday", user: "User_Demo", action: "Created new assessment: Berlin Edge Node.", icon: ClockIcon },
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
+                                    <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                                        <item.icon className="w-5 h-5 text-zinc-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-sm text-zinc-300">{item.action}</div>
+                                        <div className="text-xs text-zinc-500 mt-1">{item.user} • {item.time}</div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
 

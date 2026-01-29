@@ -5,6 +5,7 @@ import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
     MagnifyingGlassIcon,
     FunnelIcon,
@@ -96,7 +97,14 @@ export default function RecordsPage() {
                         <div key={i} className="h-24 rounded-xl bg-white/5 animate-pulse border border-white/5" />
                     ))
                 ) : filtered.length === 0 ? (
-                    <div className="text-center py-20 text-muted-foreground">No records found.</div>
+                    <div className="py-12">
+                        <EmptyState
+                            title="No records found"
+                            description={search ? `No records match "${search}"` : "Get started by creating your first thermal record."}
+                            actionLabel="Create Record"
+                            onAction={() => console.log("Create action")}
+                        />
+                    </div>
                 ) : (
                     filtered.map((record) => (
                         <SpotlightCard key={record.id} className="p-4 flex items-center justify-between group cursor-pointer hover:bg-white/[0.02]">
