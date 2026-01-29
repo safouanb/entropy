@@ -3,7 +3,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
 
+interface AnalyticsStat {
+    label: string;
+    value: string;
+}
+
 export default function AnalyticsPage() {
+    const [stats, setStats] = useState<AnalyticsStat[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("/api/analytics")
+            .then(res => res.json())
+            .then(data => {
+                setStats(data);
+                setLoading(false);
+            })
+            .catch(err => console.error(err));
+    }, []);
+
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
@@ -14,19 +32,22 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { label: "Total Heat Potentail", value: "2.4 TWh/a" },
-                    { label: "Carbon Savings", value: "850 kt" },
-                    { label: "Avg. Payback", value: "4.2 Years" },
-                    { label: "Grid Density", value: "High" },
-                ].map((stat, i) => (
-                    <Card key={i} className="bg-sidebar border-white/5">
-                        <CardContent className="p-6">
-                            <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                            <h3 className="text-2xl font-bold text-white mt-1">{stat.value}</h3>
-                        </CardContent>
-                    </Card>
-                ))}
+                {loading ? (
+                    Array.from({ length: 4 }).map((_, i) => (
+                        <Card key={i} className="bg-sidebar border-white/5 animate-pulse h-32">
+                            <CardContent className="p-6" />
+                        </Card>
+                    ))
+                ) : (
+                    stats.map((stat, i) => (
+                        <Card key={i} className="bg-sidebar border-white/5">
+                            <CardContent className="p-6">
+                                <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                                <h3 className="text-2xl font-bold text-white mt-1">{stat.value}</h3>
+                            </CardContent>
+                        </Card>
+                    ))
+                )}
             </div>
 
             <div className="h-[400px] rounded-xl border border-white/5 bg-white/[0.02] flex items-center justify-center dashed-border">

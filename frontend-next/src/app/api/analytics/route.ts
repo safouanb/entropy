@@ -1,19 +1,14 @@
-import { NextResponse } from "next/server";
-import { predictionService, BackendError } from "@/lib/backend-client";
 
-export const dynamic = 'force-dynamic';
+import { NextResponse } from 'next/server';
+
+const stats = [
+  { label: "Total Heat Potential", value: "2.4 TWh/a" },
+  { label: "Carbon Savings", value: "850 kt" },
+  { label: "Avg. Payback", value: "4.2 Years" },
+  { label: "Grid Density", value: "High" },
+];
 
 export async function GET() {
-  try {
-    const response = await predictionService.getPredictionAnalytics();
-    return NextResponse.json(response.predictionAnalytics);
-  } catch (error) {
-    // Return empty analytics instead of 500 when backend unavailable
-    console.error("Analytics fetch failed:", error instanceof BackendError ? error.message : error);
-    return NextResponse.json({
-      totalPredictions: 0,
-      averageSavings: 0,
-      totalCo2Avoided: 0
-    });
-  }
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return NextResponse.json(stats);
 }

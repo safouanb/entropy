@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,17 +16,39 @@ import {
 } from "@heroicons/react/24/outline";
 
 // Mock Data
-const records = [
-    { id: "REC-2024-001", name: "Frankfurt DC Expansion", status: "Compliant", wasteHeat: "2.4 MW", date: "2024-10-12", region: "Hesse" },
-    { id: "REC-2024-002", name: "Munich Hyperscale Alpha", status: "Review", wasteHeat: "15.0 MW", date: "2024-10-15", region: "Bavaria" },
-    { id: "REC-2024-003", name: "Berlin Edge Node", status: "Non-Compliant", wasteHeat: "0.8 MW", date: "2024-10-18", region: "Berlin" },
-    { id: "REC-2024-004", name: "Hamburg Port Colo", status: "Compliant", wasteHeat: "5.2 MW", date: "2024-10-20", region: "Hamburg" },
-    { id: "REC-2024-005", name: "Stuttgart High Perf", status: "Pending", wasteHeat: "3.1 MW", date: "2024-10-22", region: "Baden-Württemberg" },
-    { id: "REC-2024-006", name: "Dusseldorf Rhine Colo", status: "Compliant", wasteHeat: "4.5 MW", date: "2024-10-25", region: "NRW" },
-];
+// Types
+interface RecordType {
+    id: string;
+    name: string;
+    status: string;
+    wasteHeat: string;
+    date: string;
+    region: string;
+}
 
 export default function RecordsPage() {
     const [search, setSearch] = useState("");
+    const [records, setRecords] = useState<RecordType[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("/api/records")
+            .then(res => res.json())
+            .then(data => {
+                setRecords(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Failed to fetch records:", err);
+                setLoading(false);
+            })
+    }, []);
+
+    const filtered = records.filter(r =>
+        r.name.toLowerCase().includes(search.toLowerCase()) ||
+        r.id.toLowerCase().includes(search.toLowerCase()) ||
+        r.region.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <div className="space-y-8 min-h-screen pb-20">
@@ -68,45 +90,54 @@ export default function RecordsPage() {
 
             {/* Records Grid */}
             <div className="grid gap-3">
-                {records.map((record) => (
-                    <SpotlightCard key={record.id} className="p-4 flex items-center justify-between group cursor-pointer hover:bg-white/[0.02]">
-                        <div className="flex items-center gap-6">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center text-white/30 font-mono text-xs shadow-inner">
-                                {record.region.substring(0, 2).toUpperCase()}
-                            </div>
-                            <div>
-                                <h3 className="text-base font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                                    {record.name}
-                                </h3>
-                                <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
-                                    <span className="font-mono text-white/30">{record.id}</span>
-                                    <span>•</span>
-                                    <span className="flex items-center gap-1">
-                                        <MapPinIcon className="w-3 h-3" /> {record.region}
-                                    </span>
+                {loading ? (
+                    // Skeleton Loading
+                    Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="h-24 rounded-xl bg-white/5 animate-pulse border border-white/5" />
+                    ))
+                ) : filtered.length === 0 ? (
+                    <div className="text-center py-20 text-muted-foreground">No records found.</div>
+                ) : (
+                    filtered.map((record) => (
+                        <SpotlightCard key={record.id} className="p-4 flex items-center justify-between group cursor-pointer hover:bg-white/[0.02]">
+                            <div className="flex items-center gap-6">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center text-white/30 font-mono text-xs shadow-inner">
+                                    {record.region.substring(0, 2).toUpperCase()}
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                                        {record.name}
+                                    </h3>
+                                    <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
+                                        <span className="font-mono text-white/30">{record.id}</span>
+                                        <span>•</span>
+                                        <span className="flex items-center gap-1">
+                                            <MapPinIcon className="w-3 h-3" /> {record.region}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-8 md:gap-12">
-                            <div className="hidden md:block text-right">
-                                <span className="block text-[10px] uppercase tracking-wider text-white/30">Waste Heat</span>
-                                <span className="font-mono text-emerald-400 font-medium">{record.wasteHeat}</span>
-                            </div>
+                            <div className="flex items-center gap-8 md:gap-12">
+                                <div className="hidden md:block text-right">
+                                    <span className="block text-[10px] uppercase tracking-wider text-white/30">Waste Heat</span>
+                                    <span className="font-mono text-emerald-400 font-medium">{record.wasteHeat}</span>
+                                </div>
 
-                            <div className="hidden md:block text-right">
-                                <span className="block text-[10px] uppercase tracking-wider text-white/30">Date</span>
-                                <span className="flex items-center gap-1 text-white/60">
-                                    <ClockIcon className="w-3 h-3" /> {record.date}
-                                </span>
-                            </div>
+                                <div className="hidden md:block text-right">
+                                    <span className="block text-[10px] uppercase tracking-wider text-white/30">Date</span>
+                                    <span className="flex items-center gap-1 text-white/60">
+                                        <ClockIcon className="w-3 h-3" /> {record.date}
+                                    </span>
+                                </div>
 
-                            <div className="w-24 flex justify-end">
-                                <RecordStatus status={record.status} />
+                                <div className="w-24 flex justify-end">
+                                    <RecordStatus status={record.status} />
+                                </div>
                             </div>
-                        </div>
-                    </SpotlightCard>
-                ))}
+                        </SpotlightCard>
+                    ))
+                )}
             </div>
         </div>
     );

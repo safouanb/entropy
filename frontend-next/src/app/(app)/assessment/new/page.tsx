@@ -94,11 +94,11 @@ export default function NewAssessmentPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                        <Link href="/" className="hover:text-white transition-colors">Dashboard</Link>
+                        <Link href="/assessment" className="hover:text-white transition-colors">Assessments</Link>
                         <span>/</span>
-                        <span>Compilance</span>
+                        <span>New Project</span>
                     </div>
-                    <h1 className="text-2xl font-semibold text-white tracking-tight">New Decision Record</h1>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">New Assessment</h1>
                 </div>
             </div>
 
