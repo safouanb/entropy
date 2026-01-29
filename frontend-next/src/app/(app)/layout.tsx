@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { DitherTexture } from "@/components/ui/dither-texture";
 
 export default function AppLayout({
     children,
@@ -7,6 +8,9 @@ export default function AppLayout({
 }) {
     return (
         <div className="flex min-h-screen bg-black font-satoshi">
+            {/* Global Visual Effects */}
+            <DitherTexture opacity={0.03} />
+
             {/* Sidebar */}
             <div className="flex-none z-50">
                 <AppSidebar />
