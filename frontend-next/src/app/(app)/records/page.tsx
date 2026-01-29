@@ -110,7 +110,7 @@ export default function RecordsPage() {
                         <SpotlightCard key={record.id} className="p-4 flex items-center justify-between group cursor-pointer hover:bg-white/[0.02]">
                             <div className="flex items-center gap-6">
                                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center text-white/30 font-mono text-xs shadow-inner">
-                                    {record.region.substring(0, 2).toUpperCase()}
+                                    {(record.region || "Unknown").substring(0, 2).toUpperCase()}
                                 </div>
                                 <div>
                                     <h3 className="text-base font-semibold text-white group-hover:text-emerald-400 transition-colors">

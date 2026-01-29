@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
             status: dc.status || "Unknown",
             wasteHeat: `${dc.capacityMw || 0} MW`,
             date: new Date().toISOString().split('T')[0], // Mock date for now
-            region: dc.location || "Unknown"
+            region: String(dc.location || "Unknown")
         }));
 
         return NextResponse.json(records);
