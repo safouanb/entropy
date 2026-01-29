@@ -1,15 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
     GlobeEuropeAfricaIcon,
     ShieldCheckIcon,
     ArrowTrendingUpIcon,
-    ClockIcon
+    ClockIcon,
+    BoltIcon
 } from "@heroicons/react/24/outline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+function getIconForType(type: string) {
+    switch (type) {
+        case "crawling": return <GlobeEuropeAfricaIcon className="w-5 h-5 text-blue-400" />;
+        case "approval": return <ShieldCheckIcon className="w-5 h-5 text-emerald-400" />;
+        case "market": return <ArrowTrendingUpIcon className="w-5 h-5 text-amber-400" />;
+        default: return <ClockIcon className="w-5 h-5 text-zinc-400" />;
+    }
+}
 
 export default function ExecutiveDashboard() {
     return (

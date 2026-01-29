@@ -40,7 +40,7 @@ export default function MapPage() {
         <div className="container mx-auto py-6 max-w-7xl h-[calc(100vh-100px)] flex flex-col space-y-4">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Heat Network Map</h1>
+                    <h1 className="text-3xl font-bold text-white tracking-tight">Heat Network Map</h1>
                     <p className="text-muted-foreground">Visualizing the National Heat Foundation (Supply vs Demand).</p>
                 </div>
                 <div className="flex gap-4 text-sm">
