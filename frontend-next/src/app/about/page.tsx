@@ -13,7 +13,7 @@ export default function AboutPage() {
             <ArrowLeft className="w-4 h-4" />
             Home
           </Link>
-          <span className="font-bold">ABOUT ENTROPY</span>
+          <span className="font-instrument italic text-lg tracking-tight">Entropy</span>
           <div className="w-16" />
         </div>
       </header>
@@ -21,11 +21,11 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="py-24 px-6 border-b border-white/10">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl tracking-tight mb-6 leading-tight font-satoshi font-light">
             Every heat reuse project stalls in the{" "}
-            <span className="text-emerald-400">same place</span>
+            <span className="font-instrument italic text-emerald-400">same place</span>
           </h1>
-          <p className="text-xl text-gray-400 leading-relaxed">
+          <p className="text-xl text-gray-400 leading-relaxed font-satoshi font-light">
             Between &quot;this could work&quot; and &quot;we can prove it will.&quot;
             Entropy closes that gap.
           </p>
@@ -40,7 +40,7 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
               <Zap className="w-5 h-5 text-red-400" />
             </div>
-            <h2 className="text-2xl font-bold">The Problem</h2>
+            <h2 className="text-2xl font-satoshi font-light">The <span className="font-instrument italic">Problem</span></h2>
           </div>
           <div className="text-gray-400 leading-relaxed space-y-4">
             <p>
@@ -63,7 +63,7 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
               <Brain className="w-5 h-5 text-emerald-400" />
             </div>
-            <h2 className="text-2xl font-bold">What Entropy Does</h2>
+            <h2 className="text-2xl font-satoshi font-light">What Entropy <span className="font-instrument italic">Does</span></h2>
           </div>
           <div className="text-gray-400 leading-relaxed space-y-4 mb-8">
             <p>
@@ -82,7 +82,7 @@ export default function AboutPage() {
 
           {/* Quote */}
           <div className="border-l-2 border-emerald-500 pl-6 py-4 bg-white/5 rounded-r-lg">
-            <p className="text-lg text-white italic">
+            <p className="text-lg text-white font-instrument italic">
               &quot;Know whether it&apos;s worth building — before you start building.&quot;
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
               <Target className="w-5 h-5 text-blue-400" />
             </div>
-            <h2 className="text-2xl font-bold">Who It&apos;s For</h2>
+            <h2 className="text-2xl font-satoshi font-light">Who it&apos;s <span className="font-instrument italic">for</span></h2>
           </div>
 
           <div className="space-y-3">
@@ -149,7 +149,7 @@ export default function AboutPage() {
 
         {/* CTA */}
         <section className="text-center py-12 border-t border-white/10">
-          <p className="text-gray-400 mb-6">Ready to see it in action?</p>
+          <p className="text-gray-400 mb-6 font-satoshi font-light">Ready to see it in action?</p>
           <Link
             href="/assessment/new"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition group"
@@ -162,8 +162,8 @@ export default function AboutPage() {
 
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-white/10">
-        <div className="max-w-4xl mx-auto text-center text-sm text-gray-500">
-          Entropy © 2026 — The decision authority for heat reuse compliance.
+        <div className="max-w-4xl mx-auto text-center text-sm text-gray-500 font-satoshi font-light">
+          <span className="font-instrument italic">Entropy</span> © 2026
         </div>
       </footer>
     </div>
