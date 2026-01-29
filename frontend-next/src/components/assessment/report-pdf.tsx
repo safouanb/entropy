@@ -282,6 +282,8 @@ interface ComplianceResult {
     applicableLaw: string;
     reasoning: string[];
     remediationSteps?: string[];
+    citations?: { law: string; section: string; summary: string; url: string }[];
+    disclaimer?: string;
 }
 
 interface AssessmentData {

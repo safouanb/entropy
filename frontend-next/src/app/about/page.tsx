@@ -22,12 +22,12 @@ export default function AboutPage() {
       <section className="py-24 px-6 border-b border-white/10">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
-            The Gap Between <span className="text-emerald-400">Interest</span> and{" "}
-            <span className="text-emerald-400">Feasibility</span>
+            Every heat reuse project stalls in the{" "}
+            <span className="text-emerald-400">same place</span>
           </h1>
           <p className="text-xl text-gray-400 leading-relaxed">
-            Entropy exists because one of the largest energy inefficiencies in modern
-            society has quietly been normalized.
+            Between &quot;this could work&quot; and &quot;we can prove it will.&quot;
+            Entropy closes that gap.
           </p>
         </div>
       </section>
@@ -40,20 +40,19 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
               <Zap className="w-5 h-5 text-red-400" />
             </div>
-            <h2 className="text-2xl font-bold">The Absurdity of Normalized Waste</h2>
+            <h2 className="text-2xl font-bold">The Problem</h2>
           </div>
           <div className="text-gray-400 leading-relaxed space-y-4">
             <p>
-              Data centers generate enormous amounts of low- to mid-grade heat as a byproduct
-              of computation, and that heat is almost always discarded into the air or water.
-              At the same time, cities spend billions each year producing heat through gas
-              and electricity.
+              Data centers produce massive amounts of recoverable heat. Cities spend
+              billions generating heat from gas and electricity. Connecting the two
+              should be straightforward — the physics work.
             </p>
             <p>
-              The absurdity is not technological — the physics are well understood. The absurdity
-              is organizational, informational, and economic. Every potential heat reuse project
-              dies in the same place: <span className="text-white font-medium">the gap between
-                interest and feasibility</span>.
+              But every project hits the same wall: <span className="text-white font-medium">
+              is it compliant? Is it financially viable? Who takes on the risk?</span> These
+              questions kill projects before engineering even begins. Not because the answers
+              don&apos;t exist, but because nobody owns the process of producing them.
             </p>
           </div>
         </section>
@@ -64,79 +63,81 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
               <Brain className="w-5 h-5 text-emerald-400" />
             </div>
-            <h2 className="text-2xl font-bold">We Are The Decision Authority</h2>
+            <h2 className="text-2xl font-bold">What Entropy Does</h2>
           </div>
           <div className="text-gray-400 leading-relaxed space-y-4 mb-8">
             <p>
-              Entropy is not a dashboard. Not a marketplace. Not an analytics tool you can
-              optionally use. We are the <span className="text-white font-medium">accountable
-                decision layer</span> between policy intent and infrastructure execution.
+              Entropy takes the basic parameters of a heat reuse opportunity and
+              produces a <span className="text-white font-medium">decision record</span> — a
+              standardized, auditable document that tells you whether the project is
+              compliant, under what conditions, and who bears what risk.
             </p>
             <p>
-              We determine what is defensible, not what must be built. The product does not
-              replace engineering — it precedes it. It determines whether engineering is
-              worth doing at all.
+              You get a clear answer before committing engineering resources.
+              Three scenarios evaluated, regulatory citations included, risk
+              allocation made explicit. Something you can hand to a regulator,
+              an investor, or a project partner.
             </p>
           </div>
 
           {/* Quote */}
           <div className="border-l-2 border-emerald-500 pl-6 py-4 bg-white/5 rounded-r-lg">
             <p className="text-lg text-white italic">
-              "We don't just model scenarios — we stand behind one."
+              &quot;Know whether it&apos;s worth building — before you start building.&quot;
             </p>
           </div>
         </section>
 
-        {/* The Four Layers */}
+        {/* Who It's For */}
         <section>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
               <Target className="w-5 h-5 text-blue-400" />
             </div>
-            <h2 className="text-2xl font-bold">Where We Sit</h2>
+            <h2 className="text-2xl font-bold">Who It&apos;s For</h2>
           </div>
 
           <div className="space-y-3">
             {[
-              { level: "1", name: "Execution", desc: "Installing assets, running projects", opacity: "opacity-40" },
-              { level: "2", name: "Enablement", desc: "Tools and analytics — nice, but optional", opacity: "opacity-50" },
-              { level: "3", name: "Decision Authority", desc: "What is viable. What is compliant. Who bears risk.", highlight: true },
-              { level: "4", name: "Standard", desc: "Required. Embedded. The dream.", opacity: "opacity-70" },
-            ].map((layer, i) => (
+              {
+                name: "Data center operators",
+                desc: "Evaluate whether your waste heat has reuse potential before engaging consultants or engineers.",
+              },
+              {
+                name: "District heating companies",
+                desc: "Quickly assess new heat sources for regulatory compliance and integration feasibility.",
+              },
+              {
+                name: "Municipal energy planners",
+                desc: "Get standardized decision records to support policy compliance and funding applications.",
+              },
+              {
+                name: "Infrastructure investors",
+                desc: "Due-diligence heat reuse opportunities with auditable compliance and risk documentation.",
+              },
+            ].map((audience, i) => (
               <div
                 key={i}
-                className={`p-5 rounded-xl border transition ${layer.highlight
-                    ? "border-emerald-500 bg-emerald-500/10"
-                    : `border-white/10 bg-white/5 ${layer.opacity}`
-                  }`}
+                className="p-5 rounded-xl border border-white/10 bg-white/5 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition"
               >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold ${layer.highlight ? "bg-emerald-500 text-black" : "bg-white/10 text-white"
-                      }`}
-                  >
-                    {layer.level}
-                  </div>
+                <div className="flex items-start gap-4">
                   <div className="flex-1">
-                    <div className="font-semibold text-lg">{layer.name}</div>
-                    <div className="text-sm text-gray-400">{layer.desc}</div>
+                    <div className="font-semibold text-lg">{audience.name}</div>
+                    <div className="text-sm text-gray-400">{audience.desc}</div>
                   </div>
-                  {layer.highlight && (
-                    <div className="text-sm font-mono text-emerald-400">← ENTROPY</div>
-                  )}
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Vision Cards */}
+        {/* Why Entropy */}
         <section>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { title: "Software First", desc: "We are an intelligence business. Our defensibility lies in data models and feasibility logic." },
-              { title: "Pragmatism", desc: "Projects move forward not because they are elegant, but because they make financial sense." },
-              { title: "Invisible System", desc: "The ambition is to become the default. When feasibility is no longer a bottleneck, reuse becomes the norm." },
+              { title: "Fast", desc: "Get a compliance verdict in minutes. No need to commission a feasibility study before knowing if a project is worth pursuing." },
+              { title: "Auditable", desc: "Every decision record includes regulatory citations, scenario breakdowns, and explicit risk allocation. Built for scrutiny." },
+              { title: "Independent", desc: "Entropy has no stake in whether you build. You get an honest assessment, not a sales pitch from a contractor." },
             ].map((card, i) => (
               <div key={i} className="p-6 rounded-xl border border-white/10 bg-white/5">
                 <h3 className="font-semibold mb-2">{card.title}</h3>

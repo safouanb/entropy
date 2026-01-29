@@ -3,7 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Shield, FileCheck, Scale, Lock } from "lucide-react";
+import {
+  ArrowRight,
+  Shield,
+  FileCheck,
+  Scale,
+  Lock,
+  ClipboardCheck,
+  BarChart3,
+  CheckCircle,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import { IntroLoader } from "@/components/landing/IntroLoader";
 
@@ -53,7 +62,7 @@ export default function HomePage() {
   const ditherOpacity = useTransform(scrollYProgress, [0, 0.6], [0.45, 0.15]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowLoader(false), 2800);
+    const timer = setTimeout(() => setShowLoader(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -68,12 +77,9 @@ export default function HomePage() {
         {/* ── Navigation ── */}
         <nav className="fixed top-0 left-0 right-0 z-50 glass-nav">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center group-hover:shadow-glow-sm transition-shadow duration-500">
-                <span className="text-black text-xl font-instrument">E</span>
-              </div>
-              <span className="font-satoshi font-bold text-lg tracking-tight">
-                ENTROPY
+            <Link href="/" className="group">
+              <span className="font-instrument italic text-xl text-white tracking-tight group-hover:text-emerald-300 transition-colors duration-300">
+                Entropy
               </span>
             </Link>
             <div className="flex items-center gap-6">
@@ -132,12 +138,12 @@ export default function HomePage() {
           />
 
           {/* Hero Content */}
-          <div className="relative z-10 max-w-5xl mx-auto text-center">
+          <div className="relative z-10 max-w-5xl mx-auto text-center pointer-events-none">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={!showLoader ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-button text-sm text-white/70 mb-10 font-satoshi tracking-wide"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-button text-sm text-white/70 mb-10 font-satoshi tracking-wide pointer-events-auto"
             >
               <Shield className="w-4 h-4 text-emerald-400" />
               The decision authority for heat reuse
@@ -167,15 +173,15 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.6 }}
               className="text-lg md:text-xl text-white/40 max-w-2xl mx-auto mb-14 leading-relaxed font-satoshi font-light"
             >
-              Not what must be built. Entropy is the accountable decision layer
-              between policy intent and infrastructure execution.
+              Before you engineer a heat reuse project, know whether
+              it&apos;s compliant, financially viable, and who bears the risk.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={!showLoader ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto"
             >
               <Link
                 href="/assessment/new"
@@ -198,7 +204,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 1.2 }}
               className="text-xs text-white/20 mt-12 font-mono tracking-widest uppercase"
             >
-              This is not a pitch. This is the product.
+              Compliance in minutes, not months.
             </motion.p>
           </div>
 
@@ -207,7 +213,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={!showLoader ? { opacity: 1 } : {}}
             transition={{ delay: 1.5 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 pointer-events-none"
           >
             <span className="text-[10px] text-white/20 font-satoshi tracking-[0.3em] uppercase">
               Scroll
@@ -301,101 +307,69 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Where We Sit ── */}
+        {/* ── How It Works ── */}
         <section className="relative py-32 px-6">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <FadeUp>
-              <div className="text-center mb-16">
+              <div className="text-center mb-20">
                 <span className="text-xs font-mono text-emerald-400/70 tracking-[0.3em] uppercase mb-4 block">
-                  Positioning
+                  How it works
                 </span>
                 <h2 className="text-4xl md:text-5xl mb-5">
-                  <span className="font-satoshi font-light">Where we </span>
+                  <span className="font-satoshi font-light">From question to </span>
                   <span className="font-instrument italic text-white">
-                    sit
+                    answer
                   </span>
                 </h2>
                 <p className="text-white/35 text-lg max-w-2xl mx-auto font-satoshi font-light leading-relaxed">
-                  There are 4 layers in infrastructure delivery. We&apos;re not
-                  integrators. We&apos;re not optional analytics. We&apos;re the
-                  decision authority.
+                  Go from &quot;can we reuse this heat?&quot; to a defensible,
+                  auditable decision in three steps.
                 </p>
               </div>
             </FadeUp>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
-                  level: "1",
-                  name: "Execution",
-                  desc: "Installing assets, running projects. Commoditized.",
-                  dimmed: true,
+                  icon: ClipboardCheck,
+                  step: "01",
+                  title: "Describe your project",
+                  description:
+                    "Enter your heat source, demand profile, and site constraints. No engineering required upfront.",
                 },
                 {
-                  level: "2",
-                  name: "Enablement",
-                  desc: "Tools and analytics. Nice, but optional.",
-                  dimmed: true,
+                  icon: BarChart3,
+                  step: "02",
+                  title: "Get scenario analysis",
+                  description:
+                    "Entropy evaluates three scenarios — no reuse, direct reuse, and reuse with mitigation — each with a compliance verdict.",
                 },
                 {
-                  level: "3",
-                  name: "Decision Authority",
-                  desc: "What is viable. What is compliant. Who bears risk.",
-                  highlight: true,
+                  icon: CheckCircle,
+                  step: "03",
+                  title: "Receive your decision record",
+                  description:
+                    "A finalized, auditable artifact with compliance status, risk allocation, and regulatory citations you can share with stakeholders.",
                 },
-                {
-                  level: "4",
-                  name: "Standard",
-                  desc: "Required. Embedded. The dream.",
-                  dimmed: true,
-                  faded: true,
-                },
-              ].map((layer, i) => (
-                <FadeUp key={i} delay={i * 0.08}>
-                  <div
-                    className={`p-6 rounded-2xl transition-all duration-500 ${
-                      layer.highlight
-                        ? "glass-panel border-emerald-500/30 bg-emerald-500/5"
-                        : `glass-panel ${layer.dimmed ? "opacity-40" : ""} ${
-                            layer.faded ? "opacity-25" : ""
-                          }`
-                    }`}
-                    style={
-                      layer.highlight
-                        ? {
-                            borderColor: "rgba(16, 185, 129, 0.2)",
-                            boxShadow:
-                              "0 0 60px -15px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(16, 185, 129, 0.1)",
-                          }
-                        : undefined
-                    }
-                  >
-                    <div className="flex items-center gap-5">
-                      <div
-                        className={`w-11 h-11 rounded-xl flex items-center justify-center font-mono font-bold text-sm ${
-                          layer.highlight
-                            ? "bg-emerald-500 text-black"
-                            : "bg-white/5 text-white/50"
-                        }`}
-                      >
-                        {layer.level}
+              ].map((item, i) => (
+                <FadeUp key={i} delay={i * 0.12}>
+                  <div className="glass-panel-hover p-8 rounded-2xl h-full group cursor-default">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors duration-500">
+                        <item.icon className="w-5 h-5 text-emerald-400/70 group-hover:text-emerald-400 transition-colors duration-500" />
                       </div>
-                      <div>
-                        <div className="font-satoshi font-medium text-lg">
-                          {layer.name}
-                        </div>
-                        <div className="text-sm text-white/35 font-satoshi font-light">
-                          {layer.desc}
-                        </div>
-                      </div>
-                      {layer.highlight && (
-                        <div className="ml-auto text-xs font-mono text-emerald-400/70 tracking-[0.15em]">
-                          ENTROPY
-                        </div>
-                      )}
+                      <span className="text-xs font-mono text-white/20 tracking-widest">
+                        {item.step}
+                      </span>
                     </div>
+                    <h3 className="text-lg font-satoshi font-medium mb-3 text-white/90">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-white/30 font-satoshi font-light leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
                 </FadeUp>
               ))}
@@ -414,7 +388,7 @@ export default function HomePage() {
                 <span className="font-instrument italic">begin?</span>
               </h2>
               <p className="text-white/35 mb-10 font-satoshi font-light text-lg">
-                No signup required. Generate a decision record in minutes.
+                No signup required. See if your project is viable — for free.
               </p>
               <Link
                 href="/assessment/new"
@@ -431,14 +405,9 @@ export default function HomePage() {
         <footer className="relative py-14 px-6">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-white rounded-md flex items-center justify-center">
-                <span className="text-black text-sm font-instrument">E</span>
-              </div>
-              <span className="font-satoshi font-bold tracking-tight text-sm">
-                ENTROPY
-              </span>
-            </div>
+            <span className="font-instrument italic text-lg text-white/70 tracking-tight">
+              Entropy
+            </span>
             <p className="text-xs text-white/20 font-satoshi font-light tracking-wide">
               The decision authority for heat reuse compliance.
             </p>

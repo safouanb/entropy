@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { saveDataCenter, checkCompliance } from "@/lib/compliance";
-import type { ComplianceRequest, ComplianceResult, Jurisdiction } from "@/lib/compliance";
+import type { ComplianceRequest, ComplianceResult, Jurisdiction, RegulatoryReference } from "@/lib/compliance";
 import {
     Dialog,
     DialogContent,
@@ -193,6 +193,46 @@ export default function CompliancePage() {
                                                     <span>{step}</span>
                                                 </div>
                                             ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {result.citations && result.citations.length > 0 && (
+                                    <div>
+                                        <h4 className="font-semibold mb-2 text-sm uppercase tracking-wider text-muted-foreground">Regulatory Citations</h4>
+                                        <div className="space-y-2">
+                                            {result.citations.map((cite, i) => (
+                                                <div key={i} className="border border-border rounded-md p-3 text-sm">
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div>
+                                                            <span className="font-medium">{cite.law}</span>
+                                                            {cite.section && (
+                                                                <span className="text-muted-foreground"> — {cite.section}</span>
+                                                            )}
+                                                        </div>
+                                                        {cite.url && (
+                                                            <a
+                                                                href={cite.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary hover:underline shrink-0 text-xs"
+                                                            >
+                                                                Source
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-muted-foreground mt-1">{cite.summary}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {result.disclaimer && (
+                                    <div className="border border-yellow-500/30 bg-yellow-500/5 rounded-md p-3">
+                                        <div className="flex gap-2 items-start">
+                                            <ExclamationTriangleIcon className="h-4 w-4 mt-0.5 text-yellow-500 shrink-0" />
+                                            <p className="text-xs text-muted-foreground">{result.disclaimer}</p>
                                         </div>
                                     </div>
                                 )}
