@@ -17,11 +17,13 @@ import {
     MagnifyingGlassIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
+    PlusIcon,
 } from "@heroicons/react/24/outline";
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Squares2X2Icon },
-    { href: "/assessment/new", label: "New Assessment", icon: DocumentTextIcon },
+    { href: "/assessment", label: "Assessments", icon: DocumentTextIcon }, // Was New Assessment, but Assessments covers list.
+    { href: "/assessment/new", label: "New Project", icon: PlusIcon }, // Explicit new action
     { href: "/records", label: "Records", icon: ArchiveBoxIcon },
     { href: "/map", label: "Infrastructure Map", icon: MapIcon },
     { href: "/compliance", label: "Compliance", icon: ScaleIcon },
