@@ -74,36 +74,7 @@ export default function HomePage() {
       />
 
       <div className="min-h-screen bg-black text-white overflow-x-hidden">
-        {/* ── Navigation ── */}
-        <nav className="fixed top-0 left-0 right-0 z-50 glass-nav">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="group">
-              <span className="font-instrument italic text-xl text-white tracking-tight group-hover:text-emerald-300 transition-colors duration-300">
-                Entropy
-              </span>
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/about"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-300 font-satoshi"
-              >
-                About
-              </Link>
-              <Link
-                href="/assessment/new"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-300 font-satoshi"
-              >
-                New Record
-              </Link>
-              <Link
-                href="/assessment/new"
-                className="px-5 py-2.5 bg-white text-black text-sm font-satoshi font-medium rounded-lg hover:bg-emerald-300 hover:text-black transition-all duration-300"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </nav>
+        {/* ── Navigation (Handled by Global Header now) ── */}
 
         {/* ── Hero with Dither ── */}
         <motion.section
