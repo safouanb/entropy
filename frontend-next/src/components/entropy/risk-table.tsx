@@ -2,6 +2,15 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 interface RiskAllocation {
     category: string;
@@ -33,11 +42,11 @@ const partyLabels: Record<string, string> = {
 export function RiskTable({ allocations, className }: RiskTableProps) {
     if (!allocations || allocations.length === 0) {
         return (
-            <div className={cn('border border-gray-200 rounded-lg p-6 bg-gray-50', className)}>
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <div className={cn('border border-white/10 rounded-lg p-6 bg-white/5', className)}>
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                     Risk & Responsibility Allocation
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                     Risk allocation will be determined based on selected implementation pathway.
                 </p>
             </div>
@@ -45,53 +54,51 @@ export function RiskTable({ allocations, className }: RiskTableProps) {
     }
 
     return (
-        <div className={cn('border border-gray-200 rounded-lg overflow-hidden', className)}>
-            <div className="px-4 py-3 bg-gray-100 border-b border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                    Risk & Responsibility Allocation
+        <div className={cn('border border-white/10 rounded-xl overflow-hidden bg-zinc-900/50', className)}>
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+                    Risk Assessment Matrix
                 </h3>
+                <Badge variant="outline" className="border-emerald-500/20 text-emerald-400 bg-emerald-500/10">
+                    {allocations.length} Risks Identified
+                </Badge>
             </div>
 
-            <table className="w-full text-sm">
-                <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                            Risk Category
-                        </th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                            Bearing Party
-                        </th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-600">
-                            Mitigation
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHeader className="bg-white/5">
+                    <TableRow className="border-white/10 hover:bg-transparent">
+                        <TableHead className="text-muted-foreground">Category</TableHead>
+                        <TableHead className="text-muted-foreground">Bearing Party</TableHead>
+                        <TableHead className="text-muted-foreground">Mitigation Strategy</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
                     {allocations.map((risk, index) => (
-                        <tr
-                            key={index}
-                            className={cn(
-                                'border-b border-gray-100',
-                                index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                            )}
-                        >
-                            <td className="px-4 py-3 font-medium text-gray-900">
+                        <TableRow key={index} className="border-white/5 hover:bg-white/5 transition-colors">
+                            <TableCell className="font-medium text-white">
                                 {categoryLabels[risk.category] || risk.category}
-                            </td>
-                            <td className="px-4 py-3 font-mono text-gray-700">
-                                {partyLabels[risk.bearingParty] || risk.bearingParty}
-                            </td>
-                            <td className="px-4 py-3 text-gray-600">
+                            </TableCell>
+                            <TableCell>
+                                <span className={cn(
+                                    "px-2 py-1 rounded text-xs font-mono",
+                                    risk.bearingParty === 'DC_OPERATOR' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
+                                        risk.bearingParty === 'OFFTAKER' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
+                                            'bg-zinc-800 text-zinc-300 border border-white/10'
+                                )}>
+                                    {partyLabels[risk.bearingParty] || risk.bearingParty}
+                                </span>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
                                 {risk.mitigationMechanism.replace(/_/g, ' ')}
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
-            <div className="px-4 py-3 bg-amber-50 border-t border-amber-200">
-                <p className="text-xs text-amber-800">
-                    ⚠️ This section is critical for contract and financing discussions. All allocations must be explicit.
+            <div className="px-4 py-3 bg-amber-500/10 border-t border-amber-500/20">
+                <p className="text-xs text-amber-400 font-medium">
+                    ⚠️ This section is critical for contract and financing discussions.
                 </p>
             </div>
         </div>

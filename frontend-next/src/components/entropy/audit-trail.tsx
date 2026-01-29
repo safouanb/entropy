@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Badge } from "@/components/ui/badge";
 
 interface AuditEntry {
     version: number;
@@ -11,48 +12,46 @@ interface AuditEntry {
 }
 
 interface AuditTrailProps {
-    entries: AuditEntry[];
+    steps: AuditEntry[];
     className?: string;
 }
 
-export function AuditTrail({ entries, className }: AuditTrailProps) {
-    if (!entries || entries.length === 0) {
+export function AuditTrail({ steps, className }: AuditTrailProps) {
+    if (!steps || steps.length === 0) {
         return null;
     }
 
     return (
-        <div className={cn('border border-gray-200 rounded-lg overflow-hidden', className)}>
-            <div className="px-4 py-3 bg-gray-100 border-b border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                    Audit Trail
+        <div className={cn('border border-white/10 rounded-xl overflow-hidden bg-zinc-900/30', className)}>
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+                    Version History
                 </h3>
             </div>
 
-            <div className="divide-y divide-gray-100">
-                {entries.map((entry, index) => (
+            <div className="divide-y divide-white/5">
+                {steps.map((entry, index) => (
                     <div
                         key={index}
-                        className="px-4 py-3 flex items-center gap-6 text-sm"
+                        className="px-6 py-4 flex items-center justify-between group hover:bg-white/5 transition-colors"
                     >
-                        <span className="font-mono font-bold text-gray-900 w-8">
-                            v{entry.version}
-                        </span>
-                        <span className="font-mono text-gray-500 w-24">
-                            {entry.date}
-                        </span>
-                        <span className="text-gray-700 flex-1">
-                            {entry.changeSummary}
-                        </span>
-                        <span className="text-gray-400 text-right">
-                            {entry.author}
-                        </span>
+                        <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="font-mono text-white/70 border-white/10 bg-white/5">
+                                v{entry.version}.0
+                            </Badge>
+                            <div>
+                                <p className="text-sm text-white font-medium">{entry.changeSummary}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">{entry.author} • {entry.date}</p>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
-                <p className="text-xs text-gray-400 font-mono">
-                    All changes preserved
+            <div className="px-4 py-2 bg-emerald-500/5 border-t border-emerald-500/10 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                <p className="text-xs text-emerald-400 font-mono opacity-80">
+                    Cryptographically verifiable audit log
                 </p>
             </div>
         </div>
