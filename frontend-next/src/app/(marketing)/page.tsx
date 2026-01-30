@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { IntroLoader } from "@/components/landing/IntroLoader";
+import { ScrambleText } from "@/components/ui/scramble-text";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { MagneticCursor, GlobalCursor } from "@/components/ui/magnetic-cursor";
+import { ParticleField } from "@/components/ui/particle-field";
 
 const Dither = dynamic(() => import("@/components/Dither"), { ssr: false });
 
@@ -68,12 +72,21 @@ export default function HomePage() {
 
   return (
     <>
+      <GlobalCursor />
       <IntroLoader
         isVisible={showLoader}
         onComplete={() => setContentReady(true)}
       />
 
-      <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <div className="min-h-screen bg-black text-white overflow-x-hidden relative">
+        {/* Particle field background */}
+        <ParticleField
+          count={60}
+          color="#10b981"
+          size={1.5}
+          speed={0.3}
+          className="opacity-20"
+        />
         {/* ── Navigation (Handled by Global Header now) ── */}
 
         {/* ── Hero with Dither ── */}
@@ -127,14 +140,33 @@ export default function HomePage() {
               className="text-5xl sm:text-6xl md:text-8xl tracking-tight mb-8 leading-[0.95]"
             >
               <span className="font-satoshi font-light text-white/90">
-                We determine
+                <ScrambleText
+                  text="We determine"
+                  autoStart={!showLoader}
+                  delay={800}
+                  scrambleSpeed={70}
+                  scrambledLetterCount={5}
+                />
               </span>
               <br />
               <span className="font-satoshi font-light text-white/90">
-                what is{" "}
+                <ScrambleText
+                  text="what is "
+                  autoStart={!showLoader}
+                  delay={1200}
+                  scrambleSpeed={60}
+                  scrambledLetterCount={3}
+                />
               </span>
               <span className="font-instrument italic bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                defensible.
+                <ScrambleText
+                  text="defensible."
+                  autoStart={!showLoader}
+                  delay={1600}
+                  scrambleSpeed={50}
+                  scrambledLetterCount={4}
+                  characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}()#@!%&*"
+                />
               </span>
             </motion.h1>
 
@@ -154,19 +186,28 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto"
             >
-              <Link
-                href="/assessment/new"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-satoshi font-semibold rounded-xl hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow"
-              >
-                Create Decision Record
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 glass-button text-white font-satoshi font-medium rounded-xl"
-              >
-                Learn More
-              </Link>
+              <MagneticCursor strength={0.2} size={60}>
+                <Link
+                  href="/assessment/new"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-satoshi font-semibold rounded-xl hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow hover:shadow-emerald-400/20"
+                >
+                  <ScrambleText
+                    text="Create Decision Record"
+                    autoStart={false}
+                    scrambleSpeed={30}
+                    scrambledLetterCount={3}
+                  />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
+                </Link>
+              </MagneticCursor>
+              <MagneticCursor strength={0.15} size={50}>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 glass-button text-white font-satoshi font-medium rounded-xl hover:bg-white/10 transition-all duration-300"
+                >
+                  Learn More
+                </Link>
+              </MagneticCursor>
             </motion.div>
 
             <motion.p
@@ -234,6 +275,7 @@ export default function HomePage() {
                   subtitle: "A / B / C",
                   description:
                     "No Reuse, Direct Reuse, Reuse + Mitigation. Each with compliance outcome.",
+                  spotlightColor: "rgba(168, 85, 247, 0.15)",
                 },
                 {
                   icon: Shield,
@@ -241,6 +283,7 @@ export default function HomePage() {
                   subtitle: "Explicit",
                   description:
                     "Who bears what risk. Critical for contracts and financing.",
+                  spotlightColor: "rgba(16, 185, 129, 0.15)",
                 },
                 {
                   icon: FileCheck,
@@ -248,6 +291,7 @@ export default function HomePage() {
                   subtitle: "Definitive",
                   description:
                     "COMPLIANT, CONDITIONAL, or NON-COMPLIANT. With regulatory citation.",
+                  spotlightColor: "rgba(59, 130, 246, 0.15)",
                 },
                 {
                   icon: Lock,
@@ -255,23 +299,54 @@ export default function HomePage() {
                   subtitle: "Immutable",
                   description:
                     "Lock your record. Create an audit trail. Stand behind your decision.",
+                  spotlightColor: "rgba(251, 191, 36, 0.15)",
                 },
               ].map((item, i) => (
                 <FadeUp key={i} delay={i * 0.1}>
-                  <div className="glass-panel-hover p-7 rounded-2xl h-full group cursor-default">
-                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-5 group-hover:bg-emerald-500/10 transition-colors duration-500">
+                  <SpotlightCard
+                    spotlightColor={item.spotlightColor}
+                    className="p-7 h-full group cursor-default bg-black/20 backdrop-blur-sm border-white/10 hover:border-white/20 transition-all duration-500"
+                  >
+                    <motion.div
+                      className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-5 group-hover:bg-white/10 transition-all duration-500"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       <item.icon className="w-5 h-5 text-emerald-400/70 group-hover:text-emerald-400 transition-colors duration-500" />
-                    </div>
+                    </motion.div>
                     <div className="text-[10px] text-emerald-400/50 font-mono tracking-[0.2em] uppercase mb-2">
-                      {item.subtitle}
+                      <ScrambleText
+                        text={item.subtitle}
+                        autoStart={false}
+                        scrambleSpeed={40}
+                        scrambledLetterCount={2}
+                      />
                     </div>
-                    <h3 className="text-lg font-satoshi font-medium mb-2 text-white/90">
+                    <motion.h3
+                      className="text-lg font-satoshi font-medium mb-2 text-white/90"
+                      whileHover={{ x: 2 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       {item.title}
-                    </h3>
-                    <p className="text-sm text-white/30 font-satoshi font-light leading-relaxed">
+                    </motion.h3>
+                    <p className="text-sm text-white/30 font-satoshi font-light leading-relaxed group-hover:text-white/40 transition-colors duration-500">
                       {item.description}
                     </p>
-                  </div>
+
+                    {/* Floating accent dot */}
+                    <motion.div
+                      className="absolute top-4 right-4 w-2 h-2 rounded-full bg-emerald-400/0 group-hover:bg-emerald-400/60 transition-all duration-500"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.5, 1, 0.5],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  </SpotlightCard>
                 </FadeUp>
               ))}
             </div>
@@ -361,13 +436,20 @@ export default function HomePage() {
               <p className="text-white/35 mb-10 font-satoshi font-light text-lg">
                 No signup required. See if your project is viable — for free.
               </p>
-              <Link
-                href="/assessment/new"
-                className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow"
-              >
-                Create Decision Record
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
-              </Link>
+              <MagneticCursor strength={0.3} size={80}>
+                <Link
+                  href="/assessment/new"
+                  className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow hover:shadow-emerald-400/30 hover:scale-105"
+                >
+                  <ScrambleText
+                    text="Create Decision Record"
+                    autoStart={false}
+                    scrambleSpeed={25}
+                    scrambledLetterCount={4}
+                  />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
+                </Link>
+              </MagneticCursor>
             </div>
           </FadeUp>
         </section>

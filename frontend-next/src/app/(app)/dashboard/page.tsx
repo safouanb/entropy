@@ -12,6 +12,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { ScrambleText } from "@/components/ui/scramble-text";
+import { motion } from "framer-motion";
+import MagicBento from "@/components/ui/magic-bento";
 
 function getIconForType(type: string) {
     switch (type) {
@@ -22,6 +26,51 @@ function getIconForType(type: string) {
     }
 }
 
+const dashboardCards = [
+    {
+        color: '#0a0a0a',
+        title: 'Global Infrastructure',
+        description: '3 active regions, 15 data centers operational',
+        label: 'Operations',
+        icon: GlobeEuropeAfricaIcon
+    },
+    {
+        color: '#0a0a0a',
+        title: 'Compliance Health',
+        description: '94% regulatory adherence across all systems',
+        label: 'Safety',
+        icon: ShieldCheckIcon
+    },
+    {
+        color: '#0a0a0a',
+        title: 'Economic Impact',
+        description: '€2.4M projected annual savings from optimization',
+        label: 'Finance',
+        icon: ArrowTrendingUpIcon
+    },
+    {
+        color: '#0a0a0a',
+        title: 'Heat Recovery',
+        description: 'Advanced thermal management and reuse systems',
+        label: 'Technology',
+        icon: BoltIcon
+    },
+    {
+        color: '#0a0a0a',
+        title: 'Analytics Engine',
+        description: 'Real-time performance monitoring and insights',
+        label: 'Intelligence',
+        icon: ClockIcon
+    },
+    {
+        color: '#0a0a0a',
+        title: 'Risk Assessment',
+        description: 'Automated compliance and safety evaluation',
+        label: 'Security',
+        icon: ShieldCheckIcon
+    }
+];
+
 export default function ExecutiveDashboard() {
     return (
         <div className="space-y-8 pb-20">
@@ -31,77 +80,22 @@ export default function ExecutiveDashboard() {
                 <p className="text-muted-foreground mt-1">High-level operational intelligence.</p>
             </div>
 
-            {/* KPI Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Global Status */}
-                <div className="p-6 rounded-2xl bg-zinc-900/50 border border-white/5 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <GlobeEuropeAfricaIcon className="w-24 h-24 text-blue-500" />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">Global View</Badge>
-                        </div>
-                        <div className="text-4xl font-bold text-white tracking-tight">3 Regions</div>
-                        <div className="text-sm text-muted-foreground mt-1">Active Operations</div>
-
-                        <div className="mt-8">
-                            <Link href="/map">
-                                <Button variant="outline" className="w-full justify-between group-hover:bg-blue-500/10 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-all">
-                                    View Infrastructure Map
-                                    <GlobeEuropeAfricaIcon className="w-4 h-4 ml-2" />
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Compliance Health */}
-                <div className="p-6 rounded-2xl bg-zinc-900/50 border border-white/5 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <ShieldCheckIcon className="w-24 h-24 text-emerald-500" />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">Compliance Health</Badge>
-                        </div>
-                        <div className="text-4xl font-bold text-white tracking-tight">94%</div>
-                        <div className="text-sm text-muted-foreground mt-1">Regulatory Adherence</div>
-
-                        <div className="mt-8">
-                            <Link href="/compliance">
-                                <Button variant="outline" className="w-full justify-between group-hover:bg-emerald-500/10 group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all">
-                                    Compliance Dashboard
-                                    <ShieldCheckIcon className="w-4 h-4 ml-2" />
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Economic Impact */}
-                <div className="p-6 rounded-2xl bg-zinc-900/50 border border-white/5 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <ArrowTrendingUpIcon className="w-24 h-24 text-amber-500" />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/20">Financial Impact</Badge>
-                        </div>
-                        <div className="text-4xl font-bold text-white tracking-tight">€2.4M</div>
-                        <div className="text-sm text-muted-foreground mt-1">Projected Annual Savings</div>
-
-                        <div className="mt-8">
-                            <Link href="/analytics">
-                                <Button variant="outline" className="w-full justify-between group-hover:bg-amber-500/10 group-hover:text-amber-400 group-hover:border-amber-500/30 transition-all">
-                                    Financial Analytics
-                                    <ArrowTrendingUpIcon className="w-4 h-4 ml-2" />
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+            {/* Magic Bento Grid */}
+            <div className="relative">
+                <MagicBento
+                    cards={dashboardCards}
+                    enableStars={true}
+                    enableSpotlight={true}
+                    enableBorderGlow={true}
+                    enableTilt={true}
+                    enableMagnetism={true}
+                    clickEffect={true}
+                    spotlightRadius={400}
+                    particleCount={8}
+                    glowColor="16, 185, 129"
+                />
             </div>
+
 
             {/* Recent Activity Feed (Mock) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -141,28 +135,89 @@ export default function ExecutiveDashboard() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
-                    <div className="p-4 rounded-xl bg-gradient-to-br from-zinc-900 to-black border border-white/10 space-y-3">
-                        <Link href="/assessment/new">
-                            <Button className="w-full bg-white text-black hover:bg-zinc-200">Start New Assessment</Button>
-                        </Link>
-                        <Link href="/records">
-                            <Button variant="outline" className="w-full">Browse Records</Button>
-                        </Link>
+                <motion.div
+                    className="space-y-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    <h3 className="text-lg font-semibold text-white">
+                        <ScrambleText
+                            text="Quick Actions"
+                            autoStart={false}
+                            scrambleSpeed={50}
+                            scrambledLetterCount={3}
+                        />
+                    </h3>
+                    <SpotlightCard
+                        spotlightColor="rgba(168, 85, 247, 0.15)"
+                        className="p-4 bg-gradient-to-br from-zinc-900 to-black border-white/10 space-y-3"
+                    >
+                        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+                            <Link href="/assessment/new">
+                                <Button className="w-full bg-white text-black hover:bg-zinc-200 transition-all duration-300 hover:shadow-lg hover:shadow-white/10">
+                                    <motion.span
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        Start New Assessment
+                                    </motion.span>
+                                    <BoltIcon className="w-4 h-4 ml-2" />
+                                </Button>
+                            </Link>
+                        </motion.div>
+                        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+                            <Link href="/records">
+                                <Button variant="outline" className="w-full hover:bg-white/5 transition-all duration-300">
+                                    <motion.span
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        Browse Records
+                                    </motion.span>
+                                </Button>
+                            </Link>
+                        </motion.div>
                         <div className="pt-4 border-t border-white/5">
-                            <div className="text-xs text-muted-foreground mb-2">System Status</div>
-                            <div className="flex items-center justify-between text-sm">
+                            <div className="text-xs text-muted-foreground mb-2">
+                                <ScrambleText
+                                    text="System Status"
+                                    autoStart={false}
+                                    scrambleSpeed={30}
+                                    scrambledLetterCount={2}
+                                />
+                            </div>
+                            <motion.div
+                                className="flex items-center justify-between text-sm"
+                                whileHover={{ x: 2 }}
+                                transition={{ duration: 0.2 }}
+                            >
                                 <span className="text-zinc-400">API Gateway</span>
-                                <span className="text-emerald-500 font-mono">ONLINE</span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm mt-1">
+                                <motion.span
+                                    className="text-emerald-500 font-mono"
+                                    animate={{ opacity: [0.7, 1, 0.7] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                    ONLINE
+                                </motion.span>
+                            </motion.div>
+                            <motion.div
+                                className="flex items-center justify-between text-sm mt-1"
+                                whileHover={{ x: 2 }}
+                                transition={{ duration: 0.2 }}
+                            >
                                 <span className="text-zinc-400">Database</span>
-                                <span className="text-emerald-500 font-mono">CONNECTED</span>
-                            </div>
+                                <motion.span
+                                    className="text-emerald-500 font-mono"
+                                    animate={{ opacity: [0.7, 1, 0.7] }}
+                                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                                >
+                                    CONNECTED
+                                </motion.span>
+                            </motion.div>
                         </div>
-                    </div>
-                </div>
+                    </SpotlightCard>
+                </motion.div>
             </div>
         </div>
     );

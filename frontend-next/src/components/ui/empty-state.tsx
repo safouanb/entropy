@@ -8,7 +8,7 @@ interface EmptyStateProps {
     description?: string;
     actionLabel?: string;
     onAction?: () => void;
-    icon?: React.ElementType;
+    icon?: React.ComponentType<{ className?: string }>;
 }
 
 export function EmptyState({
