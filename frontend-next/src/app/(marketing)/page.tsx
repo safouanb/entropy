@@ -17,7 +17,6 @@ import dynamic from "next/dynamic";
 import { IntroLoader } from "@/components/landing/IntroLoader";
 import { ScrambleText } from "@/components/ui/scramble-text";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { MagneticCursor, GlobalCursor } from "@/components/ui/magnetic-cursor";
 import { ParticleField } from "@/components/ui/particle-field";
 import Beams from "@/components/Beams";
 import ElectricBorder from "@/components/ElectricBorder";
@@ -74,7 +73,6 @@ export default function HomePage() {
 
   return (
     <>
-      <GlobalCursor />
       <IntroLoader
         isVisible={showLoader}
         onComplete={() => setContentReady(true)}
@@ -84,7 +82,7 @@ export default function HomePage() {
         {/* ── Navigation (Handled by Global Header now) ── */}
 
         {/* ── Hero Section - Clean & Focused ── */}
-        <section className="relative min-h-screen flex items-center justify-center px-6">
+        <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6">
           {/* Single hero effect: Subtle dither */}
           <div className="absolute inset-0 opacity-30">
             <Dither
@@ -305,20 +303,18 @@ export default function HomePage() {
               <p className="text-white/35 mb-10 font-satoshi font-light text-lg">
                 No signup required. See if your project is viable — for free.
               </p>
-              <MagneticCursor strength={0.3} size={80}>
-                <Link
-                  href="/assessment/new"
-                  className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow hover:shadow-emerald-400/30 hover:scale-105"
-                >
-                  <ScrambleText
-                    text="Create Decision Record"
-                    autoStart={false}
-                    scrambleSpeed={25}
-                    scrambledLetterCount={4}
-                  />
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
-                </Link>
-              </MagneticCursor>
+              <Link
+                href="/assessment/new"
+                className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow hover:shadow-emerald-400/30 hover:scale-105"
+              >
+                <ScrambleText
+                  text="Create Decision Record"
+                  autoStart={false}
+                  scrambleSpeed={25}
+                  scrambledLetterCount={4}
+                />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
+              </Link>
             </div>
           </FadeUp>
         </section>
