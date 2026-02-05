@@ -54,6 +54,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createAssessmentStmt, err = db.PrepareContext(ctx, createAssessment); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateAssessment: %w", err)
 	}
+	if q.createAuditLogStmt, err = db.PrepareContext(ctx, createAuditLog); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateAuditLog: %w", err)
+	}
 	if q.createCarbonCreditStmt, err = db.PrepareContext(ctx, createCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateCarbonCredit: %w", err)
 	}
@@ -111,6 +114,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getCarbonCreditStmt, err = db.PrepareContext(ctx, getCarbonCredit); err != nil {
 		return nil, fmt.Errorf("error preparing query GetCarbonCredit: %w", err)
 	}
+	if q.getDashboardStatsStmt, err = db.PrepareContext(ctx, getDashboardStats); err != nil {
+		return nil, fmt.Errorf("error preparing query GetDashboardStats: %w", err)
+	}
 	if q.getDataCenterStmt, err = db.PrepareContext(ctx, getDataCenter); err != nil {
 		return nil, fmt.Errorf("error preparing query GetDataCenter: %w", err)
 	}
@@ -135,6 +141,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getRouteStmt, err = db.PrepareContext(ctx, getRoute); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoute: %w", err)
 	}
+	if q.getUserStmt, err = db.PrepareContext(ctx, getUser); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUser: %w", err)
+	}
 	if q.incrementAssessmentVersionStmt, err = db.PrepareContext(ctx, incrementAssessmentVersion); err != nil {
 		return nil, fmt.Errorf("error preparing query IncrementAssessmentVersion: %w", err)
 	}
@@ -143,6 +152,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.listAssessmentsByStatusStmt, err = db.PrepareContext(ctx, listAssessmentsByStatus); err != nil {
 		return nil, fmt.Errorf("error preparing query ListAssessmentsByStatus: %w", err)
+	}
+	if q.listAuditLogsStmt, err = db.PrepareContext(ctx, listAuditLogs); err != nil {
+		return nil, fmt.Errorf("error preparing query ListAuditLogs: %w", err)
 	}
 	if q.listCarbonCreditsStmt, err = db.PrepareContext(ctx, listCarbonCredits); err != nil {
 		return nil, fmt.Errorf("error preparing query ListCarbonCredits: %w", err)
@@ -164,6 +176,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.listRoutesStmt, err = db.PrepareContext(ctx, listRoutes); err != nil {
 		return nil, fmt.Errorf("error preparing query ListRoutes: %w", err)
+	}
+	if q.updateAssessmentDecisionRecordStmt, err = db.PrepareContext(ctx, updateAssessmentDecisionRecord); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateAssessmentDecisionRecord: %w", err)
+	}
+	if q.updateAssessmentFullResultsStmt, err = db.PrepareContext(ctx, updateAssessmentFullResults); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateAssessmentFullResults: %w", err)
 	}
 	if q.updateAssessmentInputsStmt, err = db.PrepareContext(ctx, updateAssessmentInputs); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAssessmentInputs: %w", err)
@@ -188,6 +206,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.updateRouteStmt, err = db.PrepareContext(ctx, updateRoute); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateRoute: %w", err)
+	}
+	if q.updateUserStmt, err = db.PrepareContext(ctx, updateUser); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUser: %w", err)
 	}
 	return &q, nil
 }
@@ -242,6 +263,11 @@ func (q *Queries) Close() error {
 	if q.createAssessmentStmt != nil {
 		if cerr := q.createAssessmentStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createAssessmentStmt: %w", cerr)
+		}
+	}
+	if q.createAuditLogStmt != nil {
+		if cerr := q.createAuditLogStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createAuditLogStmt: %w", cerr)
 		}
 	}
 	if q.createCarbonCreditStmt != nil {
@@ -339,6 +365,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getCarbonCreditStmt: %w", cerr)
 		}
 	}
+	if q.getDashboardStatsStmt != nil {
+		if cerr := q.getDashboardStatsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getDashboardStatsStmt: %w", cerr)
+		}
+	}
 	if q.getDataCenterStmt != nil {
 		if cerr := q.getDataCenterStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getDataCenterStmt: %w", cerr)
@@ -379,6 +410,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getRouteStmt: %w", cerr)
 		}
 	}
+	if q.getUserStmt != nil {
+		if cerr := q.getUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserStmt: %w", cerr)
+		}
+	}
 	if q.incrementAssessmentVersionStmt != nil {
 		if cerr := q.incrementAssessmentVersionStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing incrementAssessmentVersionStmt: %w", cerr)
@@ -392,6 +428,11 @@ func (q *Queries) Close() error {
 	if q.listAssessmentsByStatusStmt != nil {
 		if cerr := q.listAssessmentsByStatusStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listAssessmentsByStatusStmt: %w", cerr)
+		}
+	}
+	if q.listAuditLogsStmt != nil {
+		if cerr := q.listAuditLogsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listAuditLogsStmt: %w", cerr)
 		}
 	}
 	if q.listCarbonCreditsStmt != nil {
@@ -427,6 +468,16 @@ func (q *Queries) Close() error {
 	if q.listRoutesStmt != nil {
 		if cerr := q.listRoutesStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listRoutesStmt: %w", cerr)
+		}
+	}
+	if q.updateAssessmentDecisionRecordStmt != nil {
+		if cerr := q.updateAssessmentDecisionRecordStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateAssessmentDecisionRecordStmt: %w", cerr)
+		}
+	}
+	if q.updateAssessmentFullResultsStmt != nil {
+		if cerr := q.updateAssessmentFullResultsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateAssessmentFullResultsStmt: %w", cerr)
 		}
 	}
 	if q.updateAssessmentInputsStmt != nil {
@@ -467,6 +518,11 @@ func (q *Queries) Close() error {
 	if q.updateRouteStmt != nil {
 		if cerr := q.updateRouteStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateRouteStmt: %w", cerr)
+		}
+	}
+	if q.updateUserStmt != nil {
+		if cerr := q.updateUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserStmt: %w", cerr)
 		}
 	}
 	return err
@@ -518,6 +574,7 @@ type Queries struct {
 	countPredictionResultsStmt           *sql.Stmt
 	countRoutesStmt                      *sql.Stmt
 	createAssessmentStmt                 *sql.Stmt
+	createAuditLogStmt                   *sql.Stmt
 	createCarbonCreditStmt               *sql.Stmt
 	createDataCenterStmt                 *sql.Stmt
 	createDemandSiteStmt                 *sql.Stmt
@@ -537,6 +594,7 @@ type Queries struct {
 	getAssessmentStmt                    *sql.Stmt
 	getAssessmentsByJurisdictionStmt     *sql.Stmt
 	getCarbonCreditStmt                  *sql.Stmt
+	getDashboardStatsStmt                *sql.Stmt
 	getDataCenterStmt                    *sql.Stmt
 	getDemandSiteStmt                    *sql.Stmt
 	getHeatCenterStmt                    *sql.Stmt
@@ -545,9 +603,11 @@ type Queries struct {
 	getPredictionResultsByDataCenterStmt *sql.Stmt
 	getPredictionResultsByScenarioStmt   *sql.Stmt
 	getRouteStmt                         *sql.Stmt
+	getUserStmt                          *sql.Stmt
 	incrementAssessmentVersionStmt       *sql.Stmt
 	listAssessmentsStmt                  *sql.Stmt
 	listAssessmentsByStatusStmt          *sql.Stmt
+	listAuditLogsStmt                    *sql.Stmt
 	listCarbonCreditsStmt                *sql.Stmt
 	listDataCentersStmt                  *sql.Stmt
 	listDemandSitesStmt                  *sql.Stmt
@@ -555,6 +615,8 @@ type Queries struct {
 	listHeatSinksStmt                    *sql.Stmt
 	listPredictionResultsStmt            *sql.Stmt
 	listRoutesStmt                       *sql.Stmt
+	updateAssessmentDecisionRecordStmt   *sql.Stmt
+	updateAssessmentFullResultsStmt      *sql.Stmt
 	updateAssessmentInputsStmt           *sql.Stmt
 	updateAssessmentResultsStmt          *sql.Stmt
 	updateCarbonCreditStmt               *sql.Stmt
@@ -563,6 +625,7 @@ type Queries struct {
 	updateHeatCenterStmt                 *sql.Stmt
 	updateHeatSinkStmt                   *sql.Stmt
 	updateRouteStmt                      *sql.Stmt
+	updateUserStmt                       *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -579,6 +642,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		countPredictionResultsStmt:           q.countPredictionResultsStmt,
 		countRoutesStmt:                      q.countRoutesStmt,
 		createAssessmentStmt:                 q.createAssessmentStmt,
+		createAuditLogStmt:                   q.createAuditLogStmt,
 		createCarbonCreditStmt:               q.createCarbonCreditStmt,
 		createDataCenterStmt:                 q.createDataCenterStmt,
 		createDemandSiteStmt:                 q.createDemandSiteStmt,
@@ -598,6 +662,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getAssessmentStmt:                    q.getAssessmentStmt,
 		getAssessmentsByJurisdictionStmt:     q.getAssessmentsByJurisdictionStmt,
 		getCarbonCreditStmt:                  q.getCarbonCreditStmt,
+		getDashboardStatsStmt:                q.getDashboardStatsStmt,
 		getDataCenterStmt:                    q.getDataCenterStmt,
 		getDemandSiteStmt:                    q.getDemandSiteStmt,
 		getHeatCenterStmt:                    q.getHeatCenterStmt,
@@ -606,9 +671,11 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getPredictionResultsByDataCenterStmt: q.getPredictionResultsByDataCenterStmt,
 		getPredictionResultsByScenarioStmt:   q.getPredictionResultsByScenarioStmt,
 		getRouteStmt:                         q.getRouteStmt,
+		getUserStmt:                          q.getUserStmt,
 		incrementAssessmentVersionStmt:       q.incrementAssessmentVersionStmt,
 		listAssessmentsStmt:                  q.listAssessmentsStmt,
 		listAssessmentsByStatusStmt:          q.listAssessmentsByStatusStmt,
+		listAuditLogsStmt:                    q.listAuditLogsStmt,
 		listCarbonCreditsStmt:                q.listCarbonCreditsStmt,
 		listDataCentersStmt:                  q.listDataCentersStmt,
 		listDemandSitesStmt:                  q.listDemandSitesStmt,
@@ -616,6 +683,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		listHeatSinksStmt:                    q.listHeatSinksStmt,
 		listPredictionResultsStmt:            q.listPredictionResultsStmt,
 		listRoutesStmt:                       q.listRoutesStmt,
+		updateAssessmentDecisionRecordStmt:   q.updateAssessmentDecisionRecordStmt,
+		updateAssessmentFullResultsStmt:      q.updateAssessmentFullResultsStmt,
 		updateAssessmentInputsStmt:           q.updateAssessmentInputsStmt,
 		updateAssessmentResultsStmt:          q.updateAssessmentResultsStmt,
 		updateCarbonCreditStmt:               q.updateCarbonCreditStmt,
@@ -624,5 +693,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		updateHeatCenterStmt:                 q.updateHeatCenterStmt,
 		updateHeatSinkStmt:                   q.updateHeatSinkStmt,
 		updateRouteStmt:                      q.updateRouteStmt,
+		updateUserStmt:                       q.updateUserStmt,
 	}
 }

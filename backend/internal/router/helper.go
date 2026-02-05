@@ -9,6 +9,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// ... existing code ...
+
 // Helpers to map sqlc models to proto messages
 func toProtoTimestamp(s string) *timestamppb.Timestamp {
 	if s == "" {

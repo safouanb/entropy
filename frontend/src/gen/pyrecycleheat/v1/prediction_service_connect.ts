@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateCarbonCreditResponse, CreateDataCenterResponse, CreateHeatSinkResponse, DeleteCarbonCreditRequest, DeleteCarbonCreditResponse, DeleteDataCenterRequest, DeleteDataCenterResponse, DeleteHeatSinkRequest, DeleteHeatSinkResponse, DeletePredictionResultRequest, DeletePredictionResultResponse, GetCarbonCreditRequest, GetCarbonCreditResponse, GetDataCenterRequest, GetDataCenterResponse, GetHeatSinkRequest, GetHeatSinkResponse, GetPredictionAnalyticsRequest, GetPredictionAnalyticsResponse, GetPredictionResultResponse, ListCarbonCreditsRequest, ListCarbonCreditsResponse, ListDataCentersRequest, ListDataCentersResponse, ListHeatSinksRequest, ListHeatSinksResponse, ListNearbyHeatSinksRequest, ListNearbyHeatSinksResponse, ListPredictionResultsRequest, ListPredictionResultsResponse, UpdateCarbonCreditResponse, UpdateDataCenterResponse, UpdateHeatSinkResponse } from "./prediction_service_pb.js";
+import { CheckComplianceRequest, CheckComplianceResponse, CreateCarbonCreditResponse, CreateDataCenterResponse, CreateHeatSinkResponse, DeleteCarbonCreditRequest, DeleteCarbonCreditResponse, DeleteDataCenterRequest, DeleteDataCenterResponse, DeleteHeatSinkRequest, DeleteHeatSinkResponse, DeletePredictionResultRequest, DeletePredictionResultResponse, GetCarbonCreditRequest, GetCarbonCreditResponse, GetDashboardStatsRequest, GetDashboardStatsResponse, GetDataCenterRequest, GetDataCenterResponse, GetHeatSinkRequest, GetHeatSinkResponse, GetPredictionAnalyticsRequest, GetPredictionAnalyticsResponse, GetPredictionResultResponse, GetUserRequest, GetUserResponse, ListActivityStreamRequest, ListActivityStreamResponse, ListCarbonCreditsRequest, ListCarbonCreditsResponse, ListDataCentersRequest, ListDataCentersResponse, ListHeatSinksRequest, ListHeatSinksResponse, ListNearbyHeatSinksRequest, ListNearbyHeatSinksResponse, ListPredictionResultsRequest, ListPredictionResultsResponse, UpdateCarbonCreditResponse, UpdateDataCenterResponse, UpdateHeatSinkResponse, UpdateUserRequest, UpdateUserResponse } from "./prediction_service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 import { CalculatePredictionRequest, CalculatePredictionResponse, CreateCarbonCreditRequest, CreateDataCenterRequest, CreateHeatSinkRequest, GetPredictionResultRequest, UpdateCarbonCreditRequest, UpdateDataCenterRequest, UpdateHeatSinkRequest } from "./prediction_pb.js";
 
@@ -202,6 +202,53 @@ export const PredictionService = {
       name: "GetPredictionAnalytics",
       I: GetPredictionAnalyticsRequest,
       O: GetPredictionAnalyticsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc pyrecycleheat.v1.PredictionService.CheckCompliance
+     */
+    checkCompliance: {
+      name: "CheckCompliance",
+      I: CheckComplianceRequest,
+      O: CheckComplianceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Dashboard & Settings RPCs
+     *
+     * @generated from rpc pyrecycleheat.v1.PredictionService.GetDashboardStats
+     */
+    getDashboardStats: {
+      name: "GetDashboardStats",
+      I: GetDashboardStatsRequest,
+      O: GetDashboardStatsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc pyrecycleheat.v1.PredictionService.ListActivityStream
+     */
+    listActivityStream: {
+      name: "ListActivityStream",
+      I: ListActivityStreamRequest,
+      O: ListActivityStreamResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc pyrecycleheat.v1.PredictionService.GetUser
+     */
+    getUser: {
+      name: "GetUser",
+      I: GetUserRequest,
+      O: GetUserResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc pyrecycleheat.v1.PredictionService.UpdateUser
+     */
+    updateUser: {
+      name: "UpdateUser",
+      I: UpdateUserRequest,
+      O: UpdateUserResponse,
       kind: MethodKind.Unary,
     },
   }

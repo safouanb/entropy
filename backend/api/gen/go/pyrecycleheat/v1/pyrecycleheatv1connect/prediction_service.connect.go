@@ -96,6 +96,21 @@ const (
 	// PredictionServiceGetPredictionAnalyticsProcedure is the fully-qualified name of the
 	// PredictionService's GetPredictionAnalytics RPC.
 	PredictionServiceGetPredictionAnalyticsProcedure = "/pyrecycleheat.v1.PredictionService/GetPredictionAnalytics"
+	// PredictionServiceCheckComplianceProcedure is the fully-qualified name of the PredictionService's
+	// CheckCompliance RPC.
+	PredictionServiceCheckComplianceProcedure = "/pyrecycleheat.v1.PredictionService/CheckCompliance"
+	// PredictionServiceGetDashboardStatsProcedure is the fully-qualified name of the
+	// PredictionService's GetDashboardStats RPC.
+	PredictionServiceGetDashboardStatsProcedure = "/pyrecycleheat.v1.PredictionService/GetDashboardStats"
+	// PredictionServiceListActivityStreamProcedure is the fully-qualified name of the
+	// PredictionService's ListActivityStream RPC.
+	PredictionServiceListActivityStreamProcedure = "/pyrecycleheat.v1.PredictionService/ListActivityStream"
+	// PredictionServiceGetUserProcedure is the fully-qualified name of the PredictionService's GetUser
+	// RPC.
+	PredictionServiceGetUserProcedure = "/pyrecycleheat.v1.PredictionService/GetUser"
+	// PredictionServiceUpdateUserProcedure is the fully-qualified name of the PredictionService's
+	// UpdateUser RPC.
+	PredictionServiceUpdateUserProcedure = "/pyrecycleheat.v1.PredictionService/UpdateUser"
 )
 
 // PredictionServiceClient is a client for the pyrecycleheat.v1.PredictionService service.
@@ -122,6 +137,12 @@ type PredictionServiceClient interface {
 	DeletePredictionResult(context.Context, *connect.Request[v1.DeletePredictionResultRequest]) (*connect.Response[v1.DeletePredictionResultResponse], error)
 	ListNearbyHeatSinks(context.Context, *connect.Request[v1.ListNearbyHeatSinksRequest]) (*connect.Response[v1.ListNearbyHeatSinksResponse], error)
 	GetPredictionAnalytics(context.Context, *connect.Request[v1.GetPredictionAnalyticsRequest]) (*connect.Response[v1.GetPredictionAnalyticsResponse], error)
+	CheckCompliance(context.Context, *connect.Request[v1.CheckComplianceRequest]) (*connect.Response[v1.CheckComplianceResponse], error)
+	// Dashboard & Settings RPCs
+	GetDashboardStats(context.Context, *connect.Request[v1.GetDashboardStatsRequest]) (*connect.Response[v1.GetDashboardStatsResponse], error)
+	ListActivityStream(context.Context, *connect.Request[v1.ListActivityStreamRequest]) (*connect.Response[v1.ListActivityStreamResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
 
 // NewPredictionServiceClient constructs a client for the pyrecycleheat.v1.PredictionService
@@ -261,6 +282,36 @@ func NewPredictionServiceClient(httpClient connect.HTTPClient, baseURL string, o
 			connect.WithSchema(predictionServiceMethods.ByName("GetPredictionAnalytics")),
 			connect.WithClientOptions(opts...),
 		),
+		checkCompliance: connect.NewClient[v1.CheckComplianceRequest, v1.CheckComplianceResponse](
+			httpClient,
+			baseURL+PredictionServiceCheckComplianceProcedure,
+			connect.WithSchema(predictionServiceMethods.ByName("CheckCompliance")),
+			connect.WithClientOptions(opts...),
+		),
+		getDashboardStats: connect.NewClient[v1.GetDashboardStatsRequest, v1.GetDashboardStatsResponse](
+			httpClient,
+			baseURL+PredictionServiceGetDashboardStatsProcedure,
+			connect.WithSchema(predictionServiceMethods.ByName("GetDashboardStats")),
+			connect.WithClientOptions(opts...),
+		),
+		listActivityStream: connect.NewClient[v1.ListActivityStreamRequest, v1.ListActivityStreamResponse](
+			httpClient,
+			baseURL+PredictionServiceListActivityStreamProcedure,
+			connect.WithSchema(predictionServiceMethods.ByName("ListActivityStream")),
+			connect.WithClientOptions(opts...),
+		),
+		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
+			httpClient,
+			baseURL+PredictionServiceGetUserProcedure,
+			connect.WithSchema(predictionServiceMethods.ByName("GetUser")),
+			connect.WithClientOptions(opts...),
+		),
+		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
+			httpClient,
+			baseURL+PredictionServiceUpdateUserProcedure,
+			connect.WithSchema(predictionServiceMethods.ByName("UpdateUser")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -287,6 +338,11 @@ type predictionServiceClient struct {
 	deletePredictionResult *connect.Client[v1.DeletePredictionResultRequest, v1.DeletePredictionResultResponse]
 	listNearbyHeatSinks    *connect.Client[v1.ListNearbyHeatSinksRequest, v1.ListNearbyHeatSinksResponse]
 	getPredictionAnalytics *connect.Client[v1.GetPredictionAnalyticsRequest, v1.GetPredictionAnalyticsResponse]
+	checkCompliance        *connect.Client[v1.CheckComplianceRequest, v1.CheckComplianceResponse]
+	getDashboardStats      *connect.Client[v1.GetDashboardStatsRequest, v1.GetDashboardStatsResponse]
+	listActivityStream     *connect.Client[v1.ListActivityStreamRequest, v1.ListActivityStreamResponse]
+	getUser                *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser             *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 }
 
 // ListDataCenters calls pyrecycleheat.v1.PredictionService.ListDataCenters.
@@ -394,6 +450,31 @@ func (c *predictionServiceClient) GetPredictionAnalytics(ctx context.Context, re
 	return c.getPredictionAnalytics.CallUnary(ctx, req)
 }
 
+// CheckCompliance calls pyrecycleheat.v1.PredictionService.CheckCompliance.
+func (c *predictionServiceClient) CheckCompliance(ctx context.Context, req *connect.Request[v1.CheckComplianceRequest]) (*connect.Response[v1.CheckComplianceResponse], error) {
+	return c.checkCompliance.CallUnary(ctx, req)
+}
+
+// GetDashboardStats calls pyrecycleheat.v1.PredictionService.GetDashboardStats.
+func (c *predictionServiceClient) GetDashboardStats(ctx context.Context, req *connect.Request[v1.GetDashboardStatsRequest]) (*connect.Response[v1.GetDashboardStatsResponse], error) {
+	return c.getDashboardStats.CallUnary(ctx, req)
+}
+
+// ListActivityStream calls pyrecycleheat.v1.PredictionService.ListActivityStream.
+func (c *predictionServiceClient) ListActivityStream(ctx context.Context, req *connect.Request[v1.ListActivityStreamRequest]) (*connect.Response[v1.ListActivityStreamResponse], error) {
+	return c.listActivityStream.CallUnary(ctx, req)
+}
+
+// GetUser calls pyrecycleheat.v1.PredictionService.GetUser.
+func (c *predictionServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return c.getUser.CallUnary(ctx, req)
+}
+
+// UpdateUser calls pyrecycleheat.v1.PredictionService.UpdateUser.
+func (c *predictionServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return c.updateUser.CallUnary(ctx, req)
+}
+
 // PredictionServiceHandler is an implementation of the pyrecycleheat.v1.PredictionService service.
 type PredictionServiceHandler interface {
 	ListDataCenters(context.Context, *connect.Request[v1.ListDataCentersRequest]) (*connect.Response[v1.ListDataCentersResponse], error)
@@ -418,6 +499,12 @@ type PredictionServiceHandler interface {
 	DeletePredictionResult(context.Context, *connect.Request[v1.DeletePredictionResultRequest]) (*connect.Response[v1.DeletePredictionResultResponse], error)
 	ListNearbyHeatSinks(context.Context, *connect.Request[v1.ListNearbyHeatSinksRequest]) (*connect.Response[v1.ListNearbyHeatSinksResponse], error)
 	GetPredictionAnalytics(context.Context, *connect.Request[v1.GetPredictionAnalyticsRequest]) (*connect.Response[v1.GetPredictionAnalyticsResponse], error)
+	CheckCompliance(context.Context, *connect.Request[v1.CheckComplianceRequest]) (*connect.Response[v1.CheckComplianceResponse], error)
+	// Dashboard & Settings RPCs
+	GetDashboardStats(context.Context, *connect.Request[v1.GetDashboardStatsRequest]) (*connect.Response[v1.GetDashboardStatsResponse], error)
+	ListActivityStream(context.Context, *connect.Request[v1.ListActivityStreamRequest]) (*connect.Response[v1.ListActivityStreamResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
 
 // NewPredictionServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -553,6 +640,36 @@ func NewPredictionServiceHandler(svc PredictionServiceHandler, opts ...connect.H
 		connect.WithSchema(predictionServiceMethods.ByName("GetPredictionAnalytics")),
 		connect.WithHandlerOptions(opts...),
 	)
+	predictionServiceCheckComplianceHandler := connect.NewUnaryHandler(
+		PredictionServiceCheckComplianceProcedure,
+		svc.CheckCompliance,
+		connect.WithSchema(predictionServiceMethods.ByName("CheckCompliance")),
+		connect.WithHandlerOptions(opts...),
+	)
+	predictionServiceGetDashboardStatsHandler := connect.NewUnaryHandler(
+		PredictionServiceGetDashboardStatsProcedure,
+		svc.GetDashboardStats,
+		connect.WithSchema(predictionServiceMethods.ByName("GetDashboardStats")),
+		connect.WithHandlerOptions(opts...),
+	)
+	predictionServiceListActivityStreamHandler := connect.NewUnaryHandler(
+		PredictionServiceListActivityStreamProcedure,
+		svc.ListActivityStream,
+		connect.WithSchema(predictionServiceMethods.ByName("ListActivityStream")),
+		connect.WithHandlerOptions(opts...),
+	)
+	predictionServiceGetUserHandler := connect.NewUnaryHandler(
+		PredictionServiceGetUserProcedure,
+		svc.GetUser,
+		connect.WithSchema(predictionServiceMethods.ByName("GetUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	predictionServiceUpdateUserHandler := connect.NewUnaryHandler(
+		PredictionServiceUpdateUserProcedure,
+		svc.UpdateUser,
+		connect.WithSchema(predictionServiceMethods.ByName("UpdateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/pyrecycleheat.v1.PredictionService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PredictionServiceListDataCentersProcedure:
@@ -597,6 +714,16 @@ func NewPredictionServiceHandler(svc PredictionServiceHandler, opts ...connect.H
 			predictionServiceListNearbyHeatSinksHandler.ServeHTTP(w, r)
 		case PredictionServiceGetPredictionAnalyticsProcedure:
 			predictionServiceGetPredictionAnalyticsHandler.ServeHTTP(w, r)
+		case PredictionServiceCheckComplianceProcedure:
+			predictionServiceCheckComplianceHandler.ServeHTTP(w, r)
+		case PredictionServiceGetDashboardStatsProcedure:
+			predictionServiceGetDashboardStatsHandler.ServeHTTP(w, r)
+		case PredictionServiceListActivityStreamProcedure:
+			predictionServiceListActivityStreamHandler.ServeHTTP(w, r)
+		case PredictionServiceGetUserProcedure:
+			predictionServiceGetUserHandler.ServeHTTP(w, r)
+		case PredictionServiceUpdateUserProcedure:
+			predictionServiceUpdateUserHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -688,4 +815,24 @@ func (UnimplementedPredictionServiceHandler) ListNearbyHeatSinks(context.Context
 
 func (UnimplementedPredictionServiceHandler) GetPredictionAnalytics(context.Context, *connect.Request[v1.GetPredictionAnalyticsRequest]) (*connect.Response[v1.GetPredictionAnalyticsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.GetPredictionAnalytics is not implemented"))
+}
+
+func (UnimplementedPredictionServiceHandler) CheckCompliance(context.Context, *connect.Request[v1.CheckComplianceRequest]) (*connect.Response[v1.CheckComplianceResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.CheckCompliance is not implemented"))
+}
+
+func (UnimplementedPredictionServiceHandler) GetDashboardStats(context.Context, *connect.Request[v1.GetDashboardStatsRequest]) (*connect.Response[v1.GetDashboardStatsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.GetDashboardStats is not implemented"))
+}
+
+func (UnimplementedPredictionServiceHandler) ListActivityStream(context.Context, *connect.Request[v1.ListActivityStreamRequest]) (*connect.Response[v1.ListActivityStreamResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.ListActivityStream is not implemented"))
+}
+
+func (UnimplementedPredictionServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.GetUser is not implemented"))
+}
+
+func (UnimplementedPredictionServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pyrecycleheat.v1.PredictionService.UpdateUser is not implemented"))
 }

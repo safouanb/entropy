@@ -53,7 +53,7 @@ INSERT INTO feasibility_assessments (
     status
 ) VALUES (
     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-) RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at
+) RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
 `
 
 type CreateAssessmentParams struct {
@@ -124,6 +124,12 @@ func (q *Queries) CreateAssessment(ctx context.Context, arg CreateAssessmentPara
 		&i.UpdatedAt,
 		&i.SubmittedAt,
 		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
 	)
 	return i, err
 }
@@ -138,7 +144,7 @@ func (q *Queries) DeleteAssessment(ctx context.Context, id int64) error {
 }
 
 const getAssessment = `-- name: GetAssessment :one
-SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at FROM feasibility_assessments WHERE id = ?
+SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level FROM feasibility_assessments WHERE id = ?
 `
 
 func (q *Queries) GetAssessment(ctx context.Context, id int64) (FeasibilityAssessment, error) {
@@ -171,12 +177,18 @@ func (q *Queries) GetAssessment(ctx context.Context, id int64) (FeasibilityAsses
 		&i.UpdatedAt,
 		&i.SubmittedAt,
 		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
 	)
 	return i, err
 }
 
 const getAssessmentsByJurisdiction = `-- name: GetAssessmentsByJurisdiction :many
-SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at FROM feasibility_assessments 
+SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level FROM feasibility_assessments 
 WHERE jurisdiction = ?
 ORDER BY created_at DESC
 LIMIT ? OFFSET ?
@@ -224,6 +236,12 @@ func (q *Queries) GetAssessmentsByJurisdiction(ctx context.Context, arg GetAsses
 			&i.UpdatedAt,
 			&i.SubmittedAt,
 			&i.CompletedAt,
+			&i.StakeholdersJson,
+			&i.RiskAllocationJson,
+			&i.AuditTrailJson,
+			&i.RecordVersion,
+			&i.PreparedBy,
+			&i.ConfidenceLevel,
 		); err != nil {
 			return nil, err
 		}
@@ -248,7 +266,7 @@ UPDATE feasibility_assessments SET
     updated_at = datetime('now'),
     completed_at = NULL
 WHERE id = ?
-RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at
+RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
 `
 
 func (q *Queries) IncrementAssessmentVersion(ctx context.Context, id int64) (FeasibilityAssessment, error) {
@@ -281,12 +299,18 @@ func (q *Queries) IncrementAssessmentVersion(ctx context.Context, id int64) (Fea
 		&i.UpdatedAt,
 		&i.SubmittedAt,
 		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
 	)
 	return i, err
 }
 
 const listAssessments = `-- name: ListAssessments :many
-SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at FROM feasibility_assessments 
+SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level FROM feasibility_assessments 
 ORDER BY created_at DESC
 LIMIT ? OFFSET ?
 `
@@ -332,6 +356,12 @@ func (q *Queries) ListAssessments(ctx context.Context, arg ListAssessmentsParams
 			&i.UpdatedAt,
 			&i.SubmittedAt,
 			&i.CompletedAt,
+			&i.StakeholdersJson,
+			&i.RiskAllocationJson,
+			&i.AuditTrailJson,
+			&i.RecordVersion,
+			&i.PreparedBy,
+			&i.ConfidenceLevel,
 		); err != nil {
 			return nil, err
 		}
@@ -347,7 +377,7 @@ func (q *Queries) ListAssessments(ctx context.Context, arg ListAssessmentsParams
 }
 
 const listAssessmentsByStatus = `-- name: ListAssessmentsByStatus :many
-SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at FROM feasibility_assessments 
+SELECT id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level FROM feasibility_assessments 
 WHERE status = ?
 ORDER BY created_at DESC
 LIMIT ? OFFSET ?
@@ -395,6 +425,12 @@ func (q *Queries) ListAssessmentsByStatus(ctx context.Context, arg ListAssessmen
 			&i.UpdatedAt,
 			&i.SubmittedAt,
 			&i.CompletedAt,
+			&i.StakeholdersJson,
+			&i.RiskAllocationJson,
+			&i.AuditTrailJson,
+			&i.RecordVersion,
+			&i.PreparedBy,
+			&i.ConfidenceLevel,
 		); err != nil {
 			return nil, err
 		}
@@ -407,6 +443,151 @@ func (q *Queries) ListAssessmentsByStatus(ctx context.Context, arg ListAssessmen
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateAssessmentDecisionRecord = `-- name: UpdateAssessmentDecisionRecord :one
+UPDATE feasibility_assessments SET
+    stakeholders_json = ?,
+    risk_allocation_json = ?,
+    audit_trail_json = ?,
+    record_version = ?,
+    prepared_by = ?,
+    confidence_level = ?,
+    updated_at = datetime('now')
+WHERE id = ?
+RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
+`
+
+type UpdateAssessmentDecisionRecordParams struct {
+	StakeholdersJson   sql.NullString `json:"stakeholders_json"`
+	RiskAllocationJson sql.NullString `json:"risk_allocation_json"`
+	AuditTrailJson     sql.NullString `json:"audit_trail_json"`
+	RecordVersion      sql.NullString `json:"record_version"`
+	PreparedBy         sql.NullString `json:"prepared_by"`
+	ConfidenceLevel    sql.NullString `json:"confidence_level"`
+	ID                 int64          `json:"id"`
+}
+
+func (q *Queries) UpdateAssessmentDecisionRecord(ctx context.Context, arg UpdateAssessmentDecisionRecordParams) (FeasibilityAssessment, error) {
+	row := q.queryRow(ctx, q.updateAssessmentDecisionRecordStmt, updateAssessmentDecisionRecord,
+		arg.StakeholdersJson,
+		arg.RiskAllocationJson,
+		arg.AuditTrailJson,
+		arg.RecordVersion,
+		arg.PreparedBy,
+		arg.ConfidenceLevel,
+		arg.ID,
+	)
+	var i FeasibilityAssessment
+	err := row.Scan(
+		&i.ID,
+		&i.Version,
+		&i.ProjectName,
+		&i.DcLocationLat,
+		&i.DcLocationLng,
+		&i.ThermalLoadMinKw,
+		&i.ThermalLoadMaxKw,
+		&i.AvailabilityProfile,
+		&i.UptimeConstraint,
+		&i.ExistingCooling,
+		&i.InvestmentWillingness,
+		&i.DistanceToOfftakerKm,
+		&i.HeatDemandProfile,
+		&i.SupplyTempRequiredC,
+		&i.ExistingDhInfra,
+		&i.Jurisdiction,
+		&i.ApplicableRegulation,
+		&i.TimeHorizonYears,
+		&i.Status,
+		&i.ScenarioResults,
+		&i.ComplianceResult,
+		&i.Conclusion,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SubmittedAt,
+		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
+	)
+	return i, err
+}
+
+const updateAssessmentFullResults = `-- name: UpdateAssessmentFullResults :one
+UPDATE feasibility_assessments SET
+    scenario_results = ?,
+    compliance_result = ?,
+    risk_allocation_json = ?,
+    conclusion = ?,
+    confidence_level = ?,
+    status = ?,
+    updated_at = datetime('now'),
+    completed_at = CASE WHEN ? = 'completed' THEN datetime('now') ELSE completed_at END
+WHERE id = ?
+RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
+`
+
+type UpdateAssessmentFullResultsParams struct {
+	ScenarioResults    sql.NullString `json:"scenario_results"`
+	ComplianceResult   sql.NullString `json:"compliance_result"`
+	RiskAllocationJson sql.NullString `json:"risk_allocation_json"`
+	Conclusion         sql.NullString `json:"conclusion"`
+	ConfidenceLevel    sql.NullString `json:"confidence_level"`
+	Status             string         `json:"status"`
+	Column7            interface{}    `json:"column_7"`
+	ID                 int64          `json:"id"`
+}
+
+func (q *Queries) UpdateAssessmentFullResults(ctx context.Context, arg UpdateAssessmentFullResultsParams) (FeasibilityAssessment, error) {
+	row := q.queryRow(ctx, q.updateAssessmentFullResultsStmt, updateAssessmentFullResults,
+		arg.ScenarioResults,
+		arg.ComplianceResult,
+		arg.RiskAllocationJson,
+		arg.Conclusion,
+		arg.ConfidenceLevel,
+		arg.Status,
+		arg.Column7,
+		arg.ID,
+	)
+	var i FeasibilityAssessment
+	err := row.Scan(
+		&i.ID,
+		&i.Version,
+		&i.ProjectName,
+		&i.DcLocationLat,
+		&i.DcLocationLng,
+		&i.ThermalLoadMinKw,
+		&i.ThermalLoadMaxKw,
+		&i.AvailabilityProfile,
+		&i.UptimeConstraint,
+		&i.ExistingCooling,
+		&i.InvestmentWillingness,
+		&i.DistanceToOfftakerKm,
+		&i.HeatDemandProfile,
+		&i.SupplyTempRequiredC,
+		&i.ExistingDhInfra,
+		&i.Jurisdiction,
+		&i.ApplicableRegulation,
+		&i.TimeHorizonYears,
+		&i.Status,
+		&i.ScenarioResults,
+		&i.ComplianceResult,
+		&i.Conclusion,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SubmittedAt,
+		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
+	)
+	return i, err
 }
 
 const updateAssessmentInputs = `-- name: UpdateAssessmentInputs :one
@@ -429,7 +610,7 @@ UPDATE feasibility_assessments SET
     time_horizon_years = ?,
     updated_at = datetime('now')
 WHERE id = ?
-RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at
+RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
 `
 
 type UpdateAssessmentInputsParams struct {
@@ -500,6 +681,12 @@ func (q *Queries) UpdateAssessmentInputs(ctx context.Context, arg UpdateAssessme
 		&i.UpdatedAt,
 		&i.SubmittedAt,
 		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
 	)
 	return i, err
 }
@@ -513,7 +700,7 @@ UPDATE feasibility_assessments SET
     updated_at = datetime('now'),
     completed_at = CASE WHEN ? = 'completed' THEN datetime('now') ELSE completed_at END
 WHERE id = ?
-RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at
+RETURNING id, version, project_name, dc_location_lat, dc_location_lng, thermal_load_min_kw, thermal_load_max_kw, availability_profile, uptime_constraint, existing_cooling, investment_willingness, distance_to_offtaker_km, heat_demand_profile, supply_temp_required_c, existing_dh_infra, jurisdiction, applicable_regulation, time_horizon_years, status, scenario_results, compliance_result, conclusion, created_at, updated_at, submitted_at, completed_at, stakeholders_json, risk_allocation_json, audit_trail_json, record_version, prepared_by, confidence_level
 `
 
 type UpdateAssessmentResultsParams struct {
@@ -562,6 +749,12 @@ func (q *Queries) UpdateAssessmentResults(ctx context.Context, arg UpdateAssessm
 		&i.UpdatedAt,
 		&i.SubmittedAt,
 		&i.CompletedAt,
+		&i.StakeholdersJson,
+		&i.RiskAllocationJson,
+		&i.AuditTrailJson,
+		&i.RecordVersion,
+		&i.PreparedBy,
+		&i.ConfidenceLevel,
 	)
 	return i, err
 }

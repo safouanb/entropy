@@ -4,11 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"time"
 
 	"connectrpc.com/connect"
 	pyv1 "github.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v1"
+	"github.com/pyrecycleheat/backend/internal/compliance"
 	db "github.com/pyrecycleheat/backend/internal/database"
 	"github.com/pyrecycleheat/backend/internal/service"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type predictionRPC struct {
@@ -511,4 +514,56 @@ func (h *predictionRPC) GetPredictionAnalytics(ctx context.Context, _ *connect.R
 		},
 	}
 	return connect.NewResponse(out), nil
+}
+
+// CheckCompliance assesses regulatory obligations
+func (h *predictionRPC) CheckCompliance(ctx context.Context, req *connect.Request[pyv1.CheckComplianceRequest]) (*connect.Response[pyv1.CheckComplianceResponse], error) {
+	planDate := time.Now()
+	// Fix: GetPlanDate returns *timestamppb.Timestamp
+	if req.Msg.GetPlanDate() != nil {
+		planDate = req.Msg.GetPlanDate().AsTime()
+	}
+
+	compReq := compliance.ComplianceRequest{
+		Jurisdiction:      compliance.Jurisdiction(req.Msg.GetJurisdiction()),
+		TotalITLoadKW:     req.Msg.GetTotalItLoadKw(),
+		PlanDate:          planDate,
+		HeatRecoveryReady: req.Msg.GetHeatRecoveryReady(),
+	}
+
+	// Call service pure method
+	res, err := h.svc.CheckCompliance(ctx, compReq)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	out := &pyv1.CheckComplianceResponse{
+		Status:           string(res.Status),
+		ApplicableLaw:    res.ApplicableLaw,
+		RemediationSteps: res.RemediationSteps,
+		Reasoning:        res.Reasoning,
+	}
+	if res.ComplianceDeadline != nil {
+		out.ComplianceDeadline = timestamppb.New(*res.ComplianceDeadline)
+	}
+
+	return connect.NewResponse(out), nil
+}
+
+// Dashboard & User RPCs - Delegate to Service implementations which are already Connect handlers
+
+func (h *predictionRPC) GetDashboardStats(ctx context.Context, req *connect.Request[pyv1.GetDashboardStatsRequest]) (*connect.Response[pyv1.GetDashboardStatsResponse], error) {
+	return h.svc.GetDashboardStats(ctx, req)
+}
+
+func (h *predictionRPC) ListActivityStream(ctx context.Context, req *connect.Request[pyv1.ListActivityStreamRequest]) (*connect.Response[pyv1.ListActivityStreamResponse], error) {
+	return h.svc.ListActivityStream(ctx, req)
+}
+
+func (h *predictionRPC) GetUser(ctx context.Context, req *connect.Request[pyv1.GetUserRequest]) (*connect.Response[pyv1.GetUserResponse], error) {
+	return h.svc.GetUser(ctx, req)
+}
+
+func (h *predictionRPC) UpdateUser(ctx context.Context, req *connect.Request[pyv1.UpdateUserRequest]) (*connect.Response[pyv1.UpdateUserResponse], error) {
+	return h.svc.UpdateUser(ctx, req)
 }

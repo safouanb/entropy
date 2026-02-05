@@ -8,6 +8,15 @@ import (
 	"database/sql"
 )
 
+type AuditLog struct {
+	ID             int64        `json:"id"`
+	UserIdentifier string       `json:"user_identifier"`
+	Action         string       `json:"action"`
+	EntityType     string       `json:"entity_type"`
+	IconType       string       `json:"icon_type"`
+	CreatedAt      sql.NullTime `json:"created_at"`
+}
+
 type CarbonCredit struct {
 	ID                   int64          `json:"id"`
 	ProjectName          string         `json:"project_name"`
@@ -99,6 +108,12 @@ type FeasibilityAssessment struct {
 	UpdatedAt             sql.NullString `json:"updated_at"`
 	SubmittedAt           sql.NullString `json:"submitted_at"`
 	CompletedAt           sql.NullString `json:"completed_at"`
+	StakeholdersJson      sql.NullString `json:"stakeholders_json"`
+	RiskAllocationJson    sql.NullString `json:"risk_allocation_json"`
+	AuditTrailJson        sql.NullString `json:"audit_trail_json"`
+	RecordVersion         sql.NullString `json:"record_version"`
+	PreparedBy            sql.NullString `json:"prepared_by"`
+	ConfidenceLevel       sql.NullString `json:"confidence_level"`
 }
 
 type HeatCenter struct {
@@ -221,4 +236,16 @@ type SystemConfig struct {
 	IsActive    sql.NullInt64  `json:"is_active"`
 	CreatedAt   string         `json:"created_at"`
 	UpdatedAt   sql.NullString `json:"updated_at"`
+}
+
+type User struct {
+	ID                       int64          `json:"id"`
+	Email                    string         `json:"email"`
+	FirstName                string         `json:"first_name"`
+	LastName                 string         `json:"last_name"`
+	CreatedAt                sql.NullTime   `json:"created_at"`
+	NotifyAssessmentComplete sql.NullBool   `json:"notify_assessment_complete"`
+	NotifyRegulatoryUpdates  sql.NullBool   `json:"notify_regulatory_updates"`
+	ApiKeyLive               sql.NullString `json:"api_key_live"`
+	ApiKeyTest               sql.NullString `json:"api_key_test"`
 }

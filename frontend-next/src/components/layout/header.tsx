@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
 
 export function Header() {
   return (
@@ -9,7 +8,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <span className="font-instrument italic text-xl text-white tracking-tight group-hover:text-emerald-300 transition-colors duration-300">
+          <span className="font-instrument italic text-xl text-white tracking-tight group-hover:text-blue-300 transition-colors duration-300">
             Entropy
           </span>
         </Link>
@@ -24,7 +23,7 @@ export function Header() {
           </Link>
           <Link
             href="/dashboard"
-            className="px-5 py-2.5 bg-white text-black text-sm font-satoshi font-medium rounded-lg hover:bg-emerald-300 hover:text-black transition-all duration-300 transform hover:scale-105"
+            className="px-5 py-2.5 bg-white text-black text-sm font-satoshi font-medium rounded-lg hover:bg-blue-300 hover:text-black transition-all duration-300 transform hover:scale-105"
           >
             Launch Console
           </Link>

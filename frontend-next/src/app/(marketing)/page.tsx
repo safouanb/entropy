@@ -78,18 +78,21 @@ export default function HomePage() {
         onComplete={() => setContentReady(true)}
       />
 
-      <div className="min-h-screen bg-black text-white overflow-x-hidden relative">
+      <div className="min-h-screen bg-[#020616] text-white overflow-x-hidden relative">
         {/* ── Navigation (Handled by Global Header now) ── */}
 
         {/* ── Hero Section - Clean & Focused ── */}
-        <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6">
+        <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(38,99,255,0.78)_0%,rgba(29,78,216,0.5)_38%,rgba(2,6,23,0.96)_74%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(59,130,246,0.2)_0%,rgba(2,6,23,0.9)_60%,rgba(2,6,23,1)_100%)]" />
+
           {/* Single hero effect: Subtle dither */}
-          <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 opacity-40 mix-blend-screen">
             <Dither
               waveSpeed={0.02}
               waveFrequency={1.5}
               waveAmplitude={0.2}
-              waveColor={[0.05, 0.45, 0.3]}
+              waveColor={[0.09, 0.27, 0.98]}
               colorNum={3}
               pixelSize={4}
               enableMouseInteraction={true}
@@ -106,19 +109,19 @@ export default function HomePage() {
               className="mb-8"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-sm text-white/60 mb-8">
-                <Shield className="w-4 h-4 text-emerald-400" />
+                <Shield className="w-4 h-4 text-blue-300" />
                 Decision authority for heat reuse
               </div>
 
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-satoshi font-light tracking-tight mb-6 leading-[0.9]">
                 We determine what is{" "}
-                <span className="font-instrument italic text-emerald-400">
+                <span className="font-instrument italic text-blue-300">
                   defensible.
                 </span>
               </h1>
 
               <p className="text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed">
-                Before you engineer a heat reuse project, know whether it's compliant, financially viable, and who bears the risk.
+                Before you engineer a heat reuse project, know whether it&apos;s compliant, financially viable, and who bears the risk.
               </p>
             </motion.div>
 
@@ -130,7 +133,7 @@ export default function HomePage() {
             >
               <Link
                 href="/assessment/new"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-satoshi font-medium rounded-xl hover:bg-emerald-50 transition-colors duration-300"
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-satoshi font-medium rounded-xl hover:bg-blue-100 transition-colors duration-300"
               >
                 Create Decision Record
                 <ArrowRight className="w-5 h-5" />
@@ -162,7 +165,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <FadeUp>
               <div className="text-center mb-20">
-                <span className="text-xs font-mono text-emerald-400/70 tracking-[0.3em] uppercase mb-4 block">
+                <span className="text-xs font-mono text-blue-300/70 tracking-[0.3em] uppercase mb-4 block">
                   Core artifact
                 </span>
                 <h2 className="text-4xl md:text-5xl mb-5">
@@ -204,8 +207,8 @@ export default function HomePage() {
               ].map((item, i) => (
                 <FadeUp key={i} delay={i * 0.1}>
                   <div className="p-6 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-sm hover:border-white/20 transition-colors duration-300">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-400/10 flex items-center justify-center mb-4">
-                      <item.icon className="w-5 h-5 text-emerald-400" />
+                    <div className="w-10 h-10 rounded-lg bg-blue-400/10 flex items-center justify-center mb-4">
+                      <item.icon className="w-5 h-5 text-blue-300" />
                     </div>
                     <h3 className="text-lg font-satoshi font-medium mb-3 text-white">
                       {item.title}
@@ -227,7 +230,7 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto">
             <FadeUp>
               <div className="text-center mb-20">
-                <span className="text-xs font-mono text-emerald-400/70 tracking-[0.3em] uppercase mb-4 block">
+                <span className="text-xs font-mono text-blue-300/70 tracking-[0.3em] uppercase mb-4 block">
                   How it works
                 </span>
                 <h2 className="text-4xl md:text-5xl mb-5">
@@ -270,8 +273,8 @@ export default function HomePage() {
                 <FadeUp key={i} delay={i * 0.12}>
                   <div className="glass-panel-hover p-8 rounded-2xl h-full group cursor-default">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors duration-500">
-                        <item.icon className="w-5 h-5 text-emerald-400/70 group-hover:text-emerald-400 transition-colors duration-500" />
+                      <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors duration-500">
+                        <item.icon className="w-5 h-5 text-blue-300/70 group-hover:text-blue-300 transition-colors duration-500" />
                       </div>
                       <span className="text-xs font-mono text-white/20 tracking-widest">
                         {item.step}
@@ -305,7 +308,7 @@ export default function HomePage() {
               </p>
               <Link
                 href="/assessment/new"
-                className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-emerald-300 transition-all duration-300 hover:shadow-glow hover:shadow-emerald-400/30 hover:scale-105"
+                className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-satoshi font-semibold rounded-xl text-lg hover:bg-blue-300 transition-all duration-300 hover:shadow-glow hover:shadow-blue-400/30 hover:scale-105"
               >
                 <ScrambleText
                   text="Create Decision Record"

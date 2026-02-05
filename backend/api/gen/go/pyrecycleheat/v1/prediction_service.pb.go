@@ -10,6 +10,7 @@ import (
 	_ "github.com/pyrecycleheat/backend/api/gen/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -1590,11 +1591,731 @@ func (x *GetPredictionAnalyticsResponse) GetPredictionAnalytics() *PredictionAna
 	return nil
 }
 
+type CheckComplianceRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Jurisdiction      string                 `protobuf:"bytes,1,opt,name=jurisdiction,proto3" json:"jurisdiction,omitempty"`
+	TotalItLoadKw     float64                `protobuf:"fixed64,2,opt,name=total_it_load_kw,json=totalItLoadKw,proto3" json:"total_it_load_kw,omitempty"`
+	PlanDate          *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=plan_date,json=planDate,proto3" json:"plan_date,omitempty"`
+	HeatRecoveryReady bool                   `protobuf:"varint,4,opt,name=heat_recovery_ready,json=heatRecoveryReady,proto3" json:"heat_recovery_ready,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *CheckComplianceRequest) Reset() {
+	*x = CheckComplianceRequest{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckComplianceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckComplianceRequest) ProtoMessage() {}
+
+func (x *CheckComplianceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckComplianceRequest.ProtoReflect.Descriptor instead.
+func (*CheckComplianceRequest) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *CheckComplianceRequest) GetJurisdiction() string {
+	if x != nil {
+		return x.Jurisdiction
+	}
+	return ""
+}
+
+func (x *CheckComplianceRequest) GetTotalItLoadKw() float64 {
+	if x != nil {
+		return x.TotalItLoadKw
+	}
+	return 0
+}
+
+func (x *CheckComplianceRequest) GetPlanDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PlanDate
+	}
+	return nil
+}
+
+func (x *CheckComplianceRequest) GetHeatRecoveryReady() bool {
+	if x != nil {
+		return x.HeatRecoveryReady
+	}
+	return false
+}
+
+type CheckComplianceResponse struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Status             string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	ApplicableLaw      string                 `protobuf:"bytes,2,opt,name=applicable_law,json=applicableLaw,proto3" json:"applicable_law,omitempty"`
+	ComplianceDeadline *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=compliance_deadline,json=complianceDeadline,proto3" json:"compliance_deadline,omitempty"`
+	Reasoning          []string               `protobuf:"bytes,4,rep,name=reasoning,proto3" json:"reasoning,omitempty"`
+	RemediationSteps   []string               `protobuf:"bytes,5,rep,name=remediation_steps,json=remediationSteps,proto3" json:"remediation_steps,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *CheckComplianceResponse) Reset() {
+	*x = CheckComplianceResponse{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckComplianceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckComplianceResponse) ProtoMessage() {}
+
+func (x *CheckComplianceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckComplianceResponse.ProtoReflect.Descriptor instead.
+func (*CheckComplianceResponse) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *CheckComplianceResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *CheckComplianceResponse) GetApplicableLaw() string {
+	if x != nil {
+		return x.ApplicableLaw
+	}
+	return ""
+}
+
+func (x *CheckComplianceResponse) GetComplianceDeadline() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ComplianceDeadline
+	}
+	return nil
+}
+
+func (x *CheckComplianceResponse) GetReasoning() []string {
+	if x != nil {
+		return x.Reasoning
+	}
+	return nil
+}
+
+func (x *CheckComplianceResponse) GetRemediationSteps() []string {
+	if x != nil {
+		return x.RemediationSteps
+	}
+	return nil
+}
+
+type GetDashboardStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDashboardStatsRequest) Reset() {
+	*x = GetDashboardStatsRequest{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDashboardStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDashboardStatsRequest) ProtoMessage() {}
+
+func (x *GetDashboardStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDashboardStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetDashboardStatsRequest) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{36}
+}
+
+type GetDashboardStatsResponse struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	ActiveSites          int64                  `protobuf:"varint,1,opt,name=active_sites,json=activeSites,proto3" json:"active_sites,omitempty"`
+	ComplianceRate       int64                  `protobuf:"varint,2,opt,name=compliance_rate,json=complianceRate,proto3" json:"compliance_rate,omitempty"` // Percentage (0-100)
+	AnnualSavings        float64                `protobuf:"fixed64,3,opt,name=annual_savings,json=annualSavings,proto3" json:"annual_savings,omitempty"`   // Monetary value
+	TotalActivities      int64                  `protobuf:"varint,4,opt,name=total_activities,json=totalActivities,proto3" json:"total_activities,omitempty"`
+	CompletedAssessments int64                  `protobuf:"varint,5,opt,name=completed_assessments,json=completedAssessments,proto3" json:"completed_assessments,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *GetDashboardStatsResponse) Reset() {
+	*x = GetDashboardStatsResponse{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDashboardStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDashboardStatsResponse) ProtoMessage() {}
+
+func (x *GetDashboardStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDashboardStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetDashboardStatsResponse) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *GetDashboardStatsResponse) GetActiveSites() int64 {
+	if x != nil {
+		return x.ActiveSites
+	}
+	return 0
+}
+
+func (x *GetDashboardStatsResponse) GetComplianceRate() int64 {
+	if x != nil {
+		return x.ComplianceRate
+	}
+	return 0
+}
+
+func (x *GetDashboardStatsResponse) GetAnnualSavings() float64 {
+	if x != nil {
+		return x.AnnualSavings
+	}
+	return 0
+}
+
+func (x *GetDashboardStatsResponse) GetTotalActivities() int64 {
+	if x != nil {
+		return x.TotalActivities
+	}
+	return 0
+}
+
+func (x *GetDashboardStatsResponse) GetCompletedAssessments() int64 {
+	if x != nil {
+		return x.CompletedAssessments
+	}
+	return 0
+}
+
+type ActivityLogItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	TimeAgo       string                 `protobuf:"bytes,2,opt,name=time_ago,json=timeAgo,proto3" json:"time_ago,omitempty"` // e.g. "10 min ago" (calculated by backend)
+	User          string                 `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`
+	Action        string                 `protobuf:"bytes,4,opt,name=action,proto3" json:"action,omitempty"`
+	Type          string                 `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"` // crawling, approval, market, creation
+	Icon          string                 `protobuf:"bytes,6,opt,name=icon,proto3" json:"icon,omitempty"` // for frontend mapping
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActivityLogItem) Reset() {
+	*x = ActivityLogItem{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActivityLogItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivityLogItem) ProtoMessage() {}
+
+func (x *ActivityLogItem) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivityLogItem.ProtoReflect.Descriptor instead.
+func (*ActivityLogItem) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *ActivityLogItem) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ActivityLogItem) GetTimeAgo() string {
+	if x != nil {
+		return x.TimeAgo
+	}
+	return ""
+}
+
+func (x *ActivityLogItem) GetUser() string {
+	if x != nil {
+		return x.User
+	}
+	return ""
+}
+
+func (x *ActivityLogItem) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *ActivityLogItem) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *ActivityLogItem) GetIcon() string {
+	if x != nil {
+		return x.Icon
+	}
+	return ""
+}
+
+type ListActivityStreamRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListActivityStreamRequest) Reset() {
+	*x = ListActivityStreamRequest{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[39]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListActivityStreamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListActivityStreamRequest) ProtoMessage() {}
+
+func (x *ListActivityStreamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[39]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListActivityStreamRequest.ProtoReflect.Descriptor instead.
+func (*ListActivityStreamRequest) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *ListActivityStreamRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListActivityStreamResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Activities    []*ActivityLogItem     `protobuf:"bytes,1,rep,name=activities,proto3" json:"activities,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListActivityStreamResponse) Reset() {
+	*x = ListActivityStreamResponse{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[40]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListActivityStreamResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListActivityStreamResponse) ProtoMessage() {}
+
+func (x *ListActivityStreamResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[40]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListActivityStreamResponse.ProtoReflect.Descriptor instead.
+func (*ListActivityStreamResponse) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *ListActivityStreamResponse) GetActivities() []*ActivityLogItem {
+	if x != nil {
+		return x.Activities
+	}
+	return nil
+}
+
+type GetUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserRequest) Reset() {
+	*x = GetUserRequest{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[41]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserRequest) ProtoMessage() {}
+
+func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[41]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
+func (*GetUserRequest) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *GetUserRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type UserProfile struct {
+	state                    protoimpl.MessageState `protogen:"open.v1"`
+	FirstName                string                 `protobuf:"bytes,1,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName                 string                 `protobuf:"bytes,2,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Email                    string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	NotifyAssessmentComplete bool                   `protobuf:"varint,4,opt,name=notify_assessment_complete,json=notifyAssessmentComplete,proto3" json:"notify_assessment_complete,omitempty"`
+	NotifyRegulatoryUpdates  bool                   `protobuf:"varint,5,opt,name=notify_regulatory_updates,json=notifyRegulatoryUpdates,proto3" json:"notify_regulatory_updates,omitempty"`
+	ApiKeyLive               string                 `protobuf:"bytes,6,opt,name=api_key_live,json=apiKeyLive,proto3" json:"api_key_live,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *UserProfile) Reset() {
+	*x = UserProfile{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[42]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserProfile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserProfile) ProtoMessage() {}
+
+func (x *UserProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[42]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserProfile.ProtoReflect.Descriptor instead.
+func (*UserProfile) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *UserProfile) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *UserProfile) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *UserProfile) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UserProfile) GetNotifyAssessmentComplete() bool {
+	if x != nil {
+		return x.NotifyAssessmentComplete
+	}
+	return false
+}
+
+func (x *UserProfile) GetNotifyRegulatoryUpdates() bool {
+	if x != nil {
+		return x.NotifyRegulatoryUpdates
+	}
+	return false
+}
+
+func (x *UserProfile) GetApiKeyLive() string {
+	if x != nil {
+		return x.ApiKeyLive
+	}
+	return ""
+}
+
+type GetUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *UserProfile           `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserResponse) Reset() {
+	*x = GetUserResponse{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[43]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserResponse) ProtoMessage() {}
+
+func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[43]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserResponse.ProtoReflect.Descriptor instead.
+func (*GetUserResponse) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *GetUserResponse) GetUser() *UserProfile {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type UpdateUserRequest struct {
+	state                    protoimpl.MessageState `protogen:"open.v1"`
+	Email                    string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	FirstName                string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName                 string                 `protobuf:"bytes,3,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	NotifyAssessmentComplete bool                   `protobuf:"varint,4,opt,name=notify_assessment_complete,json=notifyAssessmentComplete,proto3" json:"notify_assessment_complete,omitempty"`
+	NotifyRegulatoryUpdates  bool                   `protobuf:"varint,5,opt,name=notify_regulatory_updates,json=notifyRegulatoryUpdates,proto3" json:"notify_regulatory_updates,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *UpdateUserRequest) Reset() {
+	*x = UpdateUserRequest{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[44]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserRequest) ProtoMessage() {}
+
+func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[44]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
+func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *UpdateUserRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetNotifyAssessmentComplete() bool {
+	if x != nil {
+		return x.NotifyAssessmentComplete
+	}
+	return false
+}
+
+func (x *UpdateUserRequest) GetNotifyRegulatoryUpdates() bool {
+	if x != nil {
+		return x.NotifyRegulatoryUpdates
+	}
+	return false
+}
+
+type UpdateUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *UserProfile           `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUserResponse) Reset() {
+	*x = UpdateUserResponse{}
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[45]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserResponse) ProtoMessage() {}
+
+func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pyrecycleheat_v1_prediction_service_proto_msgTypes[45]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserResponse.ProtoReflect.Descriptor instead.
+func (*UpdateUserResponse) Descriptor() ([]byte, []int) {
+	return file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *UpdateUserResponse) GetUser() *UserProfile {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
 var File_pyrecycleheat_v1_prediction_service_proto protoreflect.FileDescriptor
 
 const file_pyrecycleheat_v1_prediction_service_proto_rawDesc = "" +
 	"\n" +
-	")pyrecycleheat/v1/prediction_service.proto\x12\x10pyrecycleheat.v1\x1a!pyrecycleheat/v1/prediction.proto\x1a\x1dpyrecycleheat/v1/common.proto\x1a\x1bbuf/validate/validate.proto\"]\n" +
+	")pyrecycleheat/v1/prediction_service.proto\x12\x10pyrecycleheat.v1\x1a!pyrecycleheat/v1/prediction.proto\x1a\x1dpyrecycleheat/v1/common.proto\x1a\x1bbuf/validate/validate.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"]\n" +
 	"\x16ListDataCentersRequest\x12C\n" +
 	"\n" +
 	"pagination\x18\x01 \x01(\v2#.pyrecycleheat.v1.PaginationRequestR\n" +
@@ -1694,7 +2415,62 @@ const file_pyrecycleheat_v1_prediction_service_proto_rawDesc = "" +
 	"\x18avg_payback_period_years\x18\a \x01(\x01R\x15avgPaybackPeriodYears\"\x1f\n" +
 	"\x1dGetPredictionAnalyticsRequest\"z\n" +
 	"\x1eGetPredictionAnalyticsResponse\x12X\n" +
-	"\x14prediction_analytics\x18\x01 \x01(\v2%.pyrecycleheat.v1.PredictionAnalyticsR\x13predictionAnalytics2\x84\x12\n" +
+	"\x14prediction_analytics\x18\x01 \x01(\v2%.pyrecycleheat.v1.PredictionAnalyticsR\x13predictionAnalytics\"\xe2\x01\n" +
+	"\x16CheckComplianceRequest\x12.\n" +
+	"\fjurisdiction\x18\x01 \x01(\tB\n" +
+	"\xc2\xc97\x06\"\x04\b\x01\x10dR\fjurisdiction\x12/\n" +
+	"\x10total_it_load_kw\x18\x02 \x01(\x01B\x06\xc2\xc97\x02\n" +
+	"\x00R\rtotalItLoadKw\x127\n" +
+	"\tplan_date\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bplanDate\x12.\n" +
+	"\x13heat_recovery_ready\x18\x04 \x01(\bR\x11heatRecoveryReady\"\xf0\x01\n" +
+	"\x17CheckComplianceResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12%\n" +
+	"\x0eapplicable_law\x18\x02 \x01(\tR\rapplicableLaw\x12K\n" +
+	"\x13compliance_deadline\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x12complianceDeadline\x12\x1c\n" +
+	"\treasoning\x18\x04 \x03(\tR\treasoning\x12+\n" +
+	"\x11remediation_steps\x18\x05 \x03(\tR\x10remediationSteps\"\x1a\n" +
+	"\x18GetDashboardStatsRequest\"\xee\x01\n" +
+	"\x19GetDashboardStatsResponse\x12!\n" +
+	"\factive_sites\x18\x01 \x01(\x03R\vactiveSites\x12'\n" +
+	"\x0fcompliance_rate\x18\x02 \x01(\x03R\x0ecomplianceRate\x12%\n" +
+	"\x0eannual_savings\x18\x03 \x01(\x01R\rannualSavings\x12)\n" +
+	"\x10total_activities\x18\x04 \x01(\x03R\x0ftotalActivities\x123\n" +
+	"\x15completed_assessments\x18\x05 \x01(\x03R\x14completedAssessments\"\x90\x01\n" +
+	"\x0fActivityLogItem\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x19\n" +
+	"\btime_ago\x18\x02 \x01(\tR\atimeAgo\x12\x12\n" +
+	"\x04user\x18\x03 \x01(\tR\x04user\x12\x16\n" +
+	"\x06action\x18\x04 \x01(\tR\x06action\x12\x12\n" +
+	"\x04type\x18\x05 \x01(\tR\x04type\x12\x12\n" +
+	"\x04icon\x18\x06 \x01(\tR\x04icon\"1\n" +
+	"\x19ListActivityStreamRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"_\n" +
+	"\x1aListActivityStreamResponse\x12A\n" +
+	"\n" +
+	"activities\x18\x01 \x03(\v2!.pyrecycleheat.v1.ActivityLogItemR\n" +
+	"activities\"&\n" +
+	"\x0eGetUserRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\xfb\x01\n" +
+	"\vUserProfile\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x01 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x02 \x01(\tR\blastName\x12\x14\n" +
+	"\x05email\x18\x03 \x01(\tR\x05email\x12<\n" +
+	"\x1anotify_assessment_complete\x18\x04 \x01(\bR\x18notifyAssessmentComplete\x12:\n" +
+	"\x19notify_regulatory_updates\x18\x05 \x01(\bR\x17notifyRegulatoryUpdates\x12 \n" +
+	"\fapi_key_live\x18\x06 \x01(\tR\n" +
+	"apiKeyLive\"D\n" +
+	"\x0fGetUserResponse\x121\n" +
+	"\x04user\x18\x01 \x01(\v2\x1d.pyrecycleheat.v1.UserProfileR\x04user\"\xdf\x01\n" +
+	"\x11UpdateUserRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x03 \x01(\tR\blastName\x12<\n" +
+	"\x1anotify_assessment_complete\x18\x04 \x01(\bR\x18notifyAssessmentComplete\x12:\n" +
+	"\x19notify_regulatory_updates\x18\x05 \x01(\bR\x17notifyRegulatoryUpdates\"G\n" +
+	"\x12UpdateUserResponse\x121\n" +
+	"\x04user\x18\x01 \x01(\v2\x1d.pyrecycleheat.v1.UserProfileR\x04user2\xf4\x15\n" +
 	"\x11PredictionService\x12f\n" +
 	"\x0fListDataCenters\x12(.pyrecycleheat.v1.ListDataCentersRequest\x1a).pyrecycleheat.v1.ListDataCentersResponse\x12`\n" +
 	"\rGetDataCenter\x12&.pyrecycleheat.v1.GetDataCenterRequest\x1a'.pyrecycleheat.v1.GetDataCenterResponse\x12i\n" +
@@ -1716,7 +2492,13 @@ const file_pyrecycleheat_v1_prediction_service_proto_rawDesc = "" +
 	"\x13GetPredictionResult\x12,.pyrecycleheat.v1.GetPredictionResultRequest\x1a-.pyrecycleheat.v1.GetPredictionResultResponse\x12{\n" +
 	"\x16DeletePredictionResult\x12/.pyrecycleheat.v1.DeletePredictionResultRequest\x1a0.pyrecycleheat.v1.DeletePredictionResultResponse\x12r\n" +
 	"\x13ListNearbyHeatSinks\x12,.pyrecycleheat.v1.ListNearbyHeatSinksRequest\x1a-.pyrecycleheat.v1.ListNearbyHeatSinksResponse\x12{\n" +
-	"\x16GetPredictionAnalytics\x12/.pyrecycleheat.v1.GetPredictionAnalyticsRequest\x1a0.pyrecycleheat.v1.GetPredictionAnalyticsResponseB\xdd\x01\n" +
+	"\x16GetPredictionAnalytics\x12/.pyrecycleheat.v1.GetPredictionAnalyticsRequest\x1a0.pyrecycleheat.v1.GetPredictionAnalyticsResponse\x12f\n" +
+	"\x0fCheckCompliance\x12(.pyrecycleheat.v1.CheckComplianceRequest\x1a).pyrecycleheat.v1.CheckComplianceResponse\x12l\n" +
+	"\x11GetDashboardStats\x12*.pyrecycleheat.v1.GetDashboardStatsRequest\x1a+.pyrecycleheat.v1.GetDashboardStatsResponse\x12o\n" +
+	"\x12ListActivityStream\x12+.pyrecycleheat.v1.ListActivityStreamRequest\x1a,.pyrecycleheat.v1.ListActivityStreamResponse\x12N\n" +
+	"\aGetUser\x12 .pyrecycleheat.v1.GetUserRequest\x1a!.pyrecycleheat.v1.GetUserResponse\x12W\n" +
+	"\n" +
+	"UpdateUser\x12#.pyrecycleheat.v1.UpdateUserRequest\x1a$.pyrecycleheat.v1.UpdateUserResponseB\xdd\x01\n" +
 	"\x14com.pyrecycleheat.v1B\x16PredictionServiceProtoP\x01ZLgithub.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v1;pyrecycleheatv1\xa2\x02\x03PXX\xaa\x02\x10Pyrecycleheat.V1\xca\x02\x10Pyrecycleheat\\V1\xe2\x02\x1cPyrecycleheat\\V1\\GPBMetadata\xea\x02\x11Pyrecycleheat::V1b\x06proto3"
 
 var (
@@ -1731,7 +2513,7 @@ func file_pyrecycleheat_v1_prediction_service_proto_rawDescGZIP() []byte {
 	return file_pyrecycleheat_v1_prediction_service_proto_rawDescData
 }
 
-var file_pyrecycleheat_v1_prediction_service_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_pyrecycleheat_v1_prediction_service_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
 var file_pyrecycleheat_v1_prediction_service_proto_goTypes = []any{
 	(*ListDataCentersRequest)(nil),         // 0: pyrecycleheat.v1.ListDataCentersRequest
 	(*ListDataCentersResponse)(nil),        // 1: pyrecycleheat.v1.ListDataCentersResponse
@@ -1767,94 +2549,122 @@ var file_pyrecycleheat_v1_prediction_service_proto_goTypes = []any{
 	(*PredictionAnalytics)(nil),            // 31: pyrecycleheat.v1.PredictionAnalytics
 	(*GetPredictionAnalyticsRequest)(nil),  // 32: pyrecycleheat.v1.GetPredictionAnalyticsRequest
 	(*GetPredictionAnalyticsResponse)(nil), // 33: pyrecycleheat.v1.GetPredictionAnalyticsResponse
-	(*PaginationRequest)(nil),              // 34: pyrecycleheat.v1.PaginationRequest
-	(*DataCenter)(nil),                     // 35: pyrecycleheat.v1.DataCenter
-	(*PaginationMetadata)(nil),             // 36: pyrecycleheat.v1.PaginationMetadata
-	(*CarbonCredit)(nil),                   // 37: pyrecycleheat.v1.CarbonCredit
-	(*HeatSink)(nil),                       // 38: pyrecycleheat.v1.HeatSink
-	(*PredictionResult)(nil),               // 39: pyrecycleheat.v1.PredictionResult
-	(*CreateDataCenterRequest)(nil),        // 40: pyrecycleheat.v1.CreateDataCenterRequest
-	(*UpdateDataCenterRequest)(nil),        // 41: pyrecycleheat.v1.UpdateDataCenterRequest
-	(*CreateCarbonCreditRequest)(nil),      // 42: pyrecycleheat.v1.CreateCarbonCreditRequest
-	(*UpdateCarbonCreditRequest)(nil),      // 43: pyrecycleheat.v1.UpdateCarbonCreditRequest
-	(*CreateHeatSinkRequest)(nil),          // 44: pyrecycleheat.v1.CreateHeatSinkRequest
-	(*UpdateHeatSinkRequest)(nil),          // 45: pyrecycleheat.v1.UpdateHeatSinkRequest
-	(*CalculatePredictionRequest)(nil),     // 46: pyrecycleheat.v1.CalculatePredictionRequest
-	(*GetPredictionResultRequest)(nil),     // 47: pyrecycleheat.v1.GetPredictionResultRequest
-	(*CalculatePredictionResponse)(nil),    // 48: pyrecycleheat.v1.CalculatePredictionResponse
+	(*CheckComplianceRequest)(nil),         // 34: pyrecycleheat.v1.CheckComplianceRequest
+	(*CheckComplianceResponse)(nil),        // 35: pyrecycleheat.v1.CheckComplianceResponse
+	(*GetDashboardStatsRequest)(nil),       // 36: pyrecycleheat.v1.GetDashboardStatsRequest
+	(*GetDashboardStatsResponse)(nil),      // 37: pyrecycleheat.v1.GetDashboardStatsResponse
+	(*ActivityLogItem)(nil),                // 38: pyrecycleheat.v1.ActivityLogItem
+	(*ListActivityStreamRequest)(nil),      // 39: pyrecycleheat.v1.ListActivityStreamRequest
+	(*ListActivityStreamResponse)(nil),     // 40: pyrecycleheat.v1.ListActivityStreamResponse
+	(*GetUserRequest)(nil),                 // 41: pyrecycleheat.v1.GetUserRequest
+	(*UserProfile)(nil),                    // 42: pyrecycleheat.v1.UserProfile
+	(*GetUserResponse)(nil),                // 43: pyrecycleheat.v1.GetUserResponse
+	(*UpdateUserRequest)(nil),              // 44: pyrecycleheat.v1.UpdateUserRequest
+	(*UpdateUserResponse)(nil),             // 45: pyrecycleheat.v1.UpdateUserResponse
+	(*PaginationRequest)(nil),              // 46: pyrecycleheat.v1.PaginationRequest
+	(*DataCenter)(nil),                     // 47: pyrecycleheat.v1.DataCenter
+	(*PaginationMetadata)(nil),             // 48: pyrecycleheat.v1.PaginationMetadata
+	(*CarbonCredit)(nil),                   // 49: pyrecycleheat.v1.CarbonCredit
+	(*HeatSink)(nil),                       // 50: pyrecycleheat.v1.HeatSink
+	(*PredictionResult)(nil),               // 51: pyrecycleheat.v1.PredictionResult
+	(*timestamppb.Timestamp)(nil),          // 52: google.protobuf.Timestamp
+	(*CreateDataCenterRequest)(nil),        // 53: pyrecycleheat.v1.CreateDataCenterRequest
+	(*UpdateDataCenterRequest)(nil),        // 54: pyrecycleheat.v1.UpdateDataCenterRequest
+	(*CreateCarbonCreditRequest)(nil),      // 55: pyrecycleheat.v1.CreateCarbonCreditRequest
+	(*UpdateCarbonCreditRequest)(nil),      // 56: pyrecycleheat.v1.UpdateCarbonCreditRequest
+	(*CreateHeatSinkRequest)(nil),          // 57: pyrecycleheat.v1.CreateHeatSinkRequest
+	(*UpdateHeatSinkRequest)(nil),          // 58: pyrecycleheat.v1.UpdateHeatSinkRequest
+	(*CalculatePredictionRequest)(nil),     // 59: pyrecycleheat.v1.CalculatePredictionRequest
+	(*GetPredictionResultRequest)(nil),     // 60: pyrecycleheat.v1.GetPredictionResultRequest
+	(*CalculatePredictionResponse)(nil),    // 61: pyrecycleheat.v1.CalculatePredictionResponse
 }
 var file_pyrecycleheat_v1_prediction_service_proto_depIdxs = []int32{
-	34, // 0: pyrecycleheat.v1.ListDataCentersRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
-	35, // 1: pyrecycleheat.v1.ListDataCentersResponse.data_centers:type_name -> pyrecycleheat.v1.DataCenter
-	36, // 2: pyrecycleheat.v1.ListDataCentersResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
-	35, // 3: pyrecycleheat.v1.GetDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
-	35, // 4: pyrecycleheat.v1.CreateDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
-	35, // 5: pyrecycleheat.v1.UpdateDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
-	34, // 6: pyrecycleheat.v1.ListCarbonCreditsRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
-	37, // 7: pyrecycleheat.v1.ListCarbonCreditsResponse.carbon_credits:type_name -> pyrecycleheat.v1.CarbonCredit
-	36, // 8: pyrecycleheat.v1.ListCarbonCreditsResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
-	37, // 9: pyrecycleheat.v1.GetCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
-	37, // 10: pyrecycleheat.v1.CreateCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
-	37, // 11: pyrecycleheat.v1.UpdateCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
-	34, // 12: pyrecycleheat.v1.ListHeatSinksRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
-	38, // 13: pyrecycleheat.v1.ListHeatSinksResponse.heat_sinks:type_name -> pyrecycleheat.v1.HeatSink
-	36, // 14: pyrecycleheat.v1.ListHeatSinksResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
-	38, // 15: pyrecycleheat.v1.GetHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
-	38, // 16: pyrecycleheat.v1.CreateHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
-	38, // 17: pyrecycleheat.v1.UpdateHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
-	34, // 18: pyrecycleheat.v1.ListPredictionResultsRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
-	39, // 19: pyrecycleheat.v1.ListPredictionResultsResponse.prediction_results:type_name -> pyrecycleheat.v1.PredictionResult
-	36, // 20: pyrecycleheat.v1.ListPredictionResultsResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
-	39, // 21: pyrecycleheat.v1.GetPredictionResultResponse.prediction_result:type_name -> pyrecycleheat.v1.PredictionResult
-	38, // 22: pyrecycleheat.v1.ListNearbyHeatSinksResponse.heat_sinks:type_name -> pyrecycleheat.v1.HeatSink
+	46, // 0: pyrecycleheat.v1.ListDataCentersRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
+	47, // 1: pyrecycleheat.v1.ListDataCentersResponse.data_centers:type_name -> pyrecycleheat.v1.DataCenter
+	48, // 2: pyrecycleheat.v1.ListDataCentersResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
+	47, // 3: pyrecycleheat.v1.GetDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
+	47, // 4: pyrecycleheat.v1.CreateDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
+	47, // 5: pyrecycleheat.v1.UpdateDataCenterResponse.data_center:type_name -> pyrecycleheat.v1.DataCenter
+	46, // 6: pyrecycleheat.v1.ListCarbonCreditsRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
+	49, // 7: pyrecycleheat.v1.ListCarbonCreditsResponse.carbon_credits:type_name -> pyrecycleheat.v1.CarbonCredit
+	48, // 8: pyrecycleheat.v1.ListCarbonCreditsResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
+	49, // 9: pyrecycleheat.v1.GetCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
+	49, // 10: pyrecycleheat.v1.CreateCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
+	49, // 11: pyrecycleheat.v1.UpdateCarbonCreditResponse.carbon_credit:type_name -> pyrecycleheat.v1.CarbonCredit
+	46, // 12: pyrecycleheat.v1.ListHeatSinksRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
+	50, // 13: pyrecycleheat.v1.ListHeatSinksResponse.heat_sinks:type_name -> pyrecycleheat.v1.HeatSink
+	48, // 14: pyrecycleheat.v1.ListHeatSinksResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
+	50, // 15: pyrecycleheat.v1.GetHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
+	50, // 16: pyrecycleheat.v1.CreateHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
+	50, // 17: pyrecycleheat.v1.UpdateHeatSinkResponse.heat_sink:type_name -> pyrecycleheat.v1.HeatSink
+	46, // 18: pyrecycleheat.v1.ListPredictionResultsRequest.pagination:type_name -> pyrecycleheat.v1.PaginationRequest
+	51, // 19: pyrecycleheat.v1.ListPredictionResultsResponse.prediction_results:type_name -> pyrecycleheat.v1.PredictionResult
+	48, // 20: pyrecycleheat.v1.ListPredictionResultsResponse.pagination:type_name -> pyrecycleheat.v1.PaginationMetadata
+	51, // 21: pyrecycleheat.v1.GetPredictionResultResponse.prediction_result:type_name -> pyrecycleheat.v1.PredictionResult
+	50, // 22: pyrecycleheat.v1.ListNearbyHeatSinksResponse.heat_sinks:type_name -> pyrecycleheat.v1.HeatSink
 	31, // 23: pyrecycleheat.v1.GetPredictionAnalyticsResponse.prediction_analytics:type_name -> pyrecycleheat.v1.PredictionAnalytics
-	0,  // 24: pyrecycleheat.v1.PredictionService.ListDataCenters:input_type -> pyrecycleheat.v1.ListDataCentersRequest
-	2,  // 25: pyrecycleheat.v1.PredictionService.GetDataCenter:input_type -> pyrecycleheat.v1.GetDataCenterRequest
-	40, // 26: pyrecycleheat.v1.PredictionService.CreateDataCenter:input_type -> pyrecycleheat.v1.CreateDataCenterRequest
-	41, // 27: pyrecycleheat.v1.PredictionService.UpdateDataCenter:input_type -> pyrecycleheat.v1.UpdateDataCenterRequest
-	6,  // 28: pyrecycleheat.v1.PredictionService.DeleteDataCenter:input_type -> pyrecycleheat.v1.DeleteDataCenterRequest
-	8,  // 29: pyrecycleheat.v1.PredictionService.ListCarbonCredits:input_type -> pyrecycleheat.v1.ListCarbonCreditsRequest
-	10, // 30: pyrecycleheat.v1.PredictionService.GetCarbonCredit:input_type -> pyrecycleheat.v1.GetCarbonCreditRequest
-	42, // 31: pyrecycleheat.v1.PredictionService.CreateCarbonCredit:input_type -> pyrecycleheat.v1.CreateCarbonCreditRequest
-	43, // 32: pyrecycleheat.v1.PredictionService.UpdateCarbonCredit:input_type -> pyrecycleheat.v1.UpdateCarbonCreditRequest
-	14, // 33: pyrecycleheat.v1.PredictionService.DeleteCarbonCredit:input_type -> pyrecycleheat.v1.DeleteCarbonCreditRequest
-	16, // 34: pyrecycleheat.v1.PredictionService.ListHeatSinks:input_type -> pyrecycleheat.v1.ListHeatSinksRequest
-	18, // 35: pyrecycleheat.v1.PredictionService.GetHeatSink:input_type -> pyrecycleheat.v1.GetHeatSinkRequest
-	44, // 36: pyrecycleheat.v1.PredictionService.CreateHeatSink:input_type -> pyrecycleheat.v1.CreateHeatSinkRequest
-	45, // 37: pyrecycleheat.v1.PredictionService.UpdateHeatSink:input_type -> pyrecycleheat.v1.UpdateHeatSinkRequest
-	22, // 38: pyrecycleheat.v1.PredictionService.DeleteHeatSink:input_type -> pyrecycleheat.v1.DeleteHeatSinkRequest
-	46, // 39: pyrecycleheat.v1.PredictionService.CalculatePrediction:input_type -> pyrecycleheat.v1.CalculatePredictionRequest
-	24, // 40: pyrecycleheat.v1.PredictionService.ListPredictionResults:input_type -> pyrecycleheat.v1.ListPredictionResultsRequest
-	47, // 41: pyrecycleheat.v1.PredictionService.GetPredictionResult:input_type -> pyrecycleheat.v1.GetPredictionResultRequest
-	27, // 42: pyrecycleheat.v1.PredictionService.DeletePredictionResult:input_type -> pyrecycleheat.v1.DeletePredictionResultRequest
-	29, // 43: pyrecycleheat.v1.PredictionService.ListNearbyHeatSinks:input_type -> pyrecycleheat.v1.ListNearbyHeatSinksRequest
-	32, // 44: pyrecycleheat.v1.PredictionService.GetPredictionAnalytics:input_type -> pyrecycleheat.v1.GetPredictionAnalyticsRequest
-	1,  // 45: pyrecycleheat.v1.PredictionService.ListDataCenters:output_type -> pyrecycleheat.v1.ListDataCentersResponse
-	3,  // 46: pyrecycleheat.v1.PredictionService.GetDataCenter:output_type -> pyrecycleheat.v1.GetDataCenterResponse
-	4,  // 47: pyrecycleheat.v1.PredictionService.CreateDataCenter:output_type -> pyrecycleheat.v1.CreateDataCenterResponse
-	5,  // 48: pyrecycleheat.v1.PredictionService.UpdateDataCenter:output_type -> pyrecycleheat.v1.UpdateDataCenterResponse
-	7,  // 49: pyrecycleheat.v1.PredictionService.DeleteDataCenter:output_type -> pyrecycleheat.v1.DeleteDataCenterResponse
-	9,  // 50: pyrecycleheat.v1.PredictionService.ListCarbonCredits:output_type -> pyrecycleheat.v1.ListCarbonCreditsResponse
-	11, // 51: pyrecycleheat.v1.PredictionService.GetCarbonCredit:output_type -> pyrecycleheat.v1.GetCarbonCreditResponse
-	12, // 52: pyrecycleheat.v1.PredictionService.CreateCarbonCredit:output_type -> pyrecycleheat.v1.CreateCarbonCreditResponse
-	13, // 53: pyrecycleheat.v1.PredictionService.UpdateCarbonCredit:output_type -> pyrecycleheat.v1.UpdateCarbonCreditResponse
-	15, // 54: pyrecycleheat.v1.PredictionService.DeleteCarbonCredit:output_type -> pyrecycleheat.v1.DeleteCarbonCreditResponse
-	17, // 55: pyrecycleheat.v1.PredictionService.ListHeatSinks:output_type -> pyrecycleheat.v1.ListHeatSinksResponse
-	19, // 56: pyrecycleheat.v1.PredictionService.GetHeatSink:output_type -> pyrecycleheat.v1.GetHeatSinkResponse
-	20, // 57: pyrecycleheat.v1.PredictionService.CreateHeatSink:output_type -> pyrecycleheat.v1.CreateHeatSinkResponse
-	21, // 58: pyrecycleheat.v1.PredictionService.UpdateHeatSink:output_type -> pyrecycleheat.v1.UpdateHeatSinkResponse
-	23, // 59: pyrecycleheat.v1.PredictionService.DeleteHeatSink:output_type -> pyrecycleheat.v1.DeleteHeatSinkResponse
-	48, // 60: pyrecycleheat.v1.PredictionService.CalculatePrediction:output_type -> pyrecycleheat.v1.CalculatePredictionResponse
-	25, // 61: pyrecycleheat.v1.PredictionService.ListPredictionResults:output_type -> pyrecycleheat.v1.ListPredictionResultsResponse
-	26, // 62: pyrecycleheat.v1.PredictionService.GetPredictionResult:output_type -> pyrecycleheat.v1.GetPredictionResultResponse
-	28, // 63: pyrecycleheat.v1.PredictionService.DeletePredictionResult:output_type -> pyrecycleheat.v1.DeletePredictionResultResponse
-	30, // 64: pyrecycleheat.v1.PredictionService.ListNearbyHeatSinks:output_type -> pyrecycleheat.v1.ListNearbyHeatSinksResponse
-	33, // 65: pyrecycleheat.v1.PredictionService.GetPredictionAnalytics:output_type -> pyrecycleheat.v1.GetPredictionAnalyticsResponse
-	45, // [45:66] is the sub-list for method output_type
-	24, // [24:45] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	52, // 24: pyrecycleheat.v1.CheckComplianceRequest.plan_date:type_name -> google.protobuf.Timestamp
+	52, // 25: pyrecycleheat.v1.CheckComplianceResponse.compliance_deadline:type_name -> google.protobuf.Timestamp
+	38, // 26: pyrecycleheat.v1.ListActivityStreamResponse.activities:type_name -> pyrecycleheat.v1.ActivityLogItem
+	42, // 27: pyrecycleheat.v1.GetUserResponse.user:type_name -> pyrecycleheat.v1.UserProfile
+	42, // 28: pyrecycleheat.v1.UpdateUserResponse.user:type_name -> pyrecycleheat.v1.UserProfile
+	0,  // 29: pyrecycleheat.v1.PredictionService.ListDataCenters:input_type -> pyrecycleheat.v1.ListDataCentersRequest
+	2,  // 30: pyrecycleheat.v1.PredictionService.GetDataCenter:input_type -> pyrecycleheat.v1.GetDataCenterRequest
+	53, // 31: pyrecycleheat.v1.PredictionService.CreateDataCenter:input_type -> pyrecycleheat.v1.CreateDataCenterRequest
+	54, // 32: pyrecycleheat.v1.PredictionService.UpdateDataCenter:input_type -> pyrecycleheat.v1.UpdateDataCenterRequest
+	6,  // 33: pyrecycleheat.v1.PredictionService.DeleteDataCenter:input_type -> pyrecycleheat.v1.DeleteDataCenterRequest
+	8,  // 34: pyrecycleheat.v1.PredictionService.ListCarbonCredits:input_type -> pyrecycleheat.v1.ListCarbonCreditsRequest
+	10, // 35: pyrecycleheat.v1.PredictionService.GetCarbonCredit:input_type -> pyrecycleheat.v1.GetCarbonCreditRequest
+	55, // 36: pyrecycleheat.v1.PredictionService.CreateCarbonCredit:input_type -> pyrecycleheat.v1.CreateCarbonCreditRequest
+	56, // 37: pyrecycleheat.v1.PredictionService.UpdateCarbonCredit:input_type -> pyrecycleheat.v1.UpdateCarbonCreditRequest
+	14, // 38: pyrecycleheat.v1.PredictionService.DeleteCarbonCredit:input_type -> pyrecycleheat.v1.DeleteCarbonCreditRequest
+	16, // 39: pyrecycleheat.v1.PredictionService.ListHeatSinks:input_type -> pyrecycleheat.v1.ListHeatSinksRequest
+	18, // 40: pyrecycleheat.v1.PredictionService.GetHeatSink:input_type -> pyrecycleheat.v1.GetHeatSinkRequest
+	57, // 41: pyrecycleheat.v1.PredictionService.CreateHeatSink:input_type -> pyrecycleheat.v1.CreateHeatSinkRequest
+	58, // 42: pyrecycleheat.v1.PredictionService.UpdateHeatSink:input_type -> pyrecycleheat.v1.UpdateHeatSinkRequest
+	22, // 43: pyrecycleheat.v1.PredictionService.DeleteHeatSink:input_type -> pyrecycleheat.v1.DeleteHeatSinkRequest
+	59, // 44: pyrecycleheat.v1.PredictionService.CalculatePrediction:input_type -> pyrecycleheat.v1.CalculatePredictionRequest
+	24, // 45: pyrecycleheat.v1.PredictionService.ListPredictionResults:input_type -> pyrecycleheat.v1.ListPredictionResultsRequest
+	60, // 46: pyrecycleheat.v1.PredictionService.GetPredictionResult:input_type -> pyrecycleheat.v1.GetPredictionResultRequest
+	27, // 47: pyrecycleheat.v1.PredictionService.DeletePredictionResult:input_type -> pyrecycleheat.v1.DeletePredictionResultRequest
+	29, // 48: pyrecycleheat.v1.PredictionService.ListNearbyHeatSinks:input_type -> pyrecycleheat.v1.ListNearbyHeatSinksRequest
+	32, // 49: pyrecycleheat.v1.PredictionService.GetPredictionAnalytics:input_type -> pyrecycleheat.v1.GetPredictionAnalyticsRequest
+	34, // 50: pyrecycleheat.v1.PredictionService.CheckCompliance:input_type -> pyrecycleheat.v1.CheckComplianceRequest
+	36, // 51: pyrecycleheat.v1.PredictionService.GetDashboardStats:input_type -> pyrecycleheat.v1.GetDashboardStatsRequest
+	39, // 52: pyrecycleheat.v1.PredictionService.ListActivityStream:input_type -> pyrecycleheat.v1.ListActivityStreamRequest
+	41, // 53: pyrecycleheat.v1.PredictionService.GetUser:input_type -> pyrecycleheat.v1.GetUserRequest
+	44, // 54: pyrecycleheat.v1.PredictionService.UpdateUser:input_type -> pyrecycleheat.v1.UpdateUserRequest
+	1,  // 55: pyrecycleheat.v1.PredictionService.ListDataCenters:output_type -> pyrecycleheat.v1.ListDataCentersResponse
+	3,  // 56: pyrecycleheat.v1.PredictionService.GetDataCenter:output_type -> pyrecycleheat.v1.GetDataCenterResponse
+	4,  // 57: pyrecycleheat.v1.PredictionService.CreateDataCenter:output_type -> pyrecycleheat.v1.CreateDataCenterResponse
+	5,  // 58: pyrecycleheat.v1.PredictionService.UpdateDataCenter:output_type -> pyrecycleheat.v1.UpdateDataCenterResponse
+	7,  // 59: pyrecycleheat.v1.PredictionService.DeleteDataCenter:output_type -> pyrecycleheat.v1.DeleteDataCenterResponse
+	9,  // 60: pyrecycleheat.v1.PredictionService.ListCarbonCredits:output_type -> pyrecycleheat.v1.ListCarbonCreditsResponse
+	11, // 61: pyrecycleheat.v1.PredictionService.GetCarbonCredit:output_type -> pyrecycleheat.v1.GetCarbonCreditResponse
+	12, // 62: pyrecycleheat.v1.PredictionService.CreateCarbonCredit:output_type -> pyrecycleheat.v1.CreateCarbonCreditResponse
+	13, // 63: pyrecycleheat.v1.PredictionService.UpdateCarbonCredit:output_type -> pyrecycleheat.v1.UpdateCarbonCreditResponse
+	15, // 64: pyrecycleheat.v1.PredictionService.DeleteCarbonCredit:output_type -> pyrecycleheat.v1.DeleteCarbonCreditResponse
+	17, // 65: pyrecycleheat.v1.PredictionService.ListHeatSinks:output_type -> pyrecycleheat.v1.ListHeatSinksResponse
+	19, // 66: pyrecycleheat.v1.PredictionService.GetHeatSink:output_type -> pyrecycleheat.v1.GetHeatSinkResponse
+	20, // 67: pyrecycleheat.v1.PredictionService.CreateHeatSink:output_type -> pyrecycleheat.v1.CreateHeatSinkResponse
+	21, // 68: pyrecycleheat.v1.PredictionService.UpdateHeatSink:output_type -> pyrecycleheat.v1.UpdateHeatSinkResponse
+	23, // 69: pyrecycleheat.v1.PredictionService.DeleteHeatSink:output_type -> pyrecycleheat.v1.DeleteHeatSinkResponse
+	61, // 70: pyrecycleheat.v1.PredictionService.CalculatePrediction:output_type -> pyrecycleheat.v1.CalculatePredictionResponse
+	25, // 71: pyrecycleheat.v1.PredictionService.ListPredictionResults:output_type -> pyrecycleheat.v1.ListPredictionResultsResponse
+	26, // 72: pyrecycleheat.v1.PredictionService.GetPredictionResult:output_type -> pyrecycleheat.v1.GetPredictionResultResponse
+	28, // 73: pyrecycleheat.v1.PredictionService.DeletePredictionResult:output_type -> pyrecycleheat.v1.DeletePredictionResultResponse
+	30, // 74: pyrecycleheat.v1.PredictionService.ListNearbyHeatSinks:output_type -> pyrecycleheat.v1.ListNearbyHeatSinksResponse
+	33, // 75: pyrecycleheat.v1.PredictionService.GetPredictionAnalytics:output_type -> pyrecycleheat.v1.GetPredictionAnalyticsResponse
+	35, // 76: pyrecycleheat.v1.PredictionService.CheckCompliance:output_type -> pyrecycleheat.v1.CheckComplianceResponse
+	37, // 77: pyrecycleheat.v1.PredictionService.GetDashboardStats:output_type -> pyrecycleheat.v1.GetDashboardStatsResponse
+	40, // 78: pyrecycleheat.v1.PredictionService.ListActivityStream:output_type -> pyrecycleheat.v1.ListActivityStreamResponse
+	43, // 79: pyrecycleheat.v1.PredictionService.GetUser:output_type -> pyrecycleheat.v1.GetUserResponse
+	45, // 80: pyrecycleheat.v1.PredictionService.UpdateUser:output_type -> pyrecycleheat.v1.UpdateUserResponse
+	55, // [55:81] is the sub-list for method output_type
+	29, // [29:55] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_pyrecycleheat_v1_prediction_service_proto_init() }
@@ -1870,7 +2680,7 @@ func file_pyrecycleheat_v1_prediction_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pyrecycleheat_v1_prediction_service_proto_rawDesc), len(file_pyrecycleheat_v1_prediction_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   34,
+			NumMessages:   46,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

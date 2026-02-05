@@ -206,6 +206,47 @@ export const predictionService = {
       "GetPredictionAnalytics",
       {}
     ),
+
+  // Dashboard & Settings
+  getDashboardStats: () =>
+    callRPC<Record<string, never>, {
+      activeSites: number;
+      complianceRate: number;
+      annualSavings: number;
+      totalActivities: number;
+      completedAssessments: number;
+    }>(
+      "pyrecycleheat.v1.PredictionService",
+      "GetDashboardStats",
+      {}
+    ),
+
+  listActivityStream: (limit: number) =>
+    callRPC<{ limit: number }, { activities: any[] }>(
+      "pyrecycleheat.v1.PredictionService",
+      "ListActivityStream",
+      { limit }
+    ),
+
+  getUser: (email?: string) =>
+    callRPC<{ email?: string }, { user: any }>(
+      "pyrecycleheat.v1.PredictionService",
+      "GetUser",
+      { email }
+    ),
+
+  updateUser: (user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    notifyAssessmentComplete: boolean;
+    notifyRegulatoryUpdates: boolean;
+  }) =>
+    callRPC<typeof user, { user: any }>(
+      "pyrecycleheat.v1.PredictionService",
+      "UpdateUser",
+      user
+    ),
 };
 
 // Health check (standard REST endpoint)

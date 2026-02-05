@@ -7,6 +7,7 @@ option go_package = "github.com/pyrecycleheat/backend/api/gen/go/pyrecycleheat/v
 import "pyrecycleheat/v1/prediction.proto";
 import "pyrecycleheat/v1/common.proto";
 import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
 
 service PredictionService {
   rpc ListDataCenters(ListDataCentersRequest) returns (ListDataCentersResponse);
@@ -52,6 +53,12 @@ service PredictionService {
       returns (GetPredictionAnalyticsResponse);
 
   rpc CheckCompliance(CheckComplianceRequest) returns (CheckComplianceResponse);
+  
+  // Dashboard & Settings RPCs
+  rpc GetDashboardStats(GetDashboardStatsRequest) returns (GetDashboardStatsResponse);
+  rpc ListActivityStream(ListActivityStreamRequest) returns (ListActivityStreamResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
 }
 
 message ListDataCentersRequest { PaginationRequest pagination = 1; }
@@ -155,4 +162,61 @@ message CheckComplianceResponse {
   google.protobuf.Timestamp compliance_deadline = 3;
   repeated string reasoning = 4;
   repeated string remediation_steps = 5;
+}
+
+// --- Dashboard & Settings ---
+
+message GetDashboardStatsRequest {}
+message GetDashboardStatsResponse {
+    int64 active_sites = 1;
+    int64 compliance_rate = 2; // Percentage (0-100)
+    double annual_savings = 3; // Monetary value
+    int64 total_activities = 4;
+    int64 completed_assessments = 5;
+}
+
+message ActivityLogItem {
+    int64 id = 1;
+    string time_ago = 2; // e.g. "10 min ago" (calculated by backend)
+    string user = 3;
+    string action = 4;
+    string type = 5; // crawling, approval, market, creation
+    string icon = 6; // for frontend mapping
+}
+
+message ListActivityStreamRequest {
+    int32 limit = 1;
+}
+
+message ListActivityStreamResponse {
+    repeated ActivityLogItem activities = 1;
+}
+
+message GetUserRequest {
+    string email = 1;
+}
+
+message UserProfile {
+    string first_name = 1;
+    string last_name = 2;
+    string email = 3;
+    bool notify_assessment_complete = 4;
+    bool notify_regulatory_updates = 5;
+    string api_key_live = 6;
+}
+
+message GetUserResponse {
+    UserProfile user = 1;
+}
+
+message UpdateUserRequest {
+    string email = 1;
+    string first_name = 2;
+    string last_name = 3;
+    bool notify_assessment_complete = 4;
+    bool notify_regulatory_updates = 5;
+}
+
+message UpdateUserResponse {
+    UserProfile user = 1;
 }
