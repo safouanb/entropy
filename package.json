@@ -1,5 +1,7 @@
 {
   "devDependencies": {
-    "shadcn": "^3.7.0"
+    "@tailwindcss/postcss": "^4.1.18",
+    "shadcn": "^3.7.0",
+    "tailwindcss": "^4.1.18"
   }
 }
