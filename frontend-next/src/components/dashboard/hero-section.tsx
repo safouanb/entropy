@@ -17,7 +17,7 @@ export function HeroSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl">
           {/* Eyebrow */}
-          <p className="text-emerald-400 font-medium mb-4 tracking-wide text-sm uppercase">
+          <p className="text-blue-400 font-medium mb-4 tracking-wide text-sm uppercase">
             Waste Heat Intelligence
           </p>
 
@@ -41,7 +41,7 @@ export function HeroSection() {
           <div className="flex flex-wrap items-center gap-4 mb-16">
             <a
               href="#dashboard"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-emerald-500 text-white font-semibold hover:bg-emerald-400 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-400 transition-colors"
             >
               Start Analysis
               <ArrowRightIcon className="w-4 h-4" />

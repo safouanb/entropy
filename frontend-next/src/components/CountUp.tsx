@@ -9,6 +9,7 @@ interface CountUpProps {
   duration?: number;
   className?: string;
   startWhen?: boolean;
+  decimals?: number;
   separator?: string;
   onStart?: () => void;
   onEnd?: () => void;
@@ -22,6 +23,7 @@ export default function CountUp({
   duration = 2,
   className = '',
   startWhen = true,
+  decimals,
   separator = '',
   onStart,
   onEnd
@@ -50,7 +52,8 @@ export default function CountUp({
     return 0;
   };
 
-  const maxDecimals = Math.max(getDecimalPlaces(from), getDecimalPlaces(to));
+  const calculatedDecimals = Math.max(getDecimalPlaces(from), getDecimalPlaces(to));
+  const maxDecimals = decimals !== undefined ? decimals : calculatedDecimals;
 
   const formatValue = useCallback(
     (latest: number) => {

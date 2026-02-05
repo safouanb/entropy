@@ -21,7 +21,7 @@ export default function CBAPage() {
     // Fetch Data Centers
     const { data: dcData, isLoading: dcLoading } = useQuery({
         queryKey: ["data-centers"],
-        queryFn: () => predictionService.listDataCenters({ page_size: 100 }),
+        queryFn: () => predictionService.listDataCenters({ pageSize: 100 }),
     });
 
     // Nearby Sinks Logic

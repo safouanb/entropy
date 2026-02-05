@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
     try {
-        const response = await predictionService.listDataCenters({ page: 1, page_size: 50 });
+        const response = await predictionService.listDataCenters({ page: 1, pageSize: 50 });
 
         // Map backend DC entitites to frontend 'Record' format
         const records = (response.dataCenters || []).map((dc: any) => ({

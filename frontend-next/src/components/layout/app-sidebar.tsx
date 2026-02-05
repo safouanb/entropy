@@ -80,7 +80,7 @@ export function AppSidebar() {
                     <input
                         type="text"
                         placeholder="Search..."
-                        className="w-full bg-white/5 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/30 transition-all shadow-inner"
+                        className="w-full bg-white/5 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all shadow-inner"
                     />
                 </div>
             </div>
@@ -158,7 +158,7 @@ function NavItem({ item, pathname, isCollapsed }: { item: any, pathname: string,
         >
             <Icon className={cn(
                 "w-5 h-5 transition-colors duration-200 flex-shrink-0",
-                highlight ? "text-emerald-400" : "text-white/40 group-hover:text-white/70"
+                highlight ? "text-blue-300" : "text-white/40 group-hover:text-white/70"
             )} />
 
             {!isCollapsed && (
@@ -168,7 +168,7 @@ function NavItem({ item, pathname, isCollapsed }: { item: any, pathname: string,
             )}
 
             {highlight && !isCollapsed && (
-                <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
             )}
         </Link>
     );

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     const response = await predictionService.listHeatSinks({
       page: page ? parseInt(page) : undefined,
-      page_size: pageSize ? parseInt(pageSize) : undefined,
+      pageSize: pageSize ? parseInt(pageSize) : undefined,
     });
 
     return NextResponse.json({

@@ -17,7 +17,7 @@ export default function MapPage() {
     // In a real app we might want a specific endpoint for 'all nodes' or cluster them
     const { data: dcData, isLoading: dcLoading } = useQuery({
         queryKey: ["data-centers-map"],
-        queryFn: () => predictionService.listDataCenters({ page_size: 100 }), // Get up to 100
+        queryFn: () => predictionService.listDataCenters({ pageSize: 100 }), // Get up to 100
     });
 
     // Hack: We don't have a 'listAllSinks' easily accessible without a DC, or we do?
@@ -33,7 +33,7 @@ export default function MapPage() {
 
     const { data: sinksData, isLoading: sinksLoading } = useQuery({
         queryKey: ["heat-sinks-map"],
-        queryFn: () => predictionService.listHeatSinks({ page_size: 100 }),
+        queryFn: () => predictionService.listHeatSinks({ pageSize: 100 }),
     });
 
     return (

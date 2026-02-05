@@ -64,7 +64,7 @@ export function MagneticCursor({
 
       {/* Cursor follower dot */}
       <motion.div
-        className="fixed pointer-events-none z-50 rounded-full bg-emerald-400/20 backdrop-blur-sm border border-emerald-400/30"
+        className="fixed pointer-events-none z-50 rounded-full bg-blue-400/20 backdrop-blur-sm border border-blue-400/30"
         style={{
           width: size,
           height: size,

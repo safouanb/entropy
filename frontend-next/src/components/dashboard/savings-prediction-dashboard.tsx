@@ -36,35 +36,35 @@ export function SavingsPredictionDashboard() {
             <TabsList className="inline-flex h-12 items-center justify-start gap-1 rounded-xl bg-white p-1.5 shadow-sm border border-gray-200">
               <TabsTrigger
                 value="calculate"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
                 <CalculatorIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Calculate</span>
               </TabsTrigger>
               <TabsTrigger
                 value="results"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
                 <ChartBarIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Results</span>
               </TabsTrigger>
               <TabsTrigger
                 value="map"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
                 <MapIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Map</span>
               </TabsTrigger>
               <TabsTrigger
                 value="manage"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
                 <Cog6ToothIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Manage</span>
               </TabsTrigger>
               <TabsTrigger
                 value="history"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md"
               >
                 <ClockIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">History</span>

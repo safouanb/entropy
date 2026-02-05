@@ -17,7 +17,7 @@ export default function AppLayout({
             </div>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col min-w-0 bg-background relative selection:bg-emerald-500/30">
+            <main className="flex-1 flex flex-col min-w-0 bg-background relative selection:bg-blue-500/30">
                 {/* Optional Top Header could go here */}
 
                 {/* Content Scroll Area */}

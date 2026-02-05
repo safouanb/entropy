@@ -25,7 +25,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
         <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mb-4">
-          <CalculatorIcon className="h-8 w-8 text-emerald-500" />
+          <CalculatorIcon className="h-8 w-8 text-blue-500" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Analyze</h3>
         <p className="text-gray-500 max-w-sm text-sm mb-6">
@@ -54,7 +54,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
       <div className="rounded-2xl bg-slate-900 p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <p className="text-emerald-400 text-sm font-medium mb-1">Prediction Results</p>
+            <p className="text-blue-300 text-sm font-medium mb-1">Prediction Results</p>
             <h2 className="text-2xl font-bold text-white">{prediction.scenarioName}</h2>
             <p className="text-slate-400 mt-1">
               {prediction.analysisYears} year analysis at {formatPercent(prediction.discountRate)} discount rate
@@ -72,8 +72,8 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
       {/* Financial Metrics - Primary Row */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <div className="p-2 rounded-lg bg-emerald-100">
-            <CurrencyDollarIcon className="h-4 w-4 text-emerald-600" />
+          <div className="p-2 rounded-lg bg-blue-100">
+            <CurrencyDollarIcon className="h-4 w-4 text-blue-600" />
           </div>
           <h3 className="font-semibold text-gray-900">Financial Performance</h3>
         </div>
@@ -227,9 +227,9 @@ function MetricCard({ title, value, icon: Icon, description, variant = "default"
       value: "text-gray-900",
     },
     primary: {
-      card: "border-emerald-200 bg-emerald-50 hover:border-emerald-300",
-      icon: "bg-emerald-500 text-white",
-      value: "text-emerald-700",
+      card: "border-blue-200 bg-blue-50 hover:border-blue-300",
+      icon: "bg-blue-500 text-white",
+      value: "text-blue-700",
     },
     teal: {
       card: "border-teal-200 bg-teal-50 hover:border-teal-300",

@@ -82,10 +82,10 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         {/* Data Sources Section */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Data Center Selection */}
-          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-emerald-300 transition-colors">
+          <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:border-blue-300 transition-colors">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-emerald-100">
-                <BuildingOffice2Icon className="h-5 w-5 text-emerald-600" />
+              <div className="p-2 rounded-lg bg-blue-100">
+                <BuildingOffice2Icon className="h-5 w-5 text-blue-600" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">Data Center</h3>
@@ -274,7 +274,7 @@ export function CalculateTab({ onPredictionComplete }: CalculateTabProps) {
         <Button
           type="submit"
           size="lg"
-          className="w-full h-14 text-base font-medium bg-emerald-500 hover:bg-emerald-600 transition-colors"
+          className="w-full h-14 text-base font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
           disabled={!selectedDcId || calculateMutation.isPending}
         >
           {calculateMutation.isPending ? (

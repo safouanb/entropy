@@ -143,7 +143,7 @@ export function ManageTab() {
         <div className="p-6 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/25">
+              <div className="p-2.5 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/25">
                 <GlobeEuropeAfricaIcon className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -153,7 +153,7 @@ export function ManageTab() {
             </div>
             <Dialog open={ccDialogOpen} onOpenChange={setCcDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20">
+                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 shadow-md shadow-blue-500/20">
                   <PlusIcon className="mr-2 h-4 w-4" />
                   Add
                 </Button>
@@ -161,8 +161,8 @@ export function ManageTab() {
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-emerald-100">
-                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-emerald-600" />
+                    <div className="p-2 rounded-lg bg-blue-100">
+                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-blue-600" />
                     </div>
                     Add Carbon Credit
                   </DialogTitle>
@@ -191,11 +191,11 @@ export function ManageTab() {
               {carbonCredits?.items?.map((cc) => (
                 <li
                   key={cc.id}
-                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white hover:border-emerald-200 hover:shadow-md transition-all"
+                  className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
-                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-emerald-600" />
+                    <div className="p-2 rounded-lg bg-blue-50 group-hover:bg-blue-100 transition-colors">
+                      <GlobeEuropeAfricaIcon className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{cc.projectName}</p>
@@ -205,7 +205,7 @@ export function ManageTab() {
                           ${cc.pricePerTon}/ton
                         </span>
                         <span className="text-gray-300">|</span>
-                        <span className="text-sm text-emerald-600 font-medium">
+                        <span className="text-sm text-blue-600 font-medium">
                           {cc.availableTons} tons available
                         </span>
                       </div>

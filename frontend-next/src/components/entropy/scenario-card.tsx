@@ -79,7 +79,7 @@ export function ScenarioCard({
             className={cn(
                 'group relative transition-all duration-300 cursor-pointer overflow-hidden',
                 isSelected
-                    ? 'ring-2 ring-emerald-500 border-transparent bg-emerald-950/10'
+                    ? 'ring-2 ring-blue-500 border-transparent bg-blue-950/10'
                     : 'hover:border-white/20 hover:bg-white/5',
                 className
             )}
@@ -145,7 +145,7 @@ function Metric({ label, value, highlight }: { label: string, value: string, hig
     return (
         <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-0.5">{label}</span>
-            <span className={cn("font-mono text-sm text-white/90", highlight && "text-emerald-400 font-semibold")}>{value}</span>
+            <span className={cn("font-mono text-sm text-white/90", highlight && "text-blue-400 font-semibold")}>{value}</span>
         </div>
     );
 }
