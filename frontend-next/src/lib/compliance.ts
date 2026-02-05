@@ -44,8 +44,9 @@ export async function checkCompliance(req: ComplianceRequest): Promise<Complianc
 }
 
 import { predictionService } from "./backend-client";
+import { DataCenter } from "./schema";
 
-export async function saveDataCenter(req: ComplianceRequest, name: string): Promise<any> {
+export async function saveDataCenter(req: ComplianceRequest, name: string): Promise<{ dataCenter: DataCenter }> {
     const payload = {
         name: name,
         location: {

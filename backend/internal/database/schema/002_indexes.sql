@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE INDEX IF NOT EXISTS idx_heat_centers_name ON heat_centers(name);
 CREATE INDEX IF NOT EXISTS idx_heat_centers_location ON heat_centers(location_lat, location_lng);
 CREATE INDEX IF NOT EXISTS idx_heat_centers_active ON heat_centers(is_active);

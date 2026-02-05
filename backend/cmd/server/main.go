@@ -17,7 +17,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pyrecycleheat/backend/internal/config"
 	"github.com/pyrecycleheat/backend/internal/database"
-	"github.com/pyrecycleheat/backend/internal/migrations"
+	"github.com/pyrecycleheat/backend/internal/database/schema"
 	"github.com/pyrecycleheat/backend/internal/observability"
 	"github.com/pyrecycleheat/backend/internal/router"
 	"github.com/rs/cors"
@@ -89,7 +89,7 @@ func main() {
 
 	// Run migrations
 	if cfg.Migrations.AutoRun {
-		if err := migrations.Run(sqlDB, logger); err != nil {
+		if err := schema.Run(sqlDB, logger); err != nil {
 			log.Fatalf("run migrations: %v", err)
 		}
 	}

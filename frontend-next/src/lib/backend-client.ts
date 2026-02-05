@@ -1,3 +1,16 @@
+import {
+  ActivityLogItem,
+  CalculatePredictionResponse,
+  CarbonCredit,
+  CheckComplianceResponse,
+  DashboardStats,
+  DataCenter,
+  HeatSink,
+  PredictionAnalytics,
+  PredictionResult,
+  UserProfile,
+} from "./schema";
+
 const BACKEND_URL = process.env.NEXT_PUBLIC_GO_BACKEND_URL || "http://localhost:8080";
 
 interface ConnectRPCError {
@@ -45,29 +58,29 @@ async function callRPC<TReq, TRes>(
 // Note: Protobuf JSON uses camelCase for field names
 export const predictionService = {
   // Data Centers
-  listDataCenters: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { dataCenters: unknown[]; pagination: unknown }>(
+  listDataCenters: (pagination?: { page?: number; pageSize?: number }) =>
+    callRPC<{ pagination?: { page?: number; pageSize?: number } }, { dataCenters: DataCenter[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListDataCenters",
       { pagination }
     ),
 
   getDataCenter: (id: number) =>
-    callRPC<{ id: number }, { dataCenter: unknown }>(
+    callRPC<{ id: number }, { dataCenter: DataCenter }>(
       "pyrecycleheat.v1.PredictionService",
       "GetDataCenter",
       { id }
     ),
 
-  createDataCenter: (dataCenter: unknown) =>
-    callRPC<{ dataCenter: unknown }, { dataCenter: unknown }>(
+  createDataCenter: (dataCenter: Partial<DataCenter>) =>
+    callRPC<{ dataCenter: Partial<DataCenter> }, { dataCenter: DataCenter }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateDataCenter",
       { dataCenter }
     ),
 
-  updateDataCenter: (id: number, dataCenter: unknown) =>
-    callRPC<{ id: number; dataCenter: unknown }, { dataCenter: unknown }>(
+  updateDataCenter: (id: number, dataCenter: Partial<DataCenter>) =>
+    callRPC<{ id: number; dataCenter: Partial<DataCenter> }, { dataCenter: DataCenter }>(
       "pyrecycleheat.v1.PredictionService",
       "UpdateDataCenter",
       { id, dataCenter }
@@ -81,29 +94,29 @@ export const predictionService = {
     ),
 
   // Carbon Credits
-  listCarbonCredits: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { carbonCredits: unknown[]; pagination: unknown }>(
+  listCarbonCredits: (pagination?: { page?: number; pageSize?: number }) =>
+    callRPC<{ pagination?: { page?: number; pageSize?: number } }, { carbonCredits: CarbonCredit[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListCarbonCredits",
       { pagination }
     ),
 
   getCarbonCredit: (id: number) =>
-    callRPC<{ id: number }, { carbonCredit: unknown }>(
+    callRPC<{ id: number }, { carbonCredit: CarbonCredit }>(
       "pyrecycleheat.v1.PredictionService",
       "GetCarbonCredit",
       { id }
     ),
 
-  createCarbonCredit: (carbonCredit: unknown) =>
-    callRPC<{ carbonCredit: unknown }, { carbonCredit: unknown }>(
+  createCarbonCredit: (carbonCredit: Partial<CarbonCredit>) =>
+    callRPC<{ carbonCredit: Partial<CarbonCredit> }, { carbonCredit: CarbonCredit }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateCarbonCredit",
       { carbonCredit }
     ),
 
-  updateCarbonCredit: (id: number, carbonCredit: unknown) =>
-    callRPC<{ id: number; carbonCredit: unknown }, { carbonCredit: unknown }>(
+  updateCarbonCredit: (id: number, carbonCredit: Partial<CarbonCredit>) =>
+    callRPC<{ id: number; carbonCredit: Partial<CarbonCredit> }, { carbonCredit: CarbonCredit }>(
       "pyrecycleheat.v1.PredictionService",
       "UpdateCarbonCredit",
       { id, carbonCredit }
@@ -117,22 +130,29 @@ export const predictionService = {
     ),
 
   // Heat Sinks
-  listHeatSinks: (pagination?: { page?: number; page_size?: number }) =>
-    callRPC<{ pagination?: typeof pagination }, { heatSinks: unknown[]; pagination: unknown }>(
+  listHeatSinks: (pagination?: { page?: number; pageSize?: number }) =>
+    callRPC<{ pagination?: { page?: number; pageSize?: number } }, { heatSinks: HeatSink[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListHeatSinks",
       { pagination }
     ),
 
   getHeatSink: (id: number) =>
-    callRPC<{ id: number }, { heatSink: unknown }>(
+    callRPC<{ id: number }, { heatSink: HeatSink }>(
       "pyrecycleheat.v1.PredictionService",
       "GetHeatSink",
       { id }
     ),
 
-  createHeatSink: (heatSink: unknown) =>
-    callRPC<{ heatSink: unknown }, { heatSink: unknown }>(
+  createHeatSink: (heatSink: Partial<HeatSink>) =>
+    callRPC<{ heatSink: Partial<HeatSink> }, { heatSink: HeatSink }>(
+      "pyrecycleheat.v1.PredictionService",
+      "CreateHeatSink",
+      { heatSink }
+    ),
+
+  createHeatSinkFull: (heatSink: Partial<HeatSink>) =>
+    callRPC<{ heatSink: Partial<HeatSink> }, { heatSink: HeatSink }>(
       "pyrecycleheat.v1.PredictionService",
       "CreateHeatSink",
       { heatSink }
@@ -148,7 +168,7 @@ export const predictionService = {
   listNearbyHeatSinks: (dataCenterId: number, maxDistanceKm: number, limit?: number) =>
     callRPC<
       { dataCenterId: number; maxDistanceKm: number; limit?: number },
-      { heatSinks: unknown[] }
+      { heatSinks: HeatSink[] }
     >(
       "pyrecycleheat.v1.PredictionService",
       "ListNearbyHeatSinks",
@@ -168,7 +188,7 @@ export const predictionService = {
     customElectricityRate?: number;
     customCarbonPrice?: number;
   }) =>
-    callRPC<typeof input, unknown>(
+    callRPC<typeof input, CalculatePredictionResponse>(
       "pyrecycleheat.v1.PredictionService",
       "CalculatePrediction",
       input
@@ -179,14 +199,14 @@ export const predictionService = {
     dataCenterId?: number;
     scenarioName?: string;
   }) =>
-    callRPC<typeof params, { predictionResults: unknown[]; pagination: unknown }>(
+    callRPC<typeof params, { predictionResults: PredictionResult[]; pagination: unknown }>(
       "pyrecycleheat.v1.PredictionService",
       "ListPredictionResults",
       params || {}
     ),
 
   getPredictionResult: (id: number) =>
-    callRPC<{ id: number }, { predictionResult: unknown }>(
+    callRPC<{ id: number }, { predictionResult: PredictionResult }>(
       "pyrecycleheat.v1.PredictionService",
       "GetPredictionResult",
       { id }
@@ -201,35 +221,41 @@ export const predictionService = {
 
   // Analytics
   getPredictionAnalytics: () =>
-    callRPC<Record<string, never>, { predictionAnalytics: unknown }>(
+    callRPC<Record<string, never>, { predictionAnalytics: PredictionAnalytics }>(
       "pyrecycleheat.v1.PredictionService",
       "GetPredictionAnalytics",
       {}
     ),
 
+  checkCompliance: (request: {
+    jurisdiction: string;
+    totalItLoadKw: number;
+    planDate?: string;
+    heatRecoveryReady: boolean;
+  }) =>
+    callRPC<typeof request, CheckComplianceResponse>(
+      "pyrecycleheat.v1.PredictionService",
+      "CheckCompliance",
+      request
+    ),
+
   // Dashboard & Settings
   getDashboardStats: () =>
-    callRPC<Record<string, never>, {
-      activeSites: number;
-      complianceRate: number;
-      annualSavings: number;
-      totalActivities: number;
-      completedAssessments: number;
-    }>(
+    callRPC<Record<string, never>, DashboardStats>(
       "pyrecycleheat.v1.PredictionService",
       "GetDashboardStats",
       {}
     ),
 
   listActivityStream: (limit: number) =>
-    callRPC<{ limit: number }, { activities: any[] }>(
+    callRPC<{ limit: number }, { activities: ActivityLogItem[] }>(
       "pyrecycleheat.v1.PredictionService",
       "ListActivityStream",
       { limit }
     ),
 
   getUser: (email?: string) =>
-    callRPC<{ email?: string }, { user: any }>(
+    callRPC<{ email?: string }, { user: UserProfile }>(
       "pyrecycleheat.v1.PredictionService",
       "GetUser",
       { email }
@@ -242,7 +268,7 @@ export const predictionService = {
     notifyAssessmentComplete: boolean;
     notifyRegulatoryUpdates: boolean;
   }) =>
-    callRPC<typeof user, { user: any }>(
+    callRPC<typeof user, { user: UserProfile }>(
       "pyrecycleheat.v1.PredictionService",
       "UpdateUser",
       user

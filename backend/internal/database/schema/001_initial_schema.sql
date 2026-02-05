@@ -1,3 +1,4 @@
+-- +goose Up
 PRAGMA foreign_keys = ON;
 
 -- District Heating Tables

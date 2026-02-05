@@ -1,3 +1,4 @@
+-- +goose Up
 -- Migration: Decision Record Extensions for Entropy V1
 -- Purpose: Add stakeholders, risk allocation, and audit trail for regulator-grade records
 

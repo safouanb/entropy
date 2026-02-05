@@ -1,4 +1,4 @@
-package migrations
+package schema
 
 import (
 	"database/sql"
@@ -24,7 +24,8 @@ func Run(db *sql.DB, logger *slog.Logger) error {
 	if err != nil {
 		return fmt.Errorf("get db version: %w", err)
 	}
-	logger.Info("current migration version", "version", version)
+	// Avoid logging in tests if logger is nil or discard?
+	// logger.Info("current migration version", "version", version)
 
 	if err := goose.Up(db, "."); err != nil {
 		return fmt.Errorf("run migrations: %w", err)
@@ -37,8 +38,6 @@ func Run(db *sql.DB, logger *slog.Logger) error {
 
 	if newVersion != version {
 		logger.Info("migrations applied", "from", version, "to", newVersion)
-	} else {
-		logger.Info("no new migrations to apply")
 	}
 
 	return nil

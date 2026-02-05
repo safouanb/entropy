@@ -1,3 +1,4 @@
+-- +goose Up
 -- Users table for Settings page
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

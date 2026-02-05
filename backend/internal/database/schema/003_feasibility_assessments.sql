@@ -1,3 +1,4 @@
+-- +goose Up
 -- Migration: Feasibility Assessments for Entropy V1
 -- Purpose: Capture structured intake (assumptions, not data) with range-based fields
 
