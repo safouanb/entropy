@@ -25,6 +25,33 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
+// Real assessment data from backend
+interface Assessment {
+    id: number;
+    version: number;
+    project_name: string;
+    dc_location_lat: number;
+    dc_location_lng: number;
+    thermal_load_min_kw: number;
+    thermal_load_max_kw: number;
+    jurisdiction: string;
+    applicable_regulation: string;
+    status: string;
+    scenario_results?: string;
+    compliance_result?: string;
+    conclusion?: string;
+    created_at: string;
+    completed_at?: string;
+    confidence_level?: string;
+}
+
+interface ComplianceResult {
+    verdict: string;
+    overall_status: string;
+    regulatory_context: string;
+    failure_modes?: string[];
+}
+
 interface DecisionRecord {
     id: string;
     recordNumber: string;
@@ -37,48 +64,93 @@ interface DecisionRecord {
     finalizedAt?: string;
     investmentRange: string;
     thermalLoad: string;
+    originalAssessment: Assessment;
+    parsedCompliance?: ComplianceResult;
+    parsedScenarios?: any[];
 }
 
-// Mock data - replace with actual API call
-const mockRecords: DecisionRecord[] = [
-    {
-        id: "dr-001",
-        recordNumber: "DR-2026-001",
-        projectName: "Amsterdam Hyperscale DC → Residential District 4",
-        status: "FINALIZED",
-        complianceVerdict: "COMPLIANT",
-        jurisdiction: "NL",
-        primaryRiskBearer: "District Heating Authority",
-        createdAt: "2026-02-01",
-        finalizedAt: "2026-02-04",
-        investmentRange: "€2.1M - €3.4M",
-        thermalLoad: "1.2-2.8 MW"
-    },
-    {
-        id: "dr-002",
-        recordNumber: "DR-2026-002",
-        projectName: "Frankfurt Enterprise DC → Industrial Park West",
-        status: "PENDING_REVIEW",
-        complianceVerdict: "CONDITIONAL",
-        jurisdiction: "DE",
-        primaryRiskBearer: "Data Center Operator",
-        createdAt: "2026-01-28",
-        investmentRange: "€4.2M - €6.8M",
-        thermalLoad: "3.1-5.7 MW"
-    },
-    {
-        id: "dr-003",
-        recordNumber: "DR-2026-003",
-        projectName: "Brussels Colocation Hub → University Campus",
-        status: "DRAFT",
-        complianceVerdict: "PENDING",
-        jurisdiction: "BE",
-        primaryRiskBearer: "Third Party Operator",
-        createdAt: "2026-02-05",
-        investmentRange: "€1.8M - €2.9M",
-        thermalLoad: "0.8-1.4 MW"
+function transformAssessmentToRecord(assessment: Assessment): DecisionRecord {
+    // Parse JSON results
+    let parsedCompliance: ComplianceResult | undefined;
+    let parsedScenarios: any[] | undefined;
+
+    try {
+        if (assessment.compliance_result) {
+            parsedCompliance = JSON.parse(assessment.compliance_result);
+        }
+        if (assessment.scenario_results) {
+            parsedScenarios = JSON.parse(assessment.scenario_results);
+        }
+    } catch (e) {
+        console.warn('Failed to parse assessment JSON:', e);
     }
-];
+
+    // Determine compliance verdict from parsed result
+    let complianceVerdict: DecisionRecord['complianceVerdict'] = "PENDING";
+    if (parsedCompliance) {
+        switch (parsedCompliance.overall_status?.toUpperCase()) {
+            case "COMPLIANT":
+                complianceVerdict = "COMPLIANT";
+                break;
+            case "CONDITIONAL":
+                complianceVerdict = "CONDITIONAL";
+                break;
+            case "NON_COMPLIANT":
+                complianceVerdict = "NON_COMPLIANT";
+                break;
+        }
+    }
+
+    // Map status
+    let status: DecisionRecord['status'] = "DRAFT";
+    switch (assessment.status?.toLowerCase()) {
+        case "completed":
+        case "finalized":
+            status = "FINALIZED";
+            break;
+        case "calculating":
+        case "pending":
+            status = "PENDING_REVIEW";
+            break;
+        case "draft":
+            status = "DRAFT";
+            break;
+        case "archived":
+            status = "ARCHIVED";
+            break;
+    }
+
+    // Calculate investment range from scenarios
+    let investmentRange = "Calculating...";
+    if (parsedScenarios && parsedScenarios.length > 0) {
+        const investments = parsedScenarios
+            .filter(s => s.InvestmentRequiredMinEur && s.InvestmentRequiredMaxEur)
+            .map(s => ({ min: s.InvestmentRequiredMinEur, max: s.InvestmentRequiredMaxEur }));
+
+        if (investments.length > 0) {
+            const minInvestment = Math.min(...investments.map(i => i.min));
+            const maxInvestment = Math.max(...investments.map(i => i.max));
+            investmentRange = `€${(minInvestment / 1000000).toFixed(1)}M - €${(maxInvestment / 1000000).toFixed(1)}M`;
+        }
+    }
+
+    return {
+        id: assessment.id.toString(),
+        recordNumber: `DR-${new Date(assessment.created_at).getFullYear()}-${assessment.id.toString().padStart(3, '0')}`,
+        projectName: assessment.project_name,
+        status,
+        complianceVerdict,
+        jurisdiction: assessment.jurisdiction,
+        primaryRiskBearer: "Analysis Required", // TODO: Extract from parsed scenarios
+        createdAt: new Date(assessment.created_at).toISOString().split('T')[0],
+        finalizedAt: assessment.completed_at ? new Date(assessment.completed_at).toISOString().split('T')[0] : undefined,
+        investmentRange,
+        thermalLoad: `${(assessment.thermal_load_min_kw / 1000).toFixed(1)}-${(assessment.thermal_load_max_kw / 1000).toFixed(1)} MW`,
+        originalAssessment: assessment,
+        parsedCompliance,
+        parsedScenarios
+    };
+}
 
 const getStatusIcon = (status: DecisionRecord['status']) => {
     switch (status) {
@@ -108,10 +180,38 @@ const getStatusColor = (status: DecisionRecord['status']) => {
 };
 
 export default function DecisionRecordsPage() {
-    const [records] = useState<DecisionRecord[]>(mockRecords);
+    const [records, setRecords] = useState<DecisionRecord[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [jurisdictionFilter, setJurisdictionFilter] = useState<string>("all");
+
+    // Fetch real assessments from backend
+    useEffect(() => {
+        const fetchAssessments = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/assessments?limit=50&offset=0');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Transform backend assessments to decision records
+                const transformedRecords = (data.assessments || []).map(transformAssessmentToRecord);
+                setRecords(transformedRecords);
+                setError(null);
+            } catch (err) {
+                console.error('Failed to fetch assessments:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load assessments');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAssessments();
+    }, []);
 
     const filteredRecords = records.filter(record => {
         const matchesSearch = record.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -250,18 +350,32 @@ export default function DecisionRecordsPage() {
             <Card className="bg-zinc-950/50 border-zinc-800">
                 <CardHeader className="pb-3">
                     <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
-                        Active Decision Records ({filteredRecords.length})
+                        Active Decision Records ({loading ? '...' : filteredRecords.length})
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="space-y-0">
-                        {filteredRecords.map((record, index) => (
+                    {loading ? (
+                        <div className="p-8 text-center">
+                            <div className="inline-flex items-center space-x-2 text-zinc-400">
+                                <div className="w-4 h-4 border-2 border-zinc-600 border-t-zinc-400 rounded-full animate-spin" />
+                                <span className="font-mono text-sm">Loading assessments...</span>
+                            </div>
+                        </div>
+                    ) : error ? (
+                        <div className="p-8 text-center">
+                            <div className="text-red-400 text-sm font-mono mb-2">Failed to load assessments</div>
+                            <div className="text-zinc-500 text-xs font-mono">{error}</div>
+                        </div>
+                    ) : (
+                        <div className="space-y-0">
+                            {filteredRecords.map((record, index) => (
                             <motion.div
                                 key={record.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
                                 className="flex items-center justify-between p-4 border-b border-zinc-800/50 hover:bg-zinc-900/30 transition-colors group cursor-pointer"
+                                onClick={() => window.open(`/records/${record.id}`, '_blank')}
                             >
                                 <div className="flex items-center space-x-4 flex-1">
                                     <div className="flex items-center space-x-2">
@@ -312,18 +426,22 @@ export default function DecisionRecordsPage() {
                                 </div>
                             </motion.div>
                         ))}
-                    </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
             {/* Empty state */}
-            {filteredRecords.length === 0 && (
+            {!loading && !error && filteredRecords.length === 0 && (
                 <Card className="bg-zinc-950/50 border-zinc-800">
                     <CardContent className="p-12 text-center">
                         <FileText className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-white mb-2">No Records Found</h3>
                         <p className="text-sm text-zinc-500 mb-6">
-                            No decision records match your current filters.
+                            {searchQuery || statusFilter !== "all" || jurisdictionFilter !== "all"
+                                ? "No decision records match your current filters."
+                                : "No decision records exist yet. Create your first assessment to get started."
+                            }
                         </p>
                         <Link href="/assessment/new">
                             <Button className="bg-white text-black hover:bg-zinc-200">

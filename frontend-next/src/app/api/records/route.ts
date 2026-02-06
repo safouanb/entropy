@@ -1,21 +1,127 @@
 import { NextRequest, NextResponse } from "next/server";
-import { predictionService, BackendError } from "@/lib/backend-client";
+
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 
 export const dynamic = 'force-dynamic';
 
+interface SqlNullString {
+    String: string;
+    Valid: boolean;
+}
+
+interface Assessment {
+    id: number;
+    version: number;
+    project_name: string;
+    dc_location_lat: number;
+    dc_location_lng: number;
+    thermal_load_min_kw: number;
+    thermal_load_max_kw: number;
+    jurisdiction: string;
+    applicable_regulation: string;
+    status: string;
+    scenario_results?: SqlNullString;
+    compliance_result?: SqlNullString;
+    conclusion?: SqlNullString;
+    created_at: string;
+    completed_at?: SqlNullString;
+    confidence_level?: SqlNullString;
+}
+
+interface ComplianceResult {
+    status: string;
+    overall_status?: string;
+    applicableLaw: string;
+    reasoning: string[];
+}
+
+interface ScenarioResult {
+    reuseScenario: string;
+    ownershipModel: string;
+    complianceStatus: string;
+    investmentRequiredMinEur?: number;
+    investmentRequiredMaxEur?: number;
+}
+
 export async function GET(request: NextRequest) {
     try {
-        const response = await predictionService.listDataCenters({ page: 1, pageSize: 50 });
+        const response = await fetch(`${BACKEND_URL}/api/v1/assessments`);
+        if (!response.ok) {
+            throw new Error(`Backend returned ${response.status}`);
+        }
 
-        // Map backend DC entitites to frontend 'Record' format
-        const records = (response.dataCenters || []).map((dc: any) => ({
-            id: `DC-${dc.id || Math.floor(Math.random() * 1000)}`,
-            name: dc.name || "Unknown DC",
-            status: dc.status || "Unknown",
-            wasteHeat: `${dc.capacityMw || 0} MW`,
-            date: new Date().toISOString().split('T')[0], // Mock date for now
-            region: String(dc.location || "Unknown")
-        }));
+        const { assessments = [] }: { assessments: Assessment[] } = await response.json();
+
+        // Transform assessments to decision records format
+        const records = assessments.map((assessment) => {
+            const recordNumber = `DR-${new Date(assessment.created_at).getFullYear()}-${assessment.id.toString().padStart(3, '0')}`;
+            const thermalLoadRange = `${(assessment.thermal_load_min_kw / 1000).toFixed(1)}-${(assessment.thermal_load_max_kw / 1000).toFixed(1)} MW`;
+
+            // Parse compliance result from SqlNullString structure
+            let parsedCompliance: ComplianceResult | undefined;
+            try {
+                if (assessment.compliance_result?.Valid && assessment.compliance_result.String) {
+                    parsedCompliance = JSON.parse(assessment.compliance_result.String);
+                }
+            } catch (e) {
+                console.warn('Failed to parse compliance JSON:', e);
+            }
+
+            // Parse scenario results from SqlNullString structure
+            let parsedScenarios: ScenarioResult[] = [];
+            try {
+                if (assessment.scenario_results?.Valid && assessment.scenario_results.String) {
+                    parsedScenarios = JSON.parse(assessment.scenario_results.String);
+                }
+            } catch (e) {
+                console.warn('Failed to parse scenario JSON:', e);
+            }
+
+            // Determine compliance verdict
+            let complianceVerdict = "PENDING";
+            if (parsedCompliance?.status) {
+                switch (parsedCompliance.status.toUpperCase()) {
+                    case "COMPLIANT":
+                    case "MANDATORY":
+                        complianceVerdict = parsedCompliance.status.toUpperCase() === "COMPLIANT" ? "COMPLIANT" : "NON_COMPLIANT";
+                        break;
+                    case "CONDITIONAL":
+                        complianceVerdict = "CONDITIONAL";
+                        break;
+                    case "NON_COMPLIANT":
+                        complianceVerdict = "NON_COMPLIANT";
+                        break;
+                }
+            }
+
+            // Calculate investment range
+            let investmentRange = "Analysis Pending";
+            if (parsedScenarios.length > 0) {
+                const investments = parsedScenarios
+                    .filter(s => s.investmentRequiredMinEur && s.investmentRequiredMaxEur)
+                    .map(s => ({ min: s.investmentRequiredMinEur!, max: s.investmentRequiredMaxEur! }));
+
+                if (investments.length > 0) {
+                    const minInvestment = Math.min(...investments.map(i => i.min));
+                    const maxInvestment = Math.max(...investments.map(i => i.max));
+                    investmentRange = `€${(minInvestment / 1000000).toFixed(1)}M - €${(maxInvestment / 1000000).toFixed(1)}M`;
+                }
+            }
+
+            return {
+                id: assessment.id,
+                recordNumber,
+                projectName: assessment.project_name,
+                status: assessment.status,
+                complianceVerdict,
+                jurisdiction: assessment.jurisdiction,
+                thermalLoad: thermalLoadRange,
+                investmentRange,
+                createdDate: assessment.created_at ? new Date(assessment.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                completedDate: assessment.completed_at?.Valid && assessment.completed_at.String ? new Date(assessment.completed_at.String).toISOString().split('T')[0] : null,
+                confidenceLevel: assessment.confidence_level?.Valid ? assessment.confidence_level.String : "MEDIUM"
+            };
+        });
 
         return NextResponse.json(records);
     } catch (error) {
