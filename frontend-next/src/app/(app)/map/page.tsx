@@ -53,13 +53,10 @@ export default function MapPage() {
                             Loading Geospatial Data...
                         </div>
                     ) : (
-                        /* 
                         <HeatMapClient
                             dataCenters={(dcData as any)?.dataCenters || []}
                             heatSinks={(sinksData as any)?.heatSinks || []}
-                        /> 
-                        */
-                        <div className="p-10 text-center">Map Component Disabled for Debugging</div>
+                        />
                     )}
                 </CardContent>
             </Card>
