@@ -1,10 +1,29 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
-  // @ts-expect-error - turbopack types not yet in NextConfig
   turbopack: {
-    root: path.resolve(process.cwd(), ".."),
+    root: ".",
+  },
+  experimental: {
+    turbo: {
+      rules: {
+        "*.css": {
+          loaders: ["css-loader"],
+          as: "*.css",
+        },
+      },
+    },
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
   },
 };
 

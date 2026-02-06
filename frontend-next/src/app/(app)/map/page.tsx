@@ -20,16 +20,6 @@ export default function MapPage() {
         queryFn: () => predictionService.listDataCenters({ pageSize: 100 }), // Get up to 100
     });
 
-    // Hack: We don't have a 'listAllSinks' easily accessible without a DC, or we do?
-    // Let's use listNearby with a huge radius from center of NL relative to the first DC found or just a mock for now if endpoint limits
-    // Actually, `listNearbyHeatSinks` requires a DC ID. 
-    // Strategy: For the visual map, let's look at the implementation of `listNearbyHeatSinks` or just fetch sinks relative to the first DC found.
-
-    // BETTER: Using `listNearbyHeatSinks` with a "dummy" DC at center of NL (52.1326, 5.2913) would be ideal if the backend supported arbitrary lat/lon search.
-    // Backend `ListNearbyHeatSinks` takes `dataCenterID`. 
-    // Ideally we should have `ListHeatSinks` (generic). 
-    // Let's check `predictionService` definition again.
-    // It has `ListHeatSinks(limit, offset)`. Perfect.
 
     const { data: sinksData, isLoading: sinksLoading } = useQuery({
         queryKey: ["heat-sinks-map"],
@@ -63,10 +53,13 @@ export default function MapPage() {
                             Loading Geospatial Data...
                         </div>
                     ) : (
+                        /* 
                         <HeatMapClient
                             dataCenters={(dcData as any)?.dataCenters || []}
                             heatSinks={(sinksData as any)?.heatSinks || []}
-                        />
+                        /> 
+                        */
+                        <div className="p-10 text-center">Map Component Disabled for Debugging</div>
                     )}
                 </CardContent>
             </Card>
