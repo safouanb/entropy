@@ -114,13 +114,13 @@ export default function NewAssessmentPage() {
                                         onClick={() => s.n < step ? setStep(s.n) : null}
                                         disabled={s.n > step}
                                         className={cn(
-                                            "group flex flex-col w-full border-t-4 py-2 hover:border-emerald-500/50 transition-all text-left",
-                                            step >= s.n ? "border-emerald-500" : "border-white/10",
+                                            "group flex flex-col w-full border-t-4 py-2 hover:border-blue-500/50 transition-all text-left",
+                                            step >= s.n ? "border-blue-500" : "border-white/10",
                                         )}
                                     >
                                         <span className={cn(
-                                            "text-xs font-semibold tracking-wide uppercase group-hover:text-emerald-400 transition-colors",
-                                            step >= s.n ? "text-emerald-500" : "text-muted-foreground"
+                                            "text-xs font-semibold tracking-wide uppercase group-hover:text-blue-400 transition-colors",
+                                            step >= s.n ? "text-blue-500" : "text-muted-foreground"
                                         )}>
                                             Step {s.n}
                                         </span>
@@ -184,7 +184,7 @@ export default function NewAssessmentPage() {
                                                     className={cn(
                                                         "flex flex-col items-start p-3 rounded-md border text-left transition-all hover:bg-white/5",
                                                         form.thermalLoadMinKw === preset.min
-                                                            ? "border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/10 ring-1 ring-emerald-500/50"
+                                                            ? "border-blue-500 bg-blue-500/10 hover:bg-blue-500/10 ring-1 ring-blue-500/50"
                                                             : "border-white/10 bg-zinc-900/30"
                                                     )}
                                                 >
@@ -209,7 +209,7 @@ export default function NewAssessmentPage() {
                                                     className={cn(
                                                         "flex flex-col items-center justify-center p-3 rounded-md border text-center transition-all hover:bg-white/5",
                                                         form.investmentWillingness === opt.value
-                                                            ? "border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500/50"
+                                                            ? "border-blue-500 bg-blue-500/10 ring-1 ring-blue-500/50"
                                                             : "border-white/10 bg-zinc-900/30"
                                                     )}
                                                 >
@@ -229,7 +229,7 @@ export default function NewAssessmentPage() {
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-center">
                                                 <Label>Distance to Off-taker</Label>
-                                                <div className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-sm">
+                                                <div className="px-2 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-sm">
                                                     {form.distanceToOfftakerKm} km
                                                 </div>
                                             </div>
@@ -326,15 +326,15 @@ export default function NewAssessmentPage() {
                                                     className={cn(
                                                         "flex items-center w-full p-3 rounded-md border text-left transition-all hover:bg-white/5",
                                                         form.applicableRegulation === opt.value
-                                                            ? "border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500/50"
+                                                            ? "border-blue-500 bg-blue-500/10 ring-1 ring-blue-500/50"
                                                             : "border-white/10 bg-zinc-900/30"
                                                     )}
                                                 >
                                                     <div className={cn(
                                                         "w-4 h-4 rounded-full border flex items-center justify-center mr-3 transition-colors",
-                                                        form.applicableRegulation === opt.value ? "border-emerald-500" : "border-white/30"
+                                                        form.applicableRegulation === opt.value ? "border-blue-500" : "border-white/30"
                                                     )}>
-                                                        {form.applicableRegulation === opt.value && <div className="w-2 h-2 rounded-full bg-emerald-500" />}
+                                                        {form.applicableRegulation === opt.value && <div className="w-2 h-2 rounded-full bg-blue-500" />}
                                                     </div>
                                                     <div>
                                                         <div className="font-medium text-sm text-white">{opt.label}</div>
@@ -348,7 +348,7 @@ export default function NewAssessmentPage() {
                                     <div className="space-y-4 pt-4 border-t border-white/5">
                                         <div className="flex justify-between items-center">
                                             <Label>Time Horizon</Label>
-                                            <span className="font-mono text-emerald-400">{form.timeHorizonYears} years</span>
+                                            <span className="font-mono text-blue-400">{form.timeHorizonYears} years</span>
                                         </div>
                                         <Slider
                                             value={[form.timeHorizonYears]}
@@ -382,7 +382,7 @@ export default function NewAssessmentPage() {
                                 <Button
                                     onClick={handleSubmit}
                                     disabled={submitting || !form.projectName}
-                                    className="bg-emerald-500 text-black hover:bg-emerald-400 font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                                    className="bg-blue-500 text-black hover:bg-blue-400 font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)]"
                                 >
                                     {submitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                                     Generate Record
@@ -399,7 +399,7 @@ export default function NewAssessmentPage() {
                         <Card className="bg-zinc-900/50 border-white/10 overflow-hidden">
                             <div className="h-2 w-full bg-zinc-800">
                                 <div
-                                    className="h-full bg-emerald-500 transition-all duration-500 ease-out"
+                                    className="h-full bg-blue-500 transition-all duration-500 ease-out"
                                     style={{ width: `${(step / 3) * 100}%` }}
                                 />
                             </div>
@@ -425,13 +425,13 @@ export default function NewAssessmentPage() {
                                     </div>
                                     <div className="flex justify-between items-center text-sm pb-2">
                                         <span className="text-muted-foreground">Regulation</span>
-                                        <span className="font-mono text-emerald-400">{form.applicableRegulation}</span>
+                                        <span className="font-mono text-blue-400">{form.applicableRegulation}</span>
                                     </div>
                                 </div>
 
-                                <div className="bg-emerald-500/10 rounded border border-emerald-500/20 p-3 flex gap-3 items-start">
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                                    <div className="text-xs text-emerald-300/80">
+                                <div className="bg-blue-500/10 rounded border border-blue-500/20 p-3 flex gap-3 items-start">
+                                    <CheckCircle2 className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
+                                    <div className="text-xs text-blue-300/80">
                                         Ready to generate compliance scenario analysis for {form.jurisdiction}.
                                     </div>
                                 </div>

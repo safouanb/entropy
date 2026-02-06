@@ -50,7 +50,7 @@ interface AuditLogItem {
 const StatusBadge = ({ status }: { status: ComplianceStatus }) => {
     switch (status) {
         case "COMPLIANT":
-            return <Badge className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20"><CheckCircleIcon className="w-3 h-3 mr-1" /> Compliant</Badge>;
+            return <Badge className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20"><CheckCircleIcon className="w-3 h-3 mr-1" /> Compliant</Badge>;
         case "WARNING":
             return <Badge className="bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border-amber-500/20"><ExclamationTriangleIcon className="w-3 h-3 mr-1" /> Warning</Badge>;
         case "NON_COMPLIANT":
@@ -62,7 +62,7 @@ const StatusBadge = ({ status }: { status: ComplianceStatus }) => {
 
 const LogStatusBadge = ({ status }: { status: AuditLogItem['status'] }) => {
     switch (status) {
-        case "SUCCESS": return <span className="text-emerald-500 text-xs font-mono">SUCCESS</span>;
+        case "SUCCESS": return <span className="text-blue-500 text-xs font-mono">SUCCESS</span>;
         case "FAILURE": return <span className="text-rose-500 text-xs font-mono">FAILURE</span>;
         case "INFO": return <span className="text-blue-400 text-xs font-mono">INFO</span>;
     }
@@ -122,8 +122,8 @@ export default function CompliancePage() {
                     <div className="text-2xl font-bold text-white mt-1">{totalCheck}</div>
                 </div>
                 <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl">
-                    <div className="text-sm text-emerald-500/70 font-medium">Compliant</div>
-                    <div className="text-2xl font-bold text-emerald-500 mt-1">{compliantCount}</div>
+                    <div className="text-sm text-blue-500/70 font-medium">Compliant</div>
+                    <div className="text-2xl font-bold text-blue-500 mt-1">{compliantCount}</div>
                 </div>
                 <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl">
                     <div className="text-sm text-amber-500/70 font-medium">Warnings</div>
@@ -143,7 +143,7 @@ export default function CompliancePage() {
                         className={cn(
                             "pb-3 text-sm font-medium transition-colors border-b-2",
                             activeTab === "regulations"
-                                ? "border-emerald-500 text-emerald-500"
+                                ? "border-blue-500 text-blue-500"
                                 : "border-transparent text-muted-foreground hover:text-white"
                         )}
                     >
@@ -154,7 +154,7 @@ export default function CompliancePage() {
                         className={cn(
                             "pb-3 text-sm font-medium transition-colors border-b-2",
                             activeTab === "audit"
-                                ? "border-emerald-500 text-emerald-500"
+                                ? "border-blue-500 text-blue-500"
                                 : "border-transparent text-muted-foreground hover:text-white"
                         )}
                     >

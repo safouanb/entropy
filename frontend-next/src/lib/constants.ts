@@ -70,7 +70,7 @@ export const HEAT_SINK_TYPES = [
 
 // Investment Grade Colors
 export const INVESTMENT_GRADE_COLORS: Record<string, { bg: string; text: string }> = {
-  A: { bg: "bg-green-100", text: "text-green-800" },
+  A: { bg: "bg-blue-600", text: "text-blue-50" },
   B: { bg: "bg-blue-100", text: "text-blue-800" },
   C: { bg: "bg-yellow-100", text: "text-yellow-800" },
   D: { bg: "bg-red-100", text: "text-red-800" },

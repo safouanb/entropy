@@ -83,7 +83,7 @@ export default function AssessmentsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
                     { label: "Total Capacity", value: "245 MW", change: "+12%", color: "text-white" },
-                    { label: "Active Projects", value: assessments.length.toString(), change: "+2", color: "text-emerald-400" },
+                    { label: "Active Projects", value: assessments.length.toString(), change: "+2", color: "text-blue-400" },
                     { label: "Compliance Rate", value: "94%", change: "+5%", color: "text-white" },
                 ].map((metric) => (
                     <Card key={metric.label} className="bg-sidebar border-white/5 backdrop-blur-sm">
@@ -93,7 +93,7 @@ export default function AssessmentsPage() {
                                     <p className="text-sm font-medium text-muted-foreground">{metric.label}</p>
                                     <h3 className={cn("text-3xl font-bold mt-2 tracking-tight", metric.color)}>{metric.value}</h3>
                                 </div>
-                                <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-xs font-mono text-emerald-400">
+                                <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-xs font-mono text-blue-400">
                                     {metric.change}
                                 </div>
                             </div>
@@ -118,7 +118,7 @@ export default function AssessmentsPage() {
                 ) : filtered.length === 0 ? (
                     <div className="text-center py-20 border border-dashed border-white/10 rounded-xl bg-white/[0.02]">
                         <h3 className="text-muted-foreground">No assessments found.</h3>
-                        <Link href="/assessment/new" className="text-emerald-400 hover:text-emerald-300 text-sm mt-2 inline-block">Create your first record &rarr;</Link>
+                        <Link href="/assessment/new" className="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Create your first record &rarr;</Link>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-4">
@@ -126,11 +126,11 @@ export default function AssessmentsPage() {
                             <Link key={item.id} href={`/assessment/${item.id}`}>
                                 <div className="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-sidebar hover:bg-white/5 transition-all duration-200 hover:border-white/10 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5">
                                     <div className="flex items-center gap-6">
-                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center group-hover:border-emerald-500/30 group-hover:from-emerald-950/30 transition-all">
-                                            <BoltIcon className="w-5 h-5 text-white/50 group-hover:text-emerald-400 transition-colors" />
+                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center group-hover:border-blue-500/30 group-hover:from-blue-950/30 transition-all">
+                                            <BoltIcon className="w-5 h-5 text-white/50 group-hover:text-blue-400 transition-colors" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium text-white group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                                            <h3 className="font-medium text-white group-hover:text-blue-400 transition-colors flex items-center gap-2">
                                                 {item.project_name}
                                                 <ArrowTopRightOnSquareIcon className="w-3 h-3 opacity-0 group-hover:opacity-50 -translate-y-0.5 translate-x-0.5 transition-all" />
                                             </h3>
@@ -153,7 +153,7 @@ export default function AssessmentsPage() {
                                             <div className="font-mono text-white/90">{(item.thermal_load_min_kw / 1000).toFixed(1)} - {(item.thermal_load_max_kw / 1000).toFixed(1)} MW</div>
                                         </div>
 
-                                        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                                        <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
                                             COMPLIANT
                                         </Badge>
                                     </div>

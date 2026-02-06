@@ -40,7 +40,7 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
-      case "A": return "bg-emerald-500";
+      case "A": return "bg-blue-600";
       case "B": return "bg-blue-500";
       case "C": return "bg-amber-500";
       case "D": return "bg-red-500";
@@ -181,21 +181,21 @@ export function ResultsTab({ prediction }: ResultsTabProps) {
                   {prediction.yearlyBreakdown.map((year) => (
                     <tr
                       key={year.year}
-                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${year.cumulativeCashFlow >= 0 ? "bg-emerald-50/50" : ""
+                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${year.cumulativeCashFlow >= 0 ? "bg-blue-50/50" : ""
                         }`}
                     >
                       <td className="py-4 px-6 font-medium text-gray-900">Year {year.year}</td>
-                      <td className="text-right py-4 px-6 text-emerald-600 font-medium">
+                      <td className="text-right py-4 px-6 text-blue-600 font-medium">
                         {formatCurrency(year.cashInflow)}
                       </td>
                       <td className="text-right py-4 px-6 text-red-500">
                         {formatCurrency(year.cashOutflow)}
                       </td>
-                      <td className={`text-right py-4 px-6 font-medium ${year.netCashFlow >= 0 ? "text-emerald-600" : "text-red-500"
+                      <td className={`text-right py-4 px-6 font-medium ${year.netCashFlow >= 0 ? "text-blue-600" : "text-red-500"
                         }`}>
                         {formatCurrency(year.netCashFlow)}
                       </td>
-                      <td className={`text-right py-4 px-6 font-semibold ${year.cumulativeCashFlow >= 0 ? "text-emerald-700" : "text-red-600"
+                      <td className={`text-right py-4 px-6 font-semibold ${year.cumulativeCashFlow >= 0 ? "text-blue-700" : "text-red-600"
                         }`}>
                         {formatCurrency(year.cumulativeCashFlow)}
                       </td>
@@ -237,9 +237,9 @@ function MetricCard({ title, value, icon: Icon, description, variant = "default"
       value: "text-teal-700",
     },
     green: {
-      card: "border-green-200 bg-green-50 hover:border-green-300",
-      icon: "bg-green-500 text-white",
-      value: "text-green-700",
+      card: "border-blue-200 bg-blue-50 hover:border-blue-300",
+      icon: "bg-blue-500 text-white",
+      value: "text-blue-700",
     },
   };
 

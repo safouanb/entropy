@@ -6,13 +6,13 @@ const colors = {
     primary: '#0F172A',     // Deep navy
     secondary: '#1E293B',
     accent: '#3B82F6',      // Blue accent
-    success: '#059669',     // Green
+    success: '#3B82F6',     // Green (Now Blue for consistency)
     warning: '#D97706',     // Amber
     danger: '#DC2626',      // Red
     muted: '#6B7280',
     border: '#E5E7EB',
     bgLight: '#F9FAFB',
-    bgSuccess: '#ECFDF5',
+    bgSuccess: '#EFF6FF',
     bgWarning: '#FEF3C7',
     bgDanger: '#FEF2F2',
 };

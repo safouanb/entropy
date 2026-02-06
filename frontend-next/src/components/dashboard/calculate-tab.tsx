@@ -326,7 +326,7 @@ function HeatSinkSelect({ dataCenterId, selectedId, onSelect }: { dataCenterId?:
               <div className="flex items-center justify-between w-full gap-4">
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{hs.name}</span>
-                  {isTop && <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-bold">BEST MATCH</span>}
+                  {isTop && <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full font-bold">BEST MATCH</span>}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <span>{hs.temperatureRequirementC}°C Req</span>
