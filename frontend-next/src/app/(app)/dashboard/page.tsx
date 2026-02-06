@@ -2,229 +2,337 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-    GlobeEuropeAfricaIcon,
-    ShieldCheckIcon,
-    ArrowTrendingUpIcon,
-    ClockIcon,
-    BoltIcon
-} from "@heroicons/react/24/outline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { ScrambleText } from "@/components/ui/scramble-text";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    FileText,
+    Search,
+    Filter,
+    CheckCircle,
+    AlertTriangle,
+    XCircle,
+    Clock,
+    Shield,
+    Scale,
+    Building2,
+    Plus,
+    ExternalLink,
+    Archive
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import MagicBento from "@/components/ui/magic-bento";
-import CountUp from "@/components/CountUp";
-import MagnetLines from "@/components/MagnetLines";
-import Galaxy from "@/components/Galaxy";
 
-function getIconForType(type: string) {
-    switch (type) {
-        case "crawling": return <GlobeEuropeAfricaIcon className="w-5 h-5 text-blue-400" />;
-        case "approval": return <ShieldCheckIcon className="w-5 h-5 text-emerald-400" />;
-        case "market": return <ArrowTrendingUpIcon className="w-5 h-5 text-amber-400" />;
-        default: return <ClockIcon className="w-5 h-5 text-zinc-400" />;
-    }
+interface DecisionRecord {
+    id: string;
+    recordNumber: string;
+    projectName: string;
+    status: "DRAFT" | "PENDING_REVIEW" | "FINALIZED" | "ARCHIVED";
+    complianceVerdict: "COMPLIANT" | "CONDITIONAL" | "NON_COMPLIANT" | "PENDING";
+    jurisdiction: string;
+    primaryRiskBearer: string;
+    createdAt: string;
+    finalizedAt?: string;
+    investmentRange: string;
+    thermalLoad: string;
 }
 
-export default function DashboardPage() {
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+// Mock data - replace with actual API call
+const mockRecords: DecisionRecord[] = [
+    {
+        id: "dr-001",
+        recordNumber: "DR-2026-001",
+        projectName: "Amsterdam Hyperscale DC → Residential District 4",
+        status: "FINALIZED",
+        complianceVerdict: "COMPLIANT",
+        jurisdiction: "NL",
+        primaryRiskBearer: "District Heating Authority",
+        createdAt: "2026-02-01",
+        finalizedAt: "2026-02-04",
+        investmentRange: "€2.1M - €3.4M",
+        thermalLoad: "1.2-2.8 MW"
+    },
+    {
+        id: "dr-002",
+        recordNumber: "DR-2026-002",
+        projectName: "Frankfurt Enterprise DC → Industrial Park West",
+        status: "PENDING_REVIEW",
+        complianceVerdict: "CONDITIONAL",
+        jurisdiction: "DE",
+        primaryRiskBearer: "Data Center Operator",
+        createdAt: "2026-01-28",
+        investmentRange: "€4.2M - €6.8M",
+        thermalLoad: "3.1-5.7 MW"
+    },
+    {
+        id: "dr-003",
+        recordNumber: "DR-2026-003",
+        projectName: "Brussels Colocation Hub → University Campus",
+        status: "DRAFT",
+        complianceVerdict: "PENDING",
+        jurisdiction: "BE",
+        primaryRiskBearer: "Third Party Operator",
+        createdAt: "2026-02-05",
+        investmentRange: "€1.8M - €2.9M",
+        thermalLoad: "0.8-1.4 MW"
+    }
+];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch('/api/dashboard');
-                if (res.ok) {
-                    const json = await res.json();
-                    setData(json);
-                }
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+const getStatusIcon = (status: DecisionRecord['status']) => {
+    switch (status) {
+        case "FINALIZED": return <CheckCircle className="w-4 h-4" />;
+        case "PENDING_REVIEW": return <Clock className="w-4 h-4" />;
+        case "DRAFT": return <FileText className="w-4 h-4" />;
+        case "ARCHIVED": return <Archive className="w-4 h-4" />;
+    }
+};
 
-    const dashboardCards = [
-        {
-            color: '#0a0a0a',
-            title: 'Global Infrastructure',
-            description: `${data?.activeSites || 0} active regions, data centers operational`,
-            label: 'Operations',
-            icon: GlobeEuropeAfricaIcon
-        },
-        {
-            color: '#0a0a0a',
-            title: 'Compliance Health',
-            description: `${data?.complianceRate || 0}% regulatory adherence across all systems`,
-            label: 'Safety',
-            icon: ShieldCheckIcon
-        },
-        {
-            color: '#0a0a0a',
-            title: 'Economic Impact',
-            description: `€${(data?.annualSavings / 1000000).toFixed(1) || '0.0'}M projected annual savings`,
-            label: 'Finance',
-            icon: ArrowTrendingUpIcon
-        },
-        {
-            color: '#0a0a0a',
-            title: 'Heat Recovery',
-            description: 'Advanced thermal management and reuse systems',
-            label: 'Technology',
-            icon: BoltIcon
-        },
-        {
-            color: '#0a0a0a',
-            title: 'Analytics Engine',
-            description: 'Real-time performance monitoring and insights',
-            label: 'Intelligence',
-            icon: ClockIcon
-        },
-        {
-            color: '#0a0a0a',
-            title: 'Risk Assessment',
-            description: 'Automated compliance and safety evaluation',
-            label: 'Security',
-            icon: ShieldCheckIcon
-        }
-    ];
+const getComplianceIcon = (verdict: DecisionRecord['complianceVerdict']) => {
+    switch (verdict) {
+        case "COMPLIANT": return <Shield className="w-4 h-4 text-emerald-500" />;
+        case "CONDITIONAL": return <AlertTriangle className="w-4 h-4 text-amber-500" />;
+        case "NON_COMPLIANT": return <XCircle className="w-4 h-4 text-red-500" />;
+        case "PENDING": return <Clock className="w-4 h-4 text-zinc-500" />;
+    }
+};
+
+const getStatusColor = (status: DecisionRecord['status']) => {
+    switch (status) {
+        case "FINALIZED": return "text-emerald-400 bg-emerald-950 border-emerald-800";
+        case "PENDING_REVIEW": return "text-amber-400 bg-amber-950 border-amber-800";
+        case "DRAFT": return "text-zinc-400 bg-zinc-900 border-zinc-700";
+        case "ARCHIVED": return "text-zinc-500 bg-zinc-950 border-zinc-800";
+    }
+};
+
+export default function DecisionRecordsPage() {
+    const [records] = useState<DecisionRecord[]>(mockRecords);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [jurisdictionFilter, setJurisdictionFilter] = useState<string>("all");
+
+    const filteredRecords = records.filter(record => {
+        const matchesSearch = record.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                             record.recordNumber.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === "all" || record.status === statusFilter;
+        const matchesJurisdiction = jurisdictionFilter === "all" || record.jurisdiction === jurisdictionFilter;
+
+        return matchesSearch && matchesStatus && matchesJurisdiction;
+    });
+
+    const stats = {
+        totalRecords: records.length,
+        finalized: records.filter(r => r.status === "FINALIZED").length,
+        pendingReview: records.filter(r => r.status === "PENDING_REVIEW").length,
+        compliant: records.filter(r => r.complianceVerdict === "COMPLIANT").length
+    };
 
     return (
-        <div className="space-y-8 pb-20">
-            {/* Clean header with key metrics */}
-            <div className="flex items-start justify-between mb-12">
+        <div className="space-y-6 pb-20">
+            {/* Header */}
+            <div className="flex items-start justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight mb-2">
-                        Executive Overview
+                    <h1 className="text-2xl font-semibold text-white tracking-tight mb-1">
+                        Decision Records
                     </h1>
-                    <p className="text-white/60">Operational intelligence and key metrics.</p>
+                    <p className="text-sm text-zinc-400 font-mono">
+                        Legal authority for waste heat recovery compliance
+                    </p>
                 </div>
 
-                {/* Key metrics - clean presentation */}
-                <div className="flex gap-8 text-right">
-                    <div>
-                        <div className="text-2xl font-bold text-emerald-400 font-mono">
-                            <CountUp to={data?.complianceRate || 0} duration={1500} />%
-                        </div>
-                        <div className="text-sm text-white/60">Compliance</div>
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold text-white font-mono">
-                            €<CountUp to={(data?.annualSavings / 1000000) || 0} decimals={1} duration={1500} />M
-                        </div>
-                        <div className="text-sm text-white/60">Annual Savings</div>
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold text-blue-400 font-mono">
-                            <CountUp to={data?.activeSites || 0} duration={1500} />
-                        </div>
-                        <div className="text-sm text-white/60">Active Sites</div>
-                    </div>
-                </div>
+                <Link href="/assessment/new">
+                    <Button className="bg-white text-black hover:bg-zinc-200 font-medium">
+                        <Plus className="w-4 h-4 mr-2" />
+                        New Assessment
+                    </Button>
+                </Link>
             </div>
 
-            {/* Clean dashboard cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {dashboardCards.map((card, i) => (
-                    <motion.div
-                        key={i}
-                        className="p-6 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-sm hover:border-white/20 transition-colors duration-300"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                    >
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-10 h-10 rounded-lg bg-blue-400/10 flex items-center justify-center">
-                                <card.icon className="w-5 h-5 text-blue-400" />
+            {/* Stats Bar */}
+            <div className="grid grid-cols-4 gap-4">
+                <Card className="bg-zinc-950/50 border-zinc-800">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider">Total Records</p>
+                                <p className="text-2xl font-mono text-white font-semibold">{stats.totalRecords}</p>
                             </div>
-                            <div className="flex-1">
-                                <div className="text-xs text-blue-400/60 font-mono uppercase tracking-wider">
-                                    {card.label}
-                                </div>
-                                <h3 className="text-lg font-satoshi font-medium text-white">
-                                    {card.title}
-                                </h3>
-                            </div>
+                            <FileText className="w-5 h-5 text-zinc-400" />
                         </div>
-                        <p className="text-sm text-white/60 leading-relaxed">
-                            {card.description}
-                        </p>
-                    </motion.div>
-                ))}
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-emerald-950/20 border-emerald-900/50">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs text-emerald-400/70 font-mono uppercase tracking-wider">Finalized</p>
+                                <p className="text-2xl font-mono text-emerald-400 font-semibold">{stats.finalized}</p>
+                            </div>
+                            <CheckCircle className="w-5 h-5 text-emerald-500" />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-amber-950/20 border-amber-900/50">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs text-amber-400/70 font-mono uppercase tracking-wider">Under Review</p>
+                                <p className="text-2xl font-mono text-amber-400 font-semibold">{stats.pendingReview}</p>
+                            </div>
+                            <Clock className="w-5 h-5 text-amber-500" />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-blue-950/20 border-blue-900/50">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs text-blue-400/70 font-mono uppercase tracking-wider">Compliant</p>
+                                <p className="text-2xl font-mono text-blue-400 font-semibold">{stats.compliant}</p>
+                            </div>
+                            <Shield className="w-5 h-5 text-blue-500" />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-
-            {/* Recent Activity Feed */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-white">Live Activity Stream</h3>
-                        <Button variant="ghost" size="sm" className="text-muted-foreground text-xs">View Full Log</Button>
-                    </div>
-
-                    <div className="space-y-2">
-                        {loading ? (
-                            <div className="text-center text-muted-foreground py-8">Loading activity...</div>
-                        ) : (!data?.activityStream || data.activityStream.length === 0) ? (
-                            <div className="py-8">
-                                <EmptyState
-                                    title="No recent activity"
-                                    description="System events and user actions will appear here."
+            {/* Filters & Search */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
+                        <div className="flex-1">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                                <Input
+                                    placeholder="Search records, projects, or record numbers..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-10 bg-zinc-900/50 border-zinc-700 focus:border-zinc-600 font-mono text-sm"
                                 />
                             </div>
-                        ) : (
-                            data.activityStream.map((item: any, i: number) => (
-                                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
-                                    <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                                        {/* Dynamic Icon */}
-                                        {getIconForType(item.type || item.icon)}
+                        </div>
+
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-48 bg-zinc-900/50 border-zinc-700 font-mono text-sm">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                <SelectItem value="FINALIZED">Finalized</SelectItem>
+                                <SelectItem value="PENDING_REVIEW">Under Review</SelectItem>
+                                <SelectItem value="DRAFT">Draft</SelectItem>
+                                <SelectItem value="ARCHIVED">Archived</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={jurisdictionFilter} onValueChange={setJurisdictionFilter}>
+                            <SelectTrigger className="w-48 bg-zinc-900/50 border-zinc-700 font-mono text-sm">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Jurisdictions</SelectItem>
+                                <SelectItem value="DE">Germany</SelectItem>
+                                <SelectItem value="NL">Netherlands</SelectItem>
+                                <SelectItem value="BE">Belgium</SelectItem>
+                                <SelectItem value="EU">European Union</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Records Table */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
+                        Active Decision Records ({filteredRecords.length})
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-0">
+                        {filteredRecords.map((record, index) => (
+                            <motion.div
+                                key={record.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex items-center justify-between p-4 border-b border-zinc-800/50 hover:bg-zinc-900/30 transition-colors group cursor-pointer"
+                            >
+                                <div className="flex items-center space-x-4 flex-1">
+                                    <div className="flex items-center space-x-2">
+                                        {getStatusIcon(record.status)}
+                                        <Badge variant="secondary" className={cn("font-mono text-xs", getStatusColor(record.status))}>
+                                            {record.status.replace('_', ' ')}
+                                        </Badge>
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="text-sm text-zinc-300">{item.action}</div>
-                                        <div className="text-xs text-zinc-500 mt-1">{item.user} • {item.timeAgo || item.time}</div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3">
+                                            <p className="font-mono text-xs text-zinc-500 font-medium">
+                                                {record.recordNumber}
+                                            </p>
+                                            <div className="h-1 w-1 bg-zinc-600 rounded-full" />
+                                            <p className="font-mono text-xs text-blue-400 uppercase">
+                                                {record.jurisdiction}
+                                            </p>
+                                        </div>
+                                        <p className="text-sm text-white font-medium truncate mt-1">
+                                            {record.projectName}
+                                        </p>
+                                        <div className="flex items-center gap-4 mt-1 text-xs text-zinc-500 font-mono">
+                                            <span>{record.thermalLoad} thermal</span>
+                                            <span>•</span>
+                                            <span>{record.investmentRange}</span>
+                                            <span>•</span>
+                                            <span>Risk: {record.primaryRiskBearer}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
-                </div>
 
-                {/* Quick Actions */}
-                <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
-                    <div className="p-6 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-sm space-y-3">
+                                <div className="flex items-center space-x-4">
+                                    <div className="flex items-center space-x-2">
+                                        {getComplianceIcon(record.complianceVerdict)}
+                                        <span className="text-xs font-mono text-zinc-400">
+                                            {record.complianceVerdict}
+                                        </span>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <p className="text-xs text-zinc-500 font-mono">
+                                            {record.finalizedAt ? `Finalized ${record.finalizedAt}` : `Created ${record.createdAt}`}
+                                        </p>
+                                    </div>
+
+                                    <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Empty state */}
+            {filteredRecords.length === 0 && (
+                <Card className="bg-zinc-950/50 border-zinc-800">
+                    <CardContent className="p-12 text-center">
+                        <FileText className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-white mb-2">No Records Found</h3>
+                        <p className="text-sm text-zinc-500 mb-6">
+                            No decision records match your current filters.
+                        </p>
                         <Link href="/assessment/new">
-                            <Button className="w-full bg-white text-black hover:bg-blue-50 transition-colors duration-300">
-                                Start New Assessment
-                                <BoltIcon className="w-4 h-4 ml-2" />
+                            <Button className="bg-white text-black hover:bg-zinc-200">
+                                Create First Record
                             </Button>
                         </Link>
-                        <Link href="/records">
-                            <Button variant="outline" className="w-full border-white/20 hover:border-white/30 hover:bg-white/5 transition-colors duration-300">
-                                Browse Records
-                            </Button>
-                        </Link>
-                        <div className="pt-4 border-t border-white/10">
-                            <div className="text-xs text-white/60 mb-3">System Status</div>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-white/70">API Gateway</span>
-                                <span className="text-emerald-400 font-mono">ONLINE</span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm mt-1">
-                                <span className="text-white/70">Database</span>
-                                <span className="text-emerald-400 font-mono">CONNECTED</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 }

@@ -1,162 +1,429 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
+import React, { useState } from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { EmptyState } from "@/components/ui/empty-state";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
-    MagnifyingGlassIcon,
-    FunnelIcon,
-    ArrowDownTrayIcon,
-    DocumentTextIcon,
-    MapPinIcon,
-    ClockIcon,
-    CheckCircleIcon
-} from "@heroicons/react/24/outline";
+    FileText,
+    Shield,
+    Scale,
+    Building2,
+    ArrowLeft,
+    Download,
+    Share2,
+    AlertTriangle,
+    CheckCircle,
+    Calculator,
+    MapPin,
+    Clock,
+    Euro,
+    Thermometer,
+    Zap
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Mock Data
-// Types
-interface RecordType {
-    id: string;
-    name: string;
-    status: string;
-    wasteHeat: string;
-    date: string;
-    region: string;
-}
+// Mock decision record data
+const mockRecord = {
+    id: "dr-001",
+    recordNumber: "DR-2026-001",
+    projectName: "Amsterdam Hyperscale DC → Residential District 4",
+    status: "FINALIZED",
+    complianceVerdict: "COMPLIANT",
+    jurisdiction: "NL",
+    primaryRiskBearer: "District Heating Authority",
+    createdAt: "2026-02-01",
+    finalizedAt: "2026-02-04",
+    version: "1.0",
 
-export default function RecordsPage() {
-    const [search, setSearch] = useState("");
-    const [records, setRecords] = useState<RecordType[]>([]);
-    const [loading, setLoading] = useState(true);
+    // Executive Summary
+    executiveSummary: {
+        verdict: "COMPLIANT - Direct Reuse Recommended",
+        primaryRiskBearer: "District Heating Authority",
+        investmentRequired: "€2.1M - €3.4M",
+        regulatoryBasis: "EED Article 14, Netherlands Environmental Code"
+    },
 
-    useEffect(() => {
-        fetch("/api/records")
-            .then(res => res.json())
-            .then(data => {
-                setRecords(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("Failed to fetch records:", err);
-                setLoading(false);
-            })
-    }, []);
+    // Technical Analysis
+    technicalAnalysis: {
+        heatLoad: "1.2-2.8 MW thermal",
+        pipeline: "2.3km, DN300 pre-insulated",
+        temperatureCompatibility: "Native (no heat pump required)",
+        efficiency: "92% thermal efficiency expected"
+    },
 
-    const filtered = records.filter(r =>
-        r.name.toLowerCase().includes(search.toLowerCase()) ||
-        r.id.toLowerCase().includes(search.toLowerCase()) ||
-        r.region.toLowerCase().includes(search.toLowerCase())
-    );
+    // Compliance Analysis
+    complianceAnalysis: [
+        {
+            regulation: "EU Energy Efficiency Directive",
+            status: "COMPLIANT",
+            article: "Article 14 - Cogeneration and district heating",
+            details: "Project meets requirements for waste heat recovery from data centers >20MW"
+        },
+        {
+            regulation: "Netherlands Environmental Code",
+            status: "COMPLIANT",
+            article: "Chapter 9 - Energy efficiency",
+            details: "Compliant with national implementation of EED requirements"
+        },
+        {
+            regulation: "Municipal Heat Ordinance Amsterdam",
+            status: "CONDITIONAL",
+            article: "Section 4.2 - District heating connections",
+            details: "Building permit required within 180 days of project commencement"
+        }
+    ],
+
+    // Risk Allocation
+    riskAllocation: [
+        {
+            riskType: "Technical Risk",
+            owner: "District Heating Authority",
+            description: "Pipeline construction, heat exchanger performance, system integration"
+        },
+        {
+            riskType: "Regulatory Risk",
+            owner: "Shared (documented mitigation)",
+            description: "Permit delays, regulatory changes, compliance maintenance"
+        },
+        {
+            riskType: "Commercial Risk",
+            owner: "Data Center Operator",
+            description: "Operational continuity, backup cooling, service level agreements"
+        }
+    ],
+
+    // Financial Scenarios
+    financialScenarios: [
+        {
+            model: "DC_OWNS",
+            irr: "8.2-12.4%",
+            payback: "7-12 years",
+            npv: "€1.2M - €2.8M",
+            recommended: false
+        },
+        {
+            model: "UTILITY_OWNS",
+            irr: "12.1-18.7%",
+            payback: "5-8 years",
+            npv: "€2.4M - €4.1M",
+            recommended: true
+        },
+        {
+            model: "THIRD_PARTY",
+            irr: "15.2-22.3%",
+            payback: "4-6 years",
+            npv: "€3.1M - €5.2M",
+            recommended: false
+        }
+    ],
+
+    // Citations
+    citations: [
+        "[1] EU Energy Efficiency Directive (2012/27/EU), Article 14",
+        "[2] Netherlands Environmental and Planning Act (Omgevingswet)",
+        "[3] Amsterdam Heat Transition Plan 2030",
+        "[4] ASHRAE Standard 90.1 - Energy Standard for Buildings",
+        "[5] Dutch Technical Agreement BRL 5421 - District Heating Systems"
+    ]
+};
+
+export default function DecisionRecordDetailPage() {
+    const record = mockRecord;
 
     return (
-        <div className="space-y-8 min-h-screen pb-20">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Records Registry</h1>
-                    <p className="text-muted-foreground mt-1 text-lg">Centralized storage for all thermal waste assessments.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="gap-2">
-                        <ArrowDownTrayIcon className="w-4 h-4" />
-                        Export CSV
-                    </Button>
-                    <Button className="gap-2 bg-blue-500 hover:bg-blue-400 text-black">
-                        <DocumentTextIcon className="w-4 h-4" />
-                        New Record
-                    </Button>
-                </div>
-            </div>
-
-            {/* Filters */}
-            <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/5">
-                <div className="relative flex-1">
-                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                    <Input
-                        placeholder="Search by ID, Name or Region..."
-                        className="pl-10 h-10 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-                <div className="h-6 w-px bg-white/10" />
-                <Button variant="ghost" className="text-white/60 hover:text-white gap-2">
-                    <FunnelIcon className="w-4 h-4" />
-                    Filters
-                </Button>
-            </div>
-
-            {/* Records Grid */}
-            <div className="grid gap-3">
-                {loading ? (
-                    // Skeleton Loading
-                    Array.from({ length: 5 }).map((_, i) => (
-                        <div key={i} className="h-24 rounded-xl bg-white/5 animate-pulse border border-white/5" />
-                    ))
-                ) : filtered.length === 0 ? (
-                    <div className="py-12">
-                        <EmptyState
-                            title="No records found"
-                            description={search ? `No records match "${search}"` : "Get started by creating your first thermal record."}
-                            actionLabel="Create Record"
-                            onAction={() => console.log("Create action")}
-                        />
+        <div className="max-w-6xl mx-auto space-y-6 pb-20">
+            {/* Header with Navigation */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                    <Link href="/dashboard">
+                        <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Records
+                        </Button>
+                    </Link>
+                    <Separator orientation="vertical" className="h-6 bg-zinc-700" />
+                    <div>
+                        <h1 className="text-2xl font-semibold text-white tracking-tight">
+                            {record.recordNumber}
+                        </h1>
+                        <p className="text-sm text-zinc-400 font-mono">
+                            Decision Record • Version {record.version} • Finalized {record.finalizedAt}
+                        </p>
                     </div>
-                ) : (
-                    filtered.map((record) => (
-                        <SpotlightCard key={record.id} className="p-4 flex items-center justify-between group cursor-pointer hover:bg-white/[0.02]">
-                            <div className="flex items-center gap-6">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center text-white/30 font-mono text-xs shadow-inner">
-                                    {(record.region || "Unknown").substring(0, 2).toUpperCase()}
+                </div>
+
+                <div className="flex items-center space-x-3">
+                    <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300">
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Share
+                    </Button>
+                    <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300">
+                        <Download className="w-4 h-4 mr-2" />
+                        Export PDF
+                    </Button>
+                    <Badge className="bg-emerald-950 text-emerald-400 border-emerald-800 font-mono">
+                        FINALIZED
+                    </Badge>
+                </div>
+            </div>
+
+            {/* Project Title */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                            <h2 className="text-xl font-medium text-white mb-2">
+                                {record.projectName}
+                            </h2>
+                            <div className="flex items-center space-x-4 text-sm text-zinc-400 font-mono">
+                                <div className="flex items-center space-x-2">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{record.jurisdiction}</span>
                                 </div>
-                                <div>
-                                    <h3 className="text-base font-semibold text-white group-hover:text-blue-400 transition-colors">
-                                        {record.name}
-                                    </h3>
-                                    <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
-                                        <span className="font-mono text-white/30">{record.id}</span>
-                                        <span>•</span>
-                                        <span className="flex items-center gap-1">
-                                            <MapPinIcon className="w-3 h-3" /> {record.region}
-                                        </span>
+                                <div className="flex items-center space-x-2">
+                                    <Thermometer className="w-4 h-4" />
+                                    <span>{record.technicalAnalysis.heatLoad}</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Euro className="w-4 h-4" />
+                                    <span>{record.executiveSummary.investmentRequired}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Shield className="w-5 h-5 text-emerald-500" />
+                            <Badge className="bg-emerald-950 text-emerald-400 border-emerald-800 font-mono">
+                                COMPLIANT
+                            </Badge>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Executive Summary */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
+                        Executive Summary
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Verdict</p>
+                                <p className="text-white font-medium">{record.executiveSummary.verdict}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Primary Risk Bearer</p>
+                                <p className="text-white font-medium">{record.executiveSummary.primaryRiskBearer}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Investment Required</p>
+                                <p className="text-white font-medium font-mono">{record.executiveSummary.investmentRequired}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Regulatory Basis</p>
+                                <p className="text-white font-medium">{record.executiveSummary.regulatoryBasis}</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Technical Analysis */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
+                        <Building2 className="w-4 h-4 mr-2" />
+                        Technical Analysis
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Heat Load Range</p>
+                                <p className="text-white font-mono">{record.technicalAnalysis.heatLoad}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Pipeline Specification</p>
+                                <p className="text-white font-mono">{record.technicalAnalysis.pipeline}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Temperature Compatibility</p>
+                                <p className="text-white font-mono">{record.technicalAnalysis.temperatureCompatibility}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">System Efficiency</p>
+                                <p className="text-white font-mono">{record.technicalAnalysis.efficiency}</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Compliance Analysis */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
+                        <Scale className="w-4 h-4 mr-2" />
+                        Compliance Analysis
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-0">
+                        {record.complianceAnalysis.map((item, index) => (
+                            <div key={index} className="p-4 border-b border-zinc-800/50 last:border-b-0">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center space-x-3 mb-2">
+                                            {item.status === "COMPLIANT" ? (
+                                                <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                            ) : (
+                                                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                                            )}
+                                            <h4 className="text-white font-medium">{item.regulation}</h4>
+                                            <Badge
+                                                className={cn(
+                                                    "font-mono text-xs",
+                                                    item.status === "COMPLIANT"
+                                                        ? "bg-emerald-950 text-emerald-400 border-emerald-800"
+                                                        : "bg-amber-950 text-amber-400 border-amber-800"
+                                                )}
+                                            >
+                                                {item.status}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-xs text-zinc-500 font-mono mb-2">{item.article}</p>
+                                        <p className="text-sm text-zinc-300">{item.details}</p>
                                     </div>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
 
-                            <div className="flex items-center gap-8 md:gap-12">
-                                <div className="hidden md:block text-right">
-                                    <span className="block text-[10px] uppercase tracking-wider text-white/30">Waste Heat</span>
-                                    <span className="font-mono text-blue-400 font-medium">{record.wasteHeat}</span>
-                                </div>
-
-                                <div className="hidden md:block text-right">
-                                    <span className="block text-[10px] uppercase tracking-wider text-white/30">Date</span>
-                                    <span className="flex items-center gap-1 text-white/60">
-                                        <ClockIcon className="w-3 h-3" /> {record.date}
-                                    </span>
-                                </div>
-
-                                <div className="w-24 flex justify-end">
-                                    <RecordStatus status={record.status} />
+            {/* Risk Allocation */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
+                        <AlertTriangle className="w-4 h-4 mr-2" />
+                        Risk Allocation
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-0">
+                        {record.riskAllocation.map((risk, index) => (
+                            <div key={index} className="p-4 border-b border-zinc-800/50 last:border-b-0">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="text-white font-medium">{risk.riskType}</h4>
+                                            <Badge className="bg-blue-950 text-blue-400 border-blue-800 font-mono text-xs">
+                                                {risk.owner}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-sm text-zinc-300">{risk.description}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </SpotlightCard>
-                    ))
-                )}
-            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Financial Scenarios */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
+                        <Calculator className="w-4 h-4 mr-2" />
+                        Financial Scenarios
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-0">
+                        {record.financialScenarios.map((scenario, index) => (
+                            <div key={index} className={cn(
+                                "p-4 border-b border-zinc-800/50 last:border-b-0",
+                                scenario.recommended && "bg-blue-950/20 border-l-4 border-l-blue-500"
+                            )}>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center space-x-3 mb-3">
+                                            <h4 className="text-white font-medium">{scenario.model.replace('_', ' ')}</h4>
+                                            {scenario.recommended && (
+                                                <Badge className="bg-blue-950 text-blue-400 border-blue-800 font-mono text-xs">
+                                                    RECOMMENDED
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <div className="grid grid-cols-4 gap-6 text-sm">
+                                            <div>
+                                                <p className="text-zinc-500 font-mono text-xs mb-1">IRR</p>
+                                                <p className="text-white font-mono">{scenario.irr}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-zinc-500 font-mono text-xs mb-1">Payback</p>
+                                                <p className="text-white font-mono">{scenario.payback}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-zinc-500 font-mono text-xs mb-1">NPV</p>
+                                                <p className="text-white font-mono">{scenario.npv}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Citations & References */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardHeader>
+                    <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
+                        Citations & References
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2">
+                        {record.citations.map((citation, index) => (
+                            <p key={index} className="text-xs text-zinc-400 font-mono leading-relaxed">
+                                {citation}
+                            </p>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Document Footer */}
+            <Card className="bg-zinc-950/50 border-zinc-800">
+                <CardContent className="p-4">
+                    <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
+                        <div className="flex items-center space-x-4">
+                            <span>Generated by Entropy Decision Engine</span>
+                            <span>•</span>
+                            <span>Document ID: {record.recordNumber}</span>
+                            <span>•</span>
+                            <span>Version {record.version}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Clock className="w-3 h-3" />
+                            <span>Finalized: {record.finalizedAt}</span>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
-}
-
-function RecordStatus({ status }: { status: string }) {
-    if (status === "Compliant") {
-        return <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20">Compliant</Badge>;
-    }
-    if (status === "Non-Compliant") {
-        return <Badge variant="destructive" className="bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20">Non-Compliant</Badge>;
-    }
-    return <Badge variant="outline" className="text-amber-400 border-amber-500/20 bg-amber-500/10 hover:bg-amber-500/20">{status}</Badge>;
 }
