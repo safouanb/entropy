@@ -22,6 +22,7 @@ try {
 
 // @ts-ignore
 if (typeof window !== 'undefined' && L.Icon.Default.prototype._getIconUrl) {
+    // @ts-ignore
     delete L.Icon.Default.prototype._getIconUrl;
 }
 

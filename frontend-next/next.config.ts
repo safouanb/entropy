@@ -4,16 +4,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: ".",
   },
-  experimental: {
-    turbo: {
-      rules: {
-        "*.css": {
-          loaders: ["css-loader"],
-          as: "*.css",
-        },
-      },
-    },
-  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
