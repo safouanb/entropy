@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -49,6 +49,7 @@ interface Location {
     latitude: number;
     longitude: number;
 }
+
 interface MapNode {
     id: number | string;
     name: string;
@@ -61,24 +62,7 @@ interface MapProps {
     heatSinks: MapNode[];
 }
 
-// MapCleanup component to handle memory leaks
-function MapCleanup() {
-    const map = useMap();
-
-    useEffect(() => {
-        return () => {
-            if (map) {
-                map.remove();
-            }
-        };
-    }, [map]);
-
-    return null;
-}
-
 export default function HeatMapClient({ dataCenters, heatSinks }: MapProps) {
-    const mapRef = useRef<L.Map | null>(null);
-
     // Default center (Netherlands)
     const center: [number, number] = [52.1326, 5.2913];
 
@@ -97,26 +81,14 @@ export default function HeatMapClient({ dataCenters, heatSinks }: MapProps) {
         [heatSinks]
     );
 
-    useEffect(() => {
-        return () => {
-            // Cleanup on unmount
-            if (mapRef.current) {
-                mapRef.current.remove();
-                mapRef.current = null;
-            }
-        };
-    }, []);
-
     return (
         <MapContainer
             center={center}
             zoom={7}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%", borderRadius: "0.5rem" }}
-            ref={mapRef}
-            preferCanvas={true}
+            key="heat-map" // Force unique key to prevent reuse
         >
-            <MapCleanup />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

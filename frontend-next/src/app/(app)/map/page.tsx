@@ -9,7 +9,6 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 // Dynamic import for Map to avoid SSR issues
 const HeatMapClient = dynamic(() => import("@/components/map/map-client"), {
     ssr: false,
-    loading: () => <div className="h-[600px] w-full bg-muted animate-pulse flex items-center justify-center">Loading Map...</div>
 });
 
 export default function MapPage() {

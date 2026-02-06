@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   turbopack: {
     root: ".",
-    memoryLimit: 2048,
   },
   webpack: (config, { isServer, dev }) => {
     // Development optimizations
