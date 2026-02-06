@@ -64,7 +64,7 @@ export default function RecordsPage() {
                         <ArrowDownTrayIcon className="w-4 h-4" />
                         Export CSV
                     </Button>
-                    <Button className="gap-2 bg-emerald-500 hover:bg-emerald-400 text-black">
+                    <Button className="gap-2 bg-blue-500 hover:bg-blue-400 text-black">
                         <DocumentTextIcon className="w-4 h-4" />
                         New Record
                     </Button>
@@ -113,7 +113,7 @@ export default function RecordsPage() {
                                     {(record.region || "Unknown").substring(0, 2).toUpperCase()}
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                                    <h3 className="text-base font-semibold text-white group-hover:text-blue-400 transition-colors">
                                         {record.name}
                                     </h3>
                                     <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
@@ -129,7 +129,7 @@ export default function RecordsPage() {
                             <div className="flex items-center gap-8 md:gap-12">
                                 <div className="hidden md:block text-right">
                                     <span className="block text-[10px] uppercase tracking-wider text-white/30">Waste Heat</span>
-                                    <span className="font-mono text-emerald-400 font-medium">{record.wasteHeat}</span>
+                                    <span className="font-mono text-blue-400 font-medium">{record.wasteHeat}</span>
                                 </div>
 
                                 <div className="hidden md:block text-right">
@@ -153,7 +153,7 @@ export default function RecordsPage() {
 
 function RecordStatus({ status }: { status: string }) {
     if (status === "Compliant") {
-        return <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20">Compliant</Badge>;
+        return <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20">Compliant</Badge>;
     }
     if (status === "Non-Compliant") {
         return <Badge variant="destructive" className="bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20">Non-Compliant</Badge>;
