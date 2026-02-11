@@ -16,6 +16,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+interface SqlNullString {
+    String: string;
+    Valid: boolean;
+}
+
 interface Assessment {
     id: string;
     project_name: string;
@@ -25,6 +30,13 @@ interface Assessment {
     jurisdiction: string;
     dc_location_lat: number;
     dc_location_lng: number;
+    compliance_result?: SqlNullString;
+    conclusion?: SqlNullString;
+    complianceStatus?: string;
+}
+
+interface ComplianceResult {
+    status: string;
 }
 
 export default function AssessmentsPage() {
@@ -33,12 +45,48 @@ export default function AssessmentsPage() {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        // Fetch assessments (mock or real)
-        // For now using the real endpoint structure but handling empty state
+        // Fetch real assessments from backend
         fetch("/api/assessments")
-            .then(res => res.ok ? res.json() : [])
+            .then(res => res.ok ? res.json() : { assessments: [] })
             .then(data => {
-                if (Array.isArray(data)) setAssessments(data);
+                // Handle both array and {assessments: []} formats
+                const assessmentsArray = Array.isArray(data) ? data : data.assessments || [];
+
+                // Add compliance status to each assessment
+                const assessmentsWithCompliance = assessmentsArray.map(assessment => {
+                    let complianceStatus = "PENDING";
+
+                    // First check conclusion for actual verdict
+                    if (assessment.conclusion?.Valid && assessment.conclusion.String) {
+                        if (assessment.conclusion.String.includes("VERDICT: COMPLIANT")) {
+                            complianceStatus = "COMPLIANT";
+                        } else if (assessment.conclusion.String.includes("VERDICT: NON_COMPLIANT")) {
+                            complianceStatus = "NON_COMPLIANT";
+                        } else if (assessment.conclusion.String.includes("VERDICT: CONDITIONAL")) {
+                            complianceStatus = "CONDITIONAL";
+                        }
+                    } else if (assessment.compliance_result?.Valid && assessment.compliance_result.String) {
+                        // Fallback to compliance_result status
+                        try {
+                            const compliance: ComplianceResult = JSON.parse(assessment.compliance_result.String);
+                            if (compliance.status === "COMPLIANT") {
+                                complianceStatus = "COMPLIANT";
+                            } else if (compliance.status === "MANDATORY") {
+                                // MANDATORY means regulatory requirements exist, but actual compliance depends on implementation
+                                complianceStatus = "NON_COMPLIANT"; // Default to non-compliant until proven otherwise
+                            }
+                        } catch (e) {
+                            console.warn('Failed to parse compliance result:', e);
+                        }
+                    }
+
+                    return {
+                        ...assessment,
+                        complianceStatus
+                    };
+                });
+
+                setAssessments(assessmentsWithCompliance);
                 setLoading(false);
             })
             .catch(err => {
@@ -81,11 +129,32 @@ export default function AssessmentsPage() {
 
             {/* Metrics Content */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                    { label: "Total Capacity", value: "245 MW", change: "+12%", color: "text-white" },
-                    { label: "Active Projects", value: assessments.length.toString(), change: "+2", color: "text-blue-400" },
-                    { label: "Compliance Rate", value: "94%", change: "+5%", color: "text-white" },
-                ].map((metric) => (
+                {(() => {
+                    // Calculate real metrics from assessments
+                    const totalCapacityMW = assessments.reduce((sum, a) => sum + ((a.thermal_load_min_kw + a.thermal_load_max_kw) / 2 / 1000), 0);
+                    const activeProjects = assessments.length;
+
+                    return [
+                        {
+                            label: "Total Capacity",
+                            value: `${totalCapacityMW.toFixed(1)} MW`,
+                            change: assessments.length > 0 ? `${assessments.length} projects` : "No data",
+                            color: "text-white"
+                        },
+                        {
+                            label: "Active Projects",
+                            value: activeProjects.toString(),
+                            change: assessments.length > 0 ? "Real data" : "No assessments",
+                            color: "text-blue-400"
+                        },
+                        {
+                            label: "Analysis Status",
+                            value: assessments.length > 0 ? `${assessments.filter(a => a.id).length}` : "0",
+                            change: "Completed",
+                            color: "text-white"
+                        },
+                    ];
+                })().map((metric) => (
                     <Card key={metric.label} className="bg-sidebar border-white/5 backdrop-blur-sm">
                         <CardContent className="p-6">
                             <div className="flex items-start justify-between">
@@ -153,8 +222,17 @@ export default function AssessmentsPage() {
                                             <div className="font-mono text-white/90">{(item.thermal_load_min_kw / 1000).toFixed(1)} - {(item.thermal_load_max_kw / 1000).toFixed(1)} MW</div>
                                         </div>
 
-                                        <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
-                                            COMPLIANT
+                                        <Badge variant="outline" className={cn(
+                                            "font-mono",
+                                            item.complianceStatus === "COMPLIANT"
+                                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                                : item.complianceStatus === "CONDITIONAL"
+                                                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                                : item.complianceStatus === "NON_COMPLIANT"
+                                                ? "bg-red-500/10 text-red-400 border-red-500/20"
+                                                : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                        )}>
+                                            {item.complianceStatus || "PENDING"}
                                         </Badge>
                                     </div>
                                 </div>

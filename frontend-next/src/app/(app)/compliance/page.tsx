@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
+import { exportComplianceReportToPDF } from "@/lib/pdf-export";
 import {
     Table,
     TableBody,
@@ -109,6 +110,12 @@ export default function CompliancePage() {
                         <ShieldCheckIcon className="w-3.5 h-3.5 mr-2" />
                         System Status: ACTIVE
                     </Badge>
+                    <button
+                        onClick={() => exportComplianceReportToPDF(regulations, auditLogs)}
+                        className="px-3 py-1.5 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-800/50 hover:bg-zinc-700/50 rounded border border-zinc-700 transition-colors"
+                    >
+                        Export Report
+                    </button>
                     <button className="p-2 hover:bg-white/5 rounded-full text-zinc-400 hover:text-white transition-colors">
                         <ArrowPathIcon className="w-4 h-4" />
                     </button>

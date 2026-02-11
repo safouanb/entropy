@@ -109,17 +109,17 @@ export async function GET(request: NextRequest) {
             }
 
             return {
-                id: assessment.id,
+                id: assessment.id.toString(),
                 recordNumber,
                 projectName: assessment.project_name,
-                status: assessment.status,
+                status: assessment.status.toUpperCase(),
                 complianceVerdict,
                 jurisdiction: assessment.jurisdiction,
-                thermalLoad: thermalLoadRange,
+                thermalLoadRange,
                 investmentRange,
-                createdDate: assessment.created_at ? new Date(assessment.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-                completedDate: assessment.completed_at?.Valid && assessment.completed_at.String ? new Date(assessment.completed_at.String).toISOString().split('T')[0] : null,
-                confidenceLevel: assessment.confidence_level?.Valid ? assessment.confidence_level.String : "MEDIUM"
+                createdAt: assessment.created_at,
+                finalizedAt: assessment.completed_at?.Valid && assessment.completed_at.String ? assessment.completed_at.String : null,
+                version: "1.0"
             };
         });
 

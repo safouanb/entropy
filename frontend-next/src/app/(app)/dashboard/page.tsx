@@ -25,6 +25,11 @@ import {
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
+interface SqlNullString {
+    String: string;
+    Valid: boolean;
+}
+
 // Real assessment data from backend
 interface Assessment {
     id: number;
@@ -37,12 +42,12 @@ interface Assessment {
     jurisdiction: string;
     applicable_regulation: string;
     status: string;
-    scenario_results?: string;
-    compliance_result?: string;
-    conclusion?: string;
+    scenario_results?: SqlNullString;
+    compliance_result?: SqlNullString;
+    conclusion?: SqlNullString;
     created_at: string;
-    completed_at?: string;
-    confidence_level?: string;
+    completed_at?: SqlNullString;
+    confidence_level?: SqlNullString;
 }
 
 interface ComplianceResult {
@@ -70,16 +75,16 @@ interface DecisionRecord {
 }
 
 function transformAssessmentToRecord(assessment: Assessment): DecisionRecord {
-    // Parse JSON results
+    // Parse JSON results from SqlNullString structure
     let parsedCompliance: ComplianceResult | undefined;
     let parsedScenarios: any[] | undefined;
 
     try {
-        if (assessment.compliance_result) {
-            parsedCompliance = JSON.parse(assessment.compliance_result);
+        if (assessment.compliance_result?.Valid && assessment.compliance_result.String) {
+            parsedCompliance = JSON.parse(assessment.compliance_result.String);
         }
-        if (assessment.scenario_results) {
-            parsedScenarios = JSON.parse(assessment.scenario_results);
+        if (assessment.scenario_results?.Valid && assessment.scenario_results.String) {
+            parsedScenarios = JSON.parse(assessment.scenario_results.String);
         }
     } catch (e) {
         console.warn('Failed to parse assessment JSON:', e);
@@ -143,7 +148,7 @@ function transformAssessmentToRecord(assessment: Assessment): DecisionRecord {
         jurisdiction: assessment.jurisdiction,
         primaryRiskBearer: "Analysis Required", // TODO: Extract from parsed scenarios
         createdAt: new Date(assessment.created_at).toISOString().split('T')[0],
-        finalizedAt: assessment.completed_at ? new Date(assessment.completed_at).toISOString().split('T')[0] : undefined,
+        finalizedAt: assessment.completed_at?.Valid && assessment.completed_at.String ? new Date(assessment.completed_at.String).toISOString().split('T')[0] : undefined,
         investmentRange,
         thermalLoad: `${(assessment.thermal_load_min_kw / 1000).toFixed(1)}-${(assessment.thermal_load_max_kw / 1000).toFixed(1)} MW`,
         originalAssessment: assessment,

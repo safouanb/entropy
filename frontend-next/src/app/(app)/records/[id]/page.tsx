@@ -24,6 +24,12 @@ import {
     Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { exportRecordToPDF } from "@/lib/pdf-export";
+
+interface SqlNullString {
+    String: string;
+    Valid: boolean;
+}
 
 interface Assessment {
     id: number;
@@ -36,19 +42,30 @@ interface Assessment {
     jurisdiction: string;
     applicable_regulation: string;
     status: string;
-    scenario_results?: string;
-    compliance_result?: string;
-    conclusion?: string;
+    scenario_results?: SqlNullString;
+    compliance_result?: SqlNullString;
+    conclusion?: SqlNullString;
     created_at: string;
-    completed_at?: string;
-    confidence_level?: string;
-    risk_allocation_json?: string;
+    completed_at?: SqlNullString;
+    confidence_level?: SqlNullString;
+    risk_allocation_json?: SqlNullString;
 }
 
 interface ComplianceResult {
     verdict: string;
     overall_status: string;
     regulatory_context: string;
+    status: string;
+    applicableLaw: string;
+    reasoning: string[];
+    remediationSteps: string[];
+    citations: Array<{
+        law: string;
+        section: string;
+        summary: string;
+        url: string;
+    }>;
+    disclaimer: string;
     failure_modes?: string[];
     regulations?: Array<{
         name: string;
@@ -59,23 +76,23 @@ interface ComplianceResult {
 }
 
 interface ScenarioResult {
-    ReuseScenario: string;
-    OwnershipModel: string;
-    ComplianceStatus: string;
-    ComplianceReason?: string;
-    IRRMinPercent: number;
-    IRRMaxPercent: number;
-    PaybackMinYears: number;
-    PaybackMaxYears: number;
-    CapexMinEur: number;
-    CapexMaxEur: number;
-    InvestmentRequiredMinEur?: number;
-    InvestmentRequiredMaxEur?: number;
-    CO2AvoidedMinKgYear?: number;
-    CO2AvoidedMaxKgYear?: number;
-    RequiresHeatPump?: boolean;
-    RequiresPipeline?: boolean;
-    PipelineLengthKm?: number;
+    reuseScenario: string;
+    ownershipModel: string;
+    complianceStatus: string;
+    complianceReason?: string;
+    irrMinPercent: number;
+    irrMaxPercent: number;
+    paybackMinYears: number;
+    paybackMaxYears: number;
+    capexMinEur: number;
+    capexMaxEur: number;
+    investmentRequiredMinEur?: number;
+    investmentRequiredMaxEur?: number;
+    co2AvoidedMinKgYear?: number;
+    co2AvoidedMaxKgYear?: number;
+    requiresHeatPump?: boolean;
+    requiresPipeline?: boolean;
+    pipelineLengthKm?: number;
 }
 
 interface RiskAllocation {
@@ -108,16 +125,16 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                 const assessmentData = await response.json();
                 setAssessment(assessmentData);
 
-                // Parse JSON fields
+                // Parse JSON fields (handle SqlNullString format)
                 try {
-                    if (assessmentData.compliance_result) {
-                        setParsedCompliance(JSON.parse(assessmentData.compliance_result));
+                    if (assessmentData.compliance_result?.Valid && assessmentData.compliance_result.String) {
+                        setParsedCompliance(JSON.parse(assessmentData.compliance_result.String));
                     }
-                    if (assessmentData.scenario_results) {
-                        setParsedScenarios(JSON.parse(assessmentData.scenario_results));
+                    if (assessmentData.scenario_results?.Valid && assessmentData.scenario_results.String) {
+                        setParsedScenarios(JSON.parse(assessmentData.scenario_results.String));
                     }
-                    if (assessmentData.risk_allocation_json) {
-                        setParsedRiskAllocation(JSON.parse(assessmentData.risk_allocation_json));
+                    if (assessmentData.risk_allocation_json?.Valid && assessmentData.risk_allocation_json.String) {
+                        setParsedRiskAllocation(JSON.parse(assessmentData.risk_allocation_json.String));
                     }
                 } catch (parseError) {
                     console.warn('Failed to parse assessment JSON:', parseError);
@@ -155,7 +172,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                     <div className="text-center">
                         <div className="text-red-400 text-lg font-mono mb-2">Record Not Found</div>
                         <div className="text-zinc-500 text-sm font-mono mb-4">{error}</div>
-                        <Link href="/dashboard">
+                        <Link href="/records">
                             <Button variant="outline" className="border-zinc-700 text-zinc-300">
                                 <ArrowLeft className="w-4 h-4 mr-2" />
                                 Back to Records
@@ -169,6 +186,21 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
 
     const recordNumber = `DR-${new Date(assessment.created_at).getFullYear()}-${assessment.id.toString().padStart(3, '0')}`;
     const thermalLoadRange = `${(assessment.thermal_load_min_kw / 1000).toFixed(1)}-${(assessment.thermal_load_max_kw / 1000).toFixed(1)} MW`;
+
+    const handleExportPDF = () => {
+        const recordData = {
+            recordNumber,
+            projectName: assessment.project_name,
+            status: assessment.status.toUpperCase(),
+            complianceVerdict: overallCompliance,
+            jurisdiction: assessment.jurisdiction,
+            thermalLoadRange,
+            investmentRange,
+            createdAt: assessment.created_at,
+            finalizedAt: assessment.completed_at?.Valid && assessment.completed_at.String ? assessment.completed_at.String : undefined
+        };
+        exportRecordToPDF(recordData);
+    };
 
     // Determine overall compliance status
     let overallCompliance = "PENDING";
@@ -195,7 +227,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
             {/* Header with Navigation */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                    <Link href="/dashboard">
+                    <Link href="/records">
                         <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white">
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Records
@@ -207,17 +239,18 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                             {recordNumber}
                         </h1>
                         <p className="text-sm text-zinc-400 font-mono">
-                            Decision Record • Version {assessment.version} • {assessment.status === "finalized" ? "Finalized" : "Draft"} {assessment.completed_at ? new Date(assessment.completed_at).toISOString().split('T')[0] : new Date(assessment.created_at).toISOString().split('T')[0]}
+                            Decision Record • Version {assessment.version} • {assessment.status === "finalized" ? "Finalized" : "Draft"} {assessment.completed_at?.Valid && assessment.completed_at.String ? new Date(assessment.completed_at.String).toISOString().split('T')[0] : new Date(assessment.created_at).toISOString().split('T')[0]}
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                    <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300">
-                        <Share2 className="w-4 h-4 mr-2" />
-                        Share
-                    </Button>
-                    <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-emerald-700/50 text-emerald-300 hover:bg-emerald-900/20"
+                        onClick={handleExportPDF}
+                    >
                         <Download className="w-4 h-4 mr-2" />
                         Export PDF
                     </Button>
@@ -310,7 +343,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                             </div>
                             <div>
                                 <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-1">Confidence Level</p>
-                                <p className="text-white font-medium">{assessment.confidence_level || "MEDIUM"}</p>
+                                <p className="text-white font-medium">{assessment.confidence_level?.Valid && assessment.confidence_level.String ? assessment.confidence_level.String : "MEDIUM"}</p>
                             </div>
                         </div>
                     </div>
@@ -351,55 +384,50 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                 </CardContent>
             </Card>
 
-            {/* Compliance Analysis */}
+            {/* Legal Compliance Analysis */}
             {parsedCompliance && (
                 <Card className="bg-zinc-950/50 border-zinc-800">
                     <CardHeader>
                         <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
                             <Scale className="w-4 h-4 mr-2" />
-                            Compliance Analysis
+                            Legal Compliance Analysis
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0">
-                        <div className="space-y-0">
-                            {parsedCompliance.regulations?.map((regulation, index) => (
-                                <div key={index} className="p-4 border-b border-zinc-800/50 last:border-b-0">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center space-x-3 mb-2">
-                                                {regulation.status === "COMPLIANT" ? (
-                                                    <CheckCircle className="w-4 h-4 text-emerald-500" />
-                                                ) : (
-                                                    <AlertTriangle className="w-4 h-4 text-amber-500" />
-                                                )}
-                                                <h4 className="text-white font-medium">{regulation.name}</h4>
-                                                <Badge
-                                                    className={cn(
-                                                        "font-mono text-xs",
-                                                        regulation.status === "COMPLIANT"
-                                                            ? "bg-emerald-950 text-emerald-400 border-emerald-800"
-                                                            : "bg-amber-950 text-amber-400 border-amber-800"
-                                                    )}
-                                                >
-                                                    {regulation.status}
-                                                </Badge>
-                                            </div>
-                                            {regulation.article && (
-                                                <p className="text-xs text-zinc-500 font-mono mb-2">{regulation.article}</p>
-                                            )}
-                                            <p className="text-sm text-zinc-300">{regulation.details}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )) || (
-                                <div className="p-4">
-                                    <div className="text-sm text-zinc-400">
-                                        Overall Status: <span className="text-white font-mono">{parsedCompliance.overall_status}</span>
-                                    </div>
-                                    <div className="text-sm text-zinc-300 mt-2">{parsedCompliance.regulatory_context}</div>
-                                </div>
-                            )}
+                    <CardContent className="space-y-6 p-6">
+                        {/* Applicable Law */}
+                        <div>
+                            <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-2">Applicable Law</p>
+                            <p className="text-white font-medium">{parsedCompliance.applicableLaw}</p>
+                            <p className="text-sm text-zinc-400 mt-1">Status: <span className="font-mono text-amber-400">MANDATORY COMPLIANCE REQUIRED</span></p>
                         </div>
+
+                        {/* Regulatory Requirements */}
+                        <div>
+                            <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-3">Regulatory Requirements</p>
+                            <div className="space-y-2">
+                                {parsedCompliance.reasoning?.map((reason, index) => (
+                                    <div key={index} className="flex items-start space-x-3 p-3 bg-zinc-900/50 rounded border border-zinc-800">
+                                        <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                                        <p className="text-sm text-zinc-300 leading-relaxed">{reason}</p>
+                                    </div>
+                                )) || []}
+                            </div>
+                        </div>
+
+                        {/* Remediation Steps */}
+                        {parsedCompliance.remediationSteps && parsedCompliance.remediationSteps.length > 0 && (
+                            <div>
+                                <p className="text-xs text-zinc-500 font-mono uppercase tracking-wider mb-3">Required Actions</p>
+                                <div className="space-y-2">
+                                    {parsedCompliance.remediationSteps.map((step, index) => (
+                                        <div key={index} className="flex items-start space-x-3 p-3 bg-blue-950/20 rounded border border-blue-800/50">
+                                            <CheckCircle className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                                            <p className="text-sm text-zinc-300 leading-relaxed">{step}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             )}
@@ -447,7 +475,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                     <CardContent className="p-0">
                         <div className="space-y-0">
                             {parsedScenarios.map((scenario, index) => {
-                                const isRecommended = scenario.OwnershipModel === "UTILITY_OWNS" && scenario.ComplianceStatus === "COMPLIANT";
+                                const isRecommended = scenario.ownershipModel === "UTILITY_OWNS" && scenario.complianceStatus === "COMPLIANT";
                                 return (
                                     <div key={index} className={cn(
                                         "p-4 border-b border-zinc-800/50 last:border-b-0",
@@ -456,7 +484,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                                         <div className="flex items-center justify-between">
                                             <div className="flex-1">
                                                 <div className="flex items-center space-x-3 mb-3">
-                                                    <h4 className="text-white font-medium">{scenario.OwnershipModel.replace('_', ' ')}</h4>
+                                                    <h4 className="text-white font-medium">{scenario.ownershipModel.replace('_', ' ')}</h4>
                                                     {isRecommended && (
                                                         <Badge className="bg-blue-950 text-blue-400 border-blue-800 font-mono text-xs">
                                                             RECOMMENDED
@@ -466,22 +494,22 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                                                 <div className="grid grid-cols-4 gap-6 text-sm">
                                                     <div>
                                                         <p className="text-zinc-500 font-mono text-xs mb-1">IRR</p>
-                                                        <p className="text-white font-mono">{scenario.IRRMinPercent?.toFixed(1)}-{scenario.IRRMaxPercent?.toFixed(1)}%</p>
+                                                        <p className="text-white font-mono">{scenario.irrMinPercent?.toFixed(1)}-{scenario.irrMaxPercent?.toFixed(1)}%</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-zinc-500 font-mono text-xs mb-1">Payback</p>
-                                                        <p className="text-white font-mono">{scenario.PaybackMinYears?.toFixed(0)}-{scenario.PaybackMaxYears?.toFixed(0)} years</p>
+                                                        <p className="text-white font-mono">{scenario.paybackMinYears?.toFixed(0)}-{scenario.paybackMaxYears?.toFixed(0)} years</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-zinc-500 font-mono text-xs mb-1">CAPEX</p>
-                                                        <p className="text-white font-mono">€{(scenario.CapexMinEur / 1000000).toFixed(1)}-{(scenario.CapexMaxEur / 1000000).toFixed(1)}M</p>
+                                                        <p className="text-white font-mono">€{(scenario.capexMinEur / 1000000).toFixed(1)}-{(scenario.capexMaxEur / 1000000).toFixed(1)}M</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-zinc-500 font-mono text-xs mb-1">Status</p>
                                                         <p className={cn(
                                                             "font-mono text-xs",
-                                                            scenario.ComplianceStatus === "COMPLIANT" ? "text-emerald-400" : "text-amber-400"
-                                                        )}>{scenario.ComplianceStatus}</p>
+                                                            scenario.complianceStatus === "COMPLIANT" ? "text-emerald-400" : "text-amber-400"
+                                                        )}>{scenario.complianceStatus}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -494,16 +522,72 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                 </Card>
             )}
 
-            {/* Raw Conclusion */}
-            {assessment.conclusion && (
+            {/* Legal Citations & References */}
+            {parsedCompliance?.citations && parsedCompliance.citations.length > 0 && (
+                <Card className="bg-zinc-950/50 border-zinc-800">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider flex items-center">
+                            <FileText className="w-4 h-4 mr-2" />
+                            Legal Citations & References
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="space-y-0">
+                            {parsedCompliance.citations.map((citation, index) => (
+                                <div key={index} className="p-4 border-b border-zinc-800/50 last:border-b-0">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <div className="flex items-center space-x-3 mb-2">
+                                                <Scale className="w-4 h-4 text-amber-500" />
+                                                <h4 className="text-white font-medium">{citation.law}</h4>
+                                                <Badge className="bg-amber-950 text-amber-400 border-amber-800 font-mono text-xs">
+                                                    {citation.section}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-sm text-zinc-300 leading-relaxed mb-3">{citation.summary}</p>
+                                            <a
+                                                href={citation.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center space-x-2 text-xs text-blue-400 hover:text-blue-300 transition-colors font-mono"
+                                            >
+                                                <span>{citation.url}</span>
+                                                <ArrowLeft className="w-3 h-3 rotate-135" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Legal Disclaimer */}
+            {parsedCompliance?.disclaimer && (
+                <Card className="bg-amber-950/20 border-amber-800/50">
+                    <CardContent className="p-4">
+                        <div className="flex items-start space-x-3">
+                            <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                            <div>
+                                <p className="text-xs text-amber-400 font-mono uppercase tracking-wider mb-1">Legal Disclaimer</p>
+                                <p className="text-sm text-amber-200/90 leading-relaxed">{parsedCompliance.disclaimer}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Analysis Conclusion */}
+            {assessment.conclusion?.Valid && assessment.conclusion.String && (
                 <Card className="bg-zinc-950/50 border-zinc-800">
                     <CardHeader>
                         <CardTitle className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
-                            Analysis Conclusion
+                            Final Assessment
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-zinc-300 leading-relaxed">{assessment.conclusion}</p>
+                        <p className="text-sm text-zinc-300 leading-relaxed font-mono">{assessment.conclusion.String}</p>
                     </CardContent>
                 </Card>
             )}
@@ -521,7 +605,7 @@ export default function DecisionRecordDetailPage({ params }: { params: Promise<{
                         </div>
                         <div className="flex items-center space-x-2">
                             <Clock className="w-3 h-3" />
-                            <span>{assessment.status === "finalized" ? "Finalized" : "Created"}: {new Date(assessment.completed_at || assessment.created_at).toISOString().split('T')[0]}</span>
+                            <span>{assessment.status === "finalized" ? "Finalized" : "Created"}: {assessment.completed_at?.Valid && assessment.completed_at.String ? new Date(assessment.completed_at.String).toISOString().split('T')[0] : new Date(assessment.created_at).toISOString().split('T')[0]}</span>
                         </div>
                     </div>
                 </CardContent>
